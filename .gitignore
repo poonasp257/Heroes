@@ -1,11 +1,50 @@
+# Production
+build
+Debug
+
+# Dependency directories
+node_modules
+
 # Prerequisites
 *.d
 
+#Visual cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
 # Compiled Object files
-*.slo
-*.lo
-*.o
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
 *.obj
+*.iobj
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
 
 # Precompiled Headers
 *.gch
@@ -30,3 +69,8 @@
 *.exe
 *.out
 *.app
+
+# Logs
+logs
+*.log
+
