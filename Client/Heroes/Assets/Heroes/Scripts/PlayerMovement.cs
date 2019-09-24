@@ -2,73 +2,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
-{
-    private Animator animator;
-    private CharacterController controller;
+namespace Heroes {
+	public class PlayerMovement : MonoBehaviour {
+		private Animator animator;
+		private CharacterController controller;
+		private PlayerStateManager stateManager;
 
-    private float inputX;
-    private float inputZ;
-    private float gravity;
-    private Vector3 desiredMoveDirection;
-    
-    public float desiredRotationSpeed;
-    public float allowPlayerRotation;
-    public float moveSpeed;
+		private float horizon;
+		private float vertical;
+		private float inputMagnitude;
+		private Vector3 moveDirection;
+		private Vector3 desiredMoveDirection;
 
-    // Start is called before the first frame update
-    private void Start() {
-        animator = GetComponent<Animator>();
-        controller = GetComponent<CharacterController>();
-    }
+		public float desiredRotationSpeed;
+		public float allowPlayerRotation;
+		public float moveSpeed;
 
-    // Update is called once per frame
-    private void Update() {
-        inputX = Input.GetAxis("Horizontal");
-        inputZ = Input.GetAxis("Vertical");
+		private void Start() {
+			animator = GetComponent<Animator>();
+			controller = GetComponent<CharacterController>();
+			stateManager = GetComponent<PlayerStateManager>();
 
-        ProcessInput();
-    }
+			moveDirection = Vector3.zero;
+			desiredMoveDirection = Vector3.zero;
+		}
 
-    private void ProcessInput() {
-        animator.SetFloat("InputX", inputX, 0.0f, Time.deltaTime * 2.0f);
-        animator.SetFloat("InputZ", inputZ, 0.0f, Time.deltaTime * 2.0f);
+		private void Update() {
+			ProcessInput();
+		}
 
-        float inputMagnitude = new Vector2(inputX, inputZ).sqrMagnitude;
-		inputMagnitude = Mathf.Clamp(inputMagnitude, 0, 1);
-		animator.SetFloat("InputMagnitude", inputMagnitude, 0.0f, Time.deltaTime * 2.0f);
+		private void ProcessInput() {
+			horizon = stateManager.horizon;
+			vertical = stateManager.vertical;
+						
+			inputMagnitude = new Vector2(horizon, vertical).sqrMagnitude;
+			inputMagnitude = Mathf.Clamp01(inputMagnitude);
+			animator.SetFloat("Magnitude", inputMagnitude);
 
-        if (inputMagnitude > allowPlayerRotation) Rotation();
-        else desiredMoveDirection = Vector3.zero;
+			if (inputMagnitude > allowPlayerRotation) Rotation();
+			else desiredMoveDirection = Vector3.zero;
 
-        Move();
-    }
+			Move();
+		}
 
-    private void Rotation() {
-        Camera camera = Camera.main;
-        Vector3 forward = camera.transform.forward;
-        Vector3 right = camera.transform.right;
+		private void Rotation() {
+			Camera camera = Camera.main;
+			Vector3 forward = camera.transform.forward;
+			Vector3 right = camera.transform.right;
 
-        forward.y = 0.0f;
-        right.y = 0.0f;
+			forward.y = 0.0f;
+			right.y = 0.0f;
 
-        forward.Normalize();
-        right.Normalize();
+			forward.Normalize();
+			right.Normalize();
 
-        desiredMoveDirection = forward * inputZ + right * inputX;
+			desiredMoveDirection = forward * vertical + right * horizon;
 
-        transform.rotation = Quaternion.Slerp(transform.rotation,
-        Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
-    }
+			transform.rotation = Quaternion.Slerp(transform.rotation,
+			Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+		}
 
-    private void Move() {
-        gravity -= 9.8f * Time.deltaTime;
+		private void Move() {
+			if (controller.isGrounded) {
+				moveDirection = transform.forward * inputMagnitude * moveSpeed;
+			}
 
-        Vector3 moveDirection = desiredMoveDirection * moveSpeed * Time.deltaTime;
-        moveDirection = new Vector3(moveDirection.x, gravity, moveDirection.z);
-
-		controller.Move(moveDirection);
-
-        if(controller.isGrounded) gravity = 0;
-    }
+			moveDirection.y -= 45.0f * Time.deltaTime;
+			controller.Move(moveDirection * Time.deltaTime);
+		}
+	}
 }
