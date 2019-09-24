@@ -11,31 +11,32 @@ public class PlayerMovement : MonoBehaviour
     private float inputZ;
     private float gravity;
     private Vector3 desiredMoveDirection;
-
-
+    
     public float desiredRotationSpeed;
     public float allowPlayerRotation;
     public float moveSpeed;
 
     // Start is called before the first frame update
-    void Start() {
+    private void Start() {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
-    void Update() {
+    private void Update() {
         inputX = Input.GetAxis("Horizontal");
         inputZ = Input.GetAxis("Vertical");
 
         ProcessInput();
     }
 
-    void ProcessInput() {
+    private void ProcessInput() {
         animator.SetFloat("InputX", inputX, 0.0f, Time.deltaTime * 2.0f);
         animator.SetFloat("InputZ", inputZ, 0.0f, Time.deltaTime * 2.0f);
 
         float inputMagnitude = new Vector2(inputX, inputZ).sqrMagnitude;
+		inputMagnitude = Mathf.Clamp(inputMagnitude, 0, 1);
+		animator.SetFloat("InputMagnitude", inputMagnitude, 0.0f, Time.deltaTime * 2.0f);
 
         if (inputMagnitude > allowPlayerRotation) Rotation();
         else desiredMoveDirection = Vector3.zero;
@@ -43,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    void Rotation() {
+    private void Rotation() {
         Camera camera = Camera.main;
         Vector3 forward = camera.transform.forward;
         Vector3 right = camera.transform.right;
@@ -60,12 +61,13 @@ public class PlayerMovement : MonoBehaviour
         Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
     }
 
-    void Move() {
+    private void Move() {
         gravity -= 9.8f * Time.deltaTime;
 
         Vector3 moveDirection = desiredMoveDirection * moveSpeed * Time.deltaTime;
         moveDirection = new Vector3(moveDirection.x, gravity, moveDirection.z);
-        controller.Move(moveDirection);
+
+		controller.Move(moveDirection);
 
         if(controller.isGrounded) gravity = 0;
     }
