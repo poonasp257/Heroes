@@ -4,47 +4,47 @@ using UnityEngine;
 
 namespace Heroes {
 	public class CameraFollow : MonoBehaviour {
-		public GameObject cameraFollowObj;
-		public float cameraMoveSpeed = 120.0f;
-		public float clampAngle = 80.0f;
-		public float inputSensitivity = 150.0f;
-		public float mouseX;
-		public float mouseY;
+		[Serializable] private const float CameraMoveSpeed = 120.0f;
+		[Serializable] private const float ClampAngle = 80.0f;
+		[Serializable] private const float InputSensitivity = 150.0f;
+		
+		private float mouseX;
+		private float mouseY;
 		private Vector3 rotation;
-
-		// Start is called before the first frame update
-		private void Start()
-		{
+		
+		public GameObject targetObj;
+		
+		private void Start() {
 			rotation = transform.localRotation.eulerAngles;
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
+		private void Update() {
+			RotateCamera();
+		}
+
+		private void LateUpdate() {
+			FollowObject();
+		}
+
+		private void RotateCamera() {			
 			mouseX = Input.GetAxis("Mouse X");
 			mouseY = Input.GetAxis("Mouse Y");
 
-			rotation.y += mouseX * inputSensitivity * Time.deltaTime;
-			rotation.x += mouseY * inputSensitivity * Time.deltaTime;
+			rotation.y += mouseX * InputSensitivity * Time.deltaTime;
+			rotation.x += mouseY * InputSensitivity * Time.deltaTime;
 
-			rotation.x = Mathf.Clamp(rotation.x, -clampAngle, clampAngle);
+			rotation.x = Mathf.Clamp(rotation.x, -ClampAngle, ClampAngle);
 
 			Quaternion localRotation = Quaternion.Euler(rotation.x, rotation.y, 0.0f);
 			transform.rotation = localRotation;
 		}
 
-		void LateUpdate()
-		{
-			CameraUpdater();
-		}
-
-		void CameraUpdater()
-		{
-			Transform target = cameraFollowObj.transform;
-			float step = cameraMoveSpeed * Time.deltaTime;
-			transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+		private void FollowObject() {
+			Transform targetTransfrom = targetObj.transform;
+			float step = CameraMoveSpeed * Time.deltaTime;
+			transform.position = Vector3.MoveTowards(transform.position, targetTransfrom.position, step);
 		}
 	}
 }
