@@ -87,8 +87,7 @@ public class MeleeWeaponTrail : MonoBehaviour
 		_trailObject.AddComponent(typeof(MeshRenderer));
 		_trailObject.GetComponent<Renderer>().material = _material;
 
-		_trailMesh = new Mesh();
-		_trailMesh.name = name + "TrailMesh";
+		_trailMesh = new Mesh { name = name + "TrailMesh" };
 		_trailObject.GetComponent<MeshFilter>().mesh = _trailMesh;
 
 		_minVertexDistanceSqr = _minVertexDistance * _minVertexDistance;

@@ -4,36 +4,34 @@ using UnityEngine;
 
 namespace Heroes {
 	public class CameraCollision : MonoBehaviour {
-		public float minDistance = 1.0f;
-		public float maxDistance = 4.0f;
-		public float smooth = 10.0f;
-		Vector3 dollyDir;
-		public Vector3 dollyDirAdjusted;
-		public float distance;
+		[Serializable] private const float MinDistance = 1.0f;
+		[Serializable] private const float MaxDistance = 4.0f;
+		[Serializable] private const float Smooth = 10.0f;
+		[Serializable] private const float HitDistanceAdjust = 0.8f;
+		
+		private float distance;
+		private Vector3 dir;
 
-		// Start is called before the first frame update
-		void Start()
-		{
-			dollyDir = transform.localPosition.normalized;
+		private void Start() {
 			distance = transform.localPosition.magnitude;
+			dir = transform.localPosition.normalized; 
 		}
 
-		// Update is called once per frame
-		void Update()
-		{
-			Vector3 desiredCameraPos = transform.parent.TransformPoint(dollyDir * maxDistance);
+		private void Update() {
+			float distance = transform.localPosition.magnitude;			
+			Vector3 desiredCameraPos = transform.parent.TransformPoint(dir * MaxDistance);
 			RaycastHit hit;
 
-			if (Physics.Linecast(transform.parent.position, desiredCameraPos, out hit))
-			{
-				distance = Mathf.Clamp(( hit.distance * 0.8f ), minDistance, maxDistance);
+			if (Physics.Linecast(transform.parent.position, desiredCameraPos, out hit)) {
+				distance = Mathf.Clamp(( hit.distance * HitDistanceAdjust ), MinDistance, MaxDistance);
 			}
-			else
-			{
-				distance = maxDistance;
-			}
+			else distance = MaxDistance;
 
-			transform.localPosition = Vector3.Lerp(transform.localPosition, dollyDir * distance, Time.deltaTime * smooth);
+			transform.localPosition = Vector3.Lerp(transform.localPosition, dir * distance, Time.deltaTime * Smooth);
+		}
+
+		private void CalculateDistance() {
+
 		}
 	}
 }
