@@ -5992,11 +5992,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4939f9771a073488bd66a35c379041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistance: 0.2
-  maxDistance: 4
-  smooth: 5
-  dollyDirAdjusted: {x: 0, y: 0, z: 0}
-  distance: 0
 --- !u!1 &542850745 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000012925669750, guid: 04d464c74059d654db935e748cab1c29,
@@ -10652,40 +10647,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1.46, z: 0}
---- !u!114 &945103493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 945103490}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ca09dda9f1ec5d4fa7e09a96d5e2fe9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &945103494 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400004, guid: ae913b6dcaf743f46933e56f37f03137,
-    type: 3}
-  m_PrefabInstance: {fileID: 1993189382}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &945103495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 945103490}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2debfd265a847b647a05ff1fa5c11cd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  desiredRotationSpeed: 0.4
-  allowPlayerRotation: 0.3
-  moveSpeed: 7
---- !u!114 &945103496
+--- !u!114 &945103492
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10703,6 +10665,39 @@ MonoBehaviour:
   isPressedRB: 0
   countOfLeftAttack: 0
   state: 0
+--- !u!114 &945103493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945103490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2debfd265a847b647a05ff1fa5c11cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  desiredRotationSpeed: 0.5
+  allowPlayerRotation: 0.3
+  moveSpeed: 7
+--- !u!4 &945103494 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400004, guid: ae913b6dcaf743f46933e56f37f03137,
+    type: 3}
+  m_PrefabInstance: {fileID: 1993189382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &945103495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945103490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca09dda9f1ec5d4fa7e09a96d5e2fe9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &956939991
 GameObject:
   m_ObjectHideFlags: 0
@@ -18706,12 +18701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 901940cb9eb91f64489e049c11c00dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraFollowObj: {fileID: 2146815685}
-  cameraMoveSpeed: 120
-  clampAngle: 80
-  inputSensitivity: 150
-  mouseX: 0
-  mouseY: 0
+  targetObj: {fileID: 2146815685}
 --- !u!4 &1657208159
 Transform:
   m_ObjectHideFlags: 0

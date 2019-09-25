@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Heroes {
 	public class CameraCollision : MonoBehaviour {
-		[Serializable] private const float MinDistance = 1.0f;
-		[Serializable] private const float MaxDistance = 4.0f;
-		[Serializable] private const float Smooth = 10.0f;
-		[Serializable] private const float HitDistanceAdjust = 0.8f;
+		[SerializeField] private const float MinDistance = 1.0f;
+		[SerializeField] private const float MaxDistance = 4.0f;
+		[SerializeField] private const float Smooth = 10.0f;
+		[SerializeField] private const float HitDistanceAdjust = 0.8f;
 		
 		private float distance;
 		private Vector3 dir;

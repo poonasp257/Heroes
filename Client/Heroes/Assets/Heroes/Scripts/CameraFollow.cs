@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Heroes {
 	public class CameraFollow : MonoBehaviour {
-		[Serializable] private const float CameraMoveSpeed = 120.0f;
-		[Serializable] private const float ClampAngle = 80.0f;
-		[Serializable] private const float InputSensitivity = 150.0f;
-		
+		[SerializeField] private const float CameraMoveSpeed = 120.0f;
+		[SerializeField] private const float ClampAngle = 80.0f;
+		[SerializeField] private const float InputSensitivity = 150.0f;
+
 		private float mouseX;
 		private float mouseY;
 		private Vector3 rotation;
