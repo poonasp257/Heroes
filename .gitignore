@@ -24,7 +24,6 @@ ipch/
 *_p.c
 *_h.h
 *.ilk
-*.meta
 *.obj
 *.iobj
 *.pdb
