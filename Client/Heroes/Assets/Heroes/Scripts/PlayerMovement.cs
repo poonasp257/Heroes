@@ -8,67 +8,94 @@ namespace Heroes {
 		private CharacterController controller;
 		private PlayerStateManager stateManager;
 
+		private float lastRollTime;
 		private float horizon;
 		private float vertical;
-		private float inputMagnitude;
+		private float moveAmount;
 		private Vector3 moveDirection;
 		private Vector3 desiredMoveDirection;
 
-		public float desiredRotationSpeed;
-		public float allowPlayerRotation;
-		public float moveSpeed;
+		[SerializeField] private float rotationSpeed = 0.5f;
+		[SerializeField] private float allowPlayerRotation = 0.0f;
+		[SerializeField] private float moveSpeed = 7.0f;
+		[SerializeField] private float rollCoolTime = 1.0f;
 
 		private void Start() {
+			Initialize();
+		}
+
+		private void Update() {
+			InputAction();
+		}
+
+		private void FixedUpdate() {
+			ProcessInput();
+			FixedTick();
+		}
+
+		private void Initialize() {
 			animator = GetComponent<Animator>();
 			controller = GetComponent<CharacterController>();
 			stateManager = GetComponent<PlayerStateManager>();
 
-			moveDirection = Vector3.zero;
-			desiredMoveDirection = Vector3.zero;
+			lastRollTime = 0.0f;
 		}
 
-		private void Update() {
-			ProcessInput();
+		private void InputAction() {
+			if (Input.GetButtonDown("Roll")) Roll();
 		}
 
 		private void ProcessInput() {
-			horizon = stateManager.horizon;
-			vertical = stateManager.vertical;
-						
-			inputMagnitude = new Vector2(horizon, vertical).sqrMagnitude;
-			inputMagnitude = Mathf.Clamp01(inputMagnitude);
-			animator.SetFloat("Magnitude", inputMagnitude);
+			if (stateManager.InAction) return;
 
-			if (inputMagnitude > allowPlayerRotation) Rotation();
-			else desiredMoveDirection = Vector3.zero;
+			horizon = Input.GetAxis("Horizontal");
+			vertical = Input.GetAxis("Vertical");
 
+			Camera camera = Camera.main;
+			Vector3 h = horizon * camera.transform.right;
+			Vector3 v = vertical * camera.transform.forward;
+
+			moveDirection = (h + v).normalized;
+			moveAmount = new Vector2(horizon, vertical).sqrMagnitude;
+			moveAmount = Mathf.Clamp01(moveAmount);
+			animator.SetFloat("moveAmount", moveAmount);
+		}
+
+		private void FixedTick() {
+			Rotate();
 			Move();
 		}
 
-		private void Rotation() {
-			Camera camera = Camera.main;
-			Vector3 forward = camera.transform.forward;
-			Vector3 right = camera.transform.right;
+		private void Rotate() {
+			if (moveAmount < allowPlayerRotation) return;
 
-			forward.y = 0.0f;
-			right.y = 0.0f;
+			desiredMoveDirection = moveDirection;
+			desiredMoveDirection.y = 0.0f;
+			if (desiredMoveDirection == Vector3.zero) {
+				desiredMoveDirection = transform.forward;
+			}
 
-			forward.Normalize();
-			right.Normalize();
-
-			desiredMoveDirection = forward * vertical + right * horizon;
-
+			Quaternion lookAngle = Quaternion.LookRotation(desiredMoveDirection);
 			transform.rotation = Quaternion.Slerp(transform.rotation,
-			Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+				lookAngle, rotationSpeed);
 		}
 
 		private void Move() {
-			if (controller.isGrounded) {
-				moveDirection = transform.forward * inputMagnitude * moveSpeed;
+			Vector3 motion = moveDirection * moveAmount * moveSpeed;
+
+			if(controller.isGrounded == false) {
+				motion.y -= 9.8f;
 			}
 
-			moveDirection.y -= 45.0f * Time.deltaTime;
-			controller.Move(moveDirection * Time.deltaTime);
+			controller.Move(motion * Time.deltaTime);
+		}
+
+		private void Roll() {
+			if (Time.time - lastRollTime < rollCoolTime) return;
+
+			animator.CrossFade("Roll", 0.2f);
+			stateManager.InAction = true;
+			lastRollTime = Time.time;
 		}
 	}
 }
