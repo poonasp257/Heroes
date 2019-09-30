@@ -2,72 +2,154 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Heroes {
-	public class PlayerStateManager : MonoBehaviour {
-		public enum ActionState {
-			Idle, Move, Attack, Roll, Dash, Hit, Dead
-		};
+public class PlayerStateManager : MonoBehaviour {
+	private Animator animator;
+	private CharacterController controller;
 
-		private const float MaxComboDelay = 0.3f;
+	private bool isAttacking;
+	private bool isRolling;
 
-		private bool inAction;
-		private float lastAttackTime;
-		private CharacterStatus status;
+	private float horizon;
+	private float vertical;
+	private float moveAmount;
+	private Vector3 moveDirection;
+	private Vector3 desiredMoveDirection;
 
-		public float horizon; //{ get; private set; }
-		public float vertical; //{ get; private set; }
+	private const float MaxComboDelay = 0.4f;
+	private const float MaxRunSpeed = 1.0f;
+	private const float MaxSprintSpeed = 1.4f;
 
-		public bool isPressedLB; //{ get; private set; }
-		public bool isPressedRB; //{ get; private set; }
-		public int countOfLeftAttack; //{ get; private set; }
+	[Header("Movement")]
+	[SerializeField] private float rotationSpeed = 0.5f;
+	[SerializeField] private float allowPlayerRotation = 0.0f;
+	[SerializeField] private float moveSpeed = 1.0f;
 
-		public ActionState state; //{ get; private set; }
+	[Header("Attack")]
+	[SerializeField] private int attackStep;
+	[SerializeField] private float lastAttackTime;
 
+	private void Start() {
+		Initialize();
+	}
 
-		void Start() {
-			Initialize();
-			status = new CharacterStatus();
+	private void Update() {
+		InputAction();
+		DetectAction();
+	}
+
+	private void FixedUpdate() {
+		InputMovement();
+		ProcessMovement();
+		UpdateAnimatorState();
+	}
+
+	private void Initialize() {
+		animator = GetComponent<Animator>();
+		controller = GetComponent<CharacterController>();
+
+		lastAttackTime = 0.0f;
+		attackStep = 0;
+	}
+
+	private void InputAction() {
+		if (Input.GetButtonDown("Roll")) Roll();
+		else if (Input.GetButtonDown("Weak Attack")) WeakAttack();
+		else if (Input.GetButtonDown("Smash Attack")) SmashAttack();
+	}
+
+	private void DetectAction() {
+		isAttacking = animator.GetBool("isAttacking");
+		isRolling = animator.GetBool("isRolling");
+
+		if (isAttacking) {
+			lastAttackTime = Time.time;
+			return;
 		}
 
-		void Update() {
-			InputHandler();
-			Tick();
+		if (Time.time - lastAttackTime > MaxComboDelay) {
+			attackStep = 0;
+			animator.SetInteger("attackStep", attackStep);
+			animator.SetBool("LButton", false);
+			animator.SetBool("RButton", false);
+			return;
+		}
+	}
+
+	private void InputMovement() {
+		horizon = Input.GetAxis("Horizontal");
+		vertical = Input.GetAxis("Vertical");
+
+		Camera camera = Camera.main;
+		Vector3 h = horizon * camera.transform.right;
+		Vector3 v = vertical * camera.transform.forward;
+
+		moveDirection = (h + v).normalized;
+		moveAmount = new Vector2(horizon, vertical).sqrMagnitude;
+		moveAmount = Mathf.Clamp01(moveAmount);
+
+		if (Input.GetButtonDown("Sprint")) moveSpeed = MaxSprintSpeed;
+		else if (Input.GetButtonUp("Sprint")) moveSpeed = MaxRunSpeed;
+	}
+
+	private void UpdateAnimatorState() {
+		animator.SetFloat("moveAmount", moveAmount);
+		animator.SetFloat("moveSpeed", moveSpeed);
+	}
+
+	private void ProcessMovement() {
+		if (controller.isGrounded == false) Gravity();
+
+		LookMoveDirection();
+		Move();
+	}
+
+	private void Gravity() {
+		Vector3 gravity = Vector3.down * 9.8f;
+		controller.Move(gravity * Time.deltaTime);
+	}
+
+	private void LookMoveDirection() {
+		if (moveAmount < allowPlayerRotation
+			|| isAttacking) return;
+
+		desiredMoveDirection = moveDirection;
+		desiredMoveDirection.y = 0.0f;
+		if (desiredMoveDirection == Vector3.zero)
+		{
+			desiredMoveDirection = transform.forward;
 		}
 
-		void Initialize() { 
-			inAction = false;
-			state = ActionState.Idle;
-		}
+		Quaternion lookAngle = Quaternion.LookRotation(desiredMoveDirection);
+		transform.rotation = Quaternion.Slerp(transform.rotation,
+			lookAngle, rotationSpeed);
+	}
 
-		private void InputHandler() {
-			horizon = Input.GetAxis("Horizontal");
-			vertical = Input.GetAxis("Vertical");
+	private void Move() {
+		if (isAttacking) return;
 
-			if (Input.GetMouseButtonDown(0)) { 
-				isPressedLB = true;
-				++countOfLeftAttack;
-				lastAttackTime = Time.time;
-			}
-			else if (Input.GetMouseButtonDown(1)) { 
-				isPressedRB = true;
-				lastAttackTime = Time.time;
-			}
+		Vector3 motion = moveDirection * moveAmount * moveSpeed;
+		controller.Move(motion * Time.deltaTime);
+	} 
+	
+	private void Roll() {
+		if (isRolling) return;
 
-			if (Input.GetMouseButtonUp(0)) isPressedLB = false; 
-			else if (Input.GetMouseButtonUp(1)) isPressedRB = false;
-		}
+		animator.SetTrigger("Roll");		
+	}
 
-		private void Tick() {
-			if(Time.time - lastAttackTime > MaxComboDelay) {
-				countOfLeftAttack = 0;
-			}
+	private void WeakAttack() {
+		if (attackStep >= 4 || isAttacking) return;
 
-			UpdateActionState();
-		}
-		 
-		private void UpdateActionState() {
-			if (horizon != 0 || vertical != 0) state = ActionState.Move;
-			else state = ActionState.Idle;
-		}
+		animator.SetInteger("attackStep", attackStep);
+		animator.SetTrigger("Combat");
+		lastAttackTime = Time.time;
+		++attackStep;
+	}
+
+	private void SmashAttack() {
+		if (attackStep == 0) return;
+
+		attackStep = 0;
+		animator.SetBool("RButton", true);
 	}
 }

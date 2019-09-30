@@ -7,14 +7,15 @@ namespace Heroes {
 		[SerializeField] private const float CameraMoveSpeed = 120.0f;
 		[SerializeField] private const float ClampAngle = 80.0f;
 		[SerializeField] private const float InputSensitivity = 150.0f;
+		[SerializeField] private GameObject targetObj;
 
 		private float mouseX;
 		private float mouseY;
 		private Vector3 rotation;
 		
-		public GameObject targetObj;
-		
 		private void Start() {
+			if(targetObj == null) targetObj = GameObject.Find("Player");
+
 			rotation = transform.localRotation.eulerAngles;
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
@@ -25,7 +26,7 @@ namespace Heroes {
 		}
 
 		private void LateUpdate() {
-			FollowObject();
+			FollowTarget();
 		}
 
 		private void RotateCamera() {			
@@ -41,7 +42,9 @@ namespace Heroes {
 			transform.rotation = localRotation;
 		}
 
-		private void FollowObject() {
+		private void FollowTarget() {
+			if (targetObj == null) return;
+			
 			Transform targetTransfrom = targetObj.transform;
 			float step = CameraMoveSpeed * Time.deltaTime;
 			transform.position = Vector3.MoveTowards(transform.position, targetTransfrom.position, step);
