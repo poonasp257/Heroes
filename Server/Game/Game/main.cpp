@@ -55,7 +55,7 @@ int _tmain() {
 		_tprintf(_T("WSASocekt() error!!\n"));
 		return -1;
 	}
-	
+
 	SOCKADDR_IN servAddr;
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_port = htons(9000);
@@ -66,7 +66,7 @@ int _tmain() {
 		_tprintf(_T("bind() error!!\n"));
 		return -1;
 	}
-	
+
 	socketError = listen(listenSocket, 5);
 	if (socketError == SOCKET_ERROR) {
 		_tprintf(_T("listen() error!!\n"));
@@ -113,7 +113,7 @@ unsigned int WINAPI AcceptThread(LPVOID context) {
 		session->ioData.currentBytes = 0;
 		session->ioData.wsaBuf.buf = session->ioData.buffer;
 		session->ioData.wsaBuf.len = sizeof(session->ioData.buffer);
-	
+
 		iocp = CreateIoCompletionPort((HANDLE)acceptSocket, iocp, (ULONG_PTR)session, NULL);
 		if (!iocp) {
 			closesocket(acceptSocket);
@@ -181,13 +181,13 @@ unsigned int WINAPI WorkerThread(LPVOID context) {
 				closesocket(session->socket);
 				_tprintf(_T("error code = %d\n"), errorCode);
 			}
-			
+
 			ioData->wsaBuf.buf[trafficSize] = '\0';
 			_tprintf(_T("@ recv client message: %s\n"), ioData->wsaBuf.buf);
 
 			ioData->wsaBuf.len = SOCKET_BUFSIZE;
 			ZeroMemory(ioData->buffer, sizeof(ioData->buffer));
-			
+
 			ioData->ioMode = StreamMode::Read;
 			DWORD recvBytes;
 			errorCode = WSARecv(session->socket, &ioData->wsaBuf, 1, &recvBytes,

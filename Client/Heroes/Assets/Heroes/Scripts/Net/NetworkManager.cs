@@ -1,32 +1,28 @@
 ﻿using System;
-using System.Net;
+using System.Runtime.InteropServices;
 using System.Net.Sockets;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Net;
 
 namespace Heroes {
-	public class NetworkManager : MonoBehaviour {
-		private int port;
-		private IPAddress ipAddress;
-		private IPEndPoint remoteEP;
-		protected Socket socket;
+	public class NetworkManager {
+		private readonly IPAddress ipAddress;
+		private readonly IPEndPoint remoteEP;
+		private Socket socket;
 
-		private void Start() {
-			Initialize();
+		public NetworkManager(int port, string ip) {
+			ipAddress = IPAddress.Parse(ip);
+			remoteEP = new IPEndPoint(ipAddress, port);
 		}
 
-		private void Update() {
-
-		}
-
-		private void Initialize() {
-			ipAddress = IPAddress.Parse("127.0.0.1");
-
-			remoteEP = new IPEndPoint(ipAddress, 9000);
+		public void CreateTCPSocket()
+		{
 			socket = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp);
+		}
+
+		public void CreateUDPSocket() {
+			socket = new Socket(AddressFamily.InterNetwork,
+				SocketType.Dgram, ProtocolType.Udp);
 		}
 
 		public void Connect() {
@@ -38,15 +34,12 @@ namespace Heroes {
 			socket.Close();
 		}
 
-		public void Send(byte[] data) {
-			socket.Send(data);
+		public void Send(byte[] outBuffer) {
+			socket.Send(outBuffer);
 		}
 
-		public byte[] Recieve() {
-			byte[] buffer = new byte[1024];
-			socket.Receive(buffer);
-
-			return buffer;
+		public void Recieve(byte[] inBuffer) {
+			socket.Receive(inBuffer);
 		}
 	}
 }
