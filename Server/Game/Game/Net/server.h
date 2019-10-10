@@ -9,7 +9,7 @@ enum class ServerStatus {
 
 class Server
 {
-private:
+protected:
 	char			ip[16];
 	int				port;
 	int				workerThreadCount;
@@ -19,8 +19,8 @@ public:
 	Server();
 	virtual ~Server();
 
-	virtual void Initialize();
-	virtual void Run() = 0;
+	virtual void Initialize(Json::Document& document);
+	virtual bool Run() = 0;
 
 	ServerStatus GetStatus() { return status; };
 };

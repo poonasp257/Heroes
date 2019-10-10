@@ -21,16 +21,24 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net\IOCPServer.cpp" />
-    <ClCompile Include="Net\server.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Json.cpp" />
+    <ClCompile Include="Net\IOCPSession.cpp" />
+    <ClCompile Include="Net\Server.cpp" />
+    <ClCompile Include="Net\Session.cpp" />
+    <ClCompile Include="Net\SessionManager.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Util\Json.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Json.h" />
     <ClInclude Include="Net\IOCPServer.h" />
-    <ClInclude Include="Net\server.h" />
+    <ClInclude Include="Net\IOCPSession.h" />
+    <ClInclude Include="Net\Server.h" />
+    <ClInclude Include="Net\Session.h" />
+    <ClInclude Include="Net\SessionManager.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Util\singleton.h" />
+    <ClInclude Include="Util\Json.h" />
+    <ClInclude Include="Util\Singleton.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
