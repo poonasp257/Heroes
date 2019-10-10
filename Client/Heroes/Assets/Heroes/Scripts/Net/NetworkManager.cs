@@ -14,8 +14,7 @@ namespace Heroes {
 			remoteEP = new IPEndPoint(ipAddress, port);
 		}
 
-		public void CreateTCPSocket()
-		{
+		public void CreateTCPSocket() {
 			socket = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp);
 		}
@@ -34,12 +33,15 @@ namespace Heroes {
 			socket.Close();
 		}
 
-		public void Send(byte[] outBuffer) {
-			socket.Send(outBuffer);
+		public void Send(byte[] buffer) {
+			socket.Send(buffer);
 		}
 
-		public void Recieve(byte[] inBuffer) {
-			socket.Receive(inBuffer);
+		public byte[] Recieve() {
+			byte[] buffer = new byte[1024];
+			socket.Receive(buffer);
+
+			return buffer;
 		}
 	}
 }
