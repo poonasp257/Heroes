@@ -18,13 +18,6 @@ struct IO_DATA {
 	char		buffer[SOCKET_BUFSIZE];
 };
 
-struct SOCKET_DATA {
-	SOCKET			socket;
-	SOCKADDR_IN		addrInfo;
-	char			inAddress[16];
-	IO_DATA			ioData;
-};
-
 class IOCPSession : public Session {
 public:
 	IOCPSession();

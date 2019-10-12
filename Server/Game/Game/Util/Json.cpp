@@ -6,6 +6,14 @@ using rapidjson::FileReadStream;
 using rapidjson::FileWriteStream;
 using rapidjson::PrettyWriter;
 
+Json::Json() {
+
+}
+
+Json::~Json() {
+
+}
+
 bool Json::ReadFile(const std::string& fileName) {	
 	errno_t err = ::fopen_s(&fp, fileName.c_str(), "rb");
 	if (err) {
@@ -35,4 +43,8 @@ bool Json::WriteFile(const std::string& fileName) {
 	::fclose(fp);
 
 	return true;
+}
+
+inline Document& Json::GetDocument() {
+	return document; 
 }

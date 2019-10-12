@@ -13,12 +13,12 @@ public:
 	using Value = rapidjson::Value;
 
 public:
-	Json() {}
-	~Json() {}
+	Json();
+	~Json();
 
 	bool ReadFile(const std::string& fileName);
 	bool WriteFile(const std::string& fileName);
-	Document& GetDocument() { return document; }
+	Document& GetDocument();
 
 };
 
