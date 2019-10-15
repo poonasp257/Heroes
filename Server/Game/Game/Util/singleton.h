@@ -5,13 +5,13 @@ template<class TYPE>
 class Singleton {
 protected:
 	Singleton() {}
-	~Singleton() {}
+	virtual ~Singleton() {}
 
 public:
-	Singleton(const TYPE& other) = delete;
-	TYPE& operator=(const TYPE& other) = delete;
+	Singleton(const TYPE&) = delete;
+	TYPE& operator=(const TYPE&) = delete;
 
-	static TYPE& GetInstance() { 
+	static TYPE& Instance() { 
 		static TYPE instance;
 		return instance; 
 	}

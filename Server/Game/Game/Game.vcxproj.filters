@@ -39,6 +39,9 @@
     <ClCompile Include="Net\SessionManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -63,6 +66,12 @@
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="Util\Singleton.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Type.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.h">
       <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>

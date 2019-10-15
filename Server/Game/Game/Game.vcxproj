@@ -29,6 +29,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Util\Json.cpp" />
+    <ClCompile Include="Util\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Net\IOCPServer.h" />
@@ -38,7 +39,9 @@
     <ClInclude Include="Net\SessionManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\Json.h" />
+    <ClInclude Include="Util\Logger.h" />
     <ClInclude Include="Util\Singleton.h" />
+    <ClInclude Include="Util\Type.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

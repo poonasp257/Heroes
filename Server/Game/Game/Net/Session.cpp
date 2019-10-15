@@ -2,15 +2,14 @@
 #include "Session.h"
 
 Session::Session() {
-	sessionInfo.socket = INVALID_SOCKET;
-	memset(&(sessionInfo.addrInfo), 0, sizeof(SOCKADDR_IN));
+	ZeroMemory(&sessionInfo, sizeof(SessionInfo));
 }
 
 Session::~Session() {
 	this->Close();
 }
 
-bool Session::Accept(SOCKET socket, SOCKADDR_IN addrInfo) {
+void Session::Accept(SOCKET socket, SOCKADDR_IN addrInfo) {
 	sessionInfo.socket = socket;
 	sessionInfo.addrInfo = addrInfo;
 }
@@ -23,6 +22,9 @@ inline SOCKET& Session::GetSocket() {
 	return sessionInfo.socket;
 }
 
-inline std::string Session::GetClientAddress() {
+inline char* Session::GetClientAddress() {
+	std::array<char, 16> ip;
+	inet_ntop(AF_INET, &(sessionInfo.addrInfo.sin_addr), ip.data(), ip.size());
 
+	return ip.data();
 }
