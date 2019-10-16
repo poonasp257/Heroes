@@ -42,52 +42,52 @@ unsigned int WINAPI IOCPServer::AcceptThread(LPVOID serverPtr) {
 	IOCPServer *server = static_cast<IOCPServer*>(serverPtr);
 
 	while (true) {
-		SOCKET acceptSocket = INVALID_SOCKET;
-		SOCKADDR_IN recvAddr;
-		int addrLen = sizeof(recvAddr);
+		//SOCKET acceptSocket = INVALID_SOCKET;
+		//SOCKADDR_IN recvAddr;
+		//int addrLen = sizeof(recvAddr);
 
-		acceptSocket = WSAAccept(server->listenSocket, (SOCKADDR*)&recvAddr,
-			&addrLen, NULL, 0);
-		if (acceptSocket == SOCKET_ERROR) {
-			_tprintf(_T("WSAAccept() error!!\n"));
-			continue;
-		}
+		//acceptSocket = WSAAccept(server->listenSocket, (SOCKADDR*)&recvAddr,
+		//	&addrLen, NULL, 0);
+		//if (acceptSocket == SOCKET_ERROR) {
+		//	_tprintf(_T("WSAAccept() error!!\n"));
+		//	continue;
+		//}
 
-		// IOCPSession
-		char clientAddr[64];
-		inet_ntop(AF_INET, &(recvAddr.sin_addr), clientAddr, _countof(clientAddr));
+		//// IOCPSession
+		//char clientAddr[64];
+		//inet_ntop(AF_INET, &(recvAddr.sin_addr), clientAddr, _countof(clientAddr));
 
-		SOCKET_DATA *session = new SOCKET_DATA;
-		if (!session) {
-			_tprintf(_T("memory alloac failed\n"));
-			return -1;
-		}
+		//SOCKET_DATA *session = new SOCKET_DATA;
+		//if (!session) {
+		//	_tprintf(_T("memory alloac failed\n"));
+		//	return -1;
+		//}
 
-		ZeroMemory(session, sizeof(SOCKET_DATA));
-		session->socket = acceptSocket;
-		strcpy(session->inAddress, clientAddr);
+		//ZeroMemory(session, sizeof(SOCKET_DATA));
+		//session->socket = acceptSocket;
+		//strcpy(session->inAddress, clientAddr);
 
-		session->ioData.ioMode = StreamMode::Read;
-		session->ioData.totalBytes = sizeof(session->ioData.buffer);
-		session->ioData.currentBytes = 0;
-		session->ioData.wsaBuf.buf = session->ioData.buffer;
-		session->ioData.wsaBuf.len = sizeof(session->ioData.buffer);
+		//session->ioData.ioMode = StreamMode::Read;
+		//session->ioData.totalBytes = sizeof(session->ioData.buffer);
+		//session->ioData.currentBytes = 0;
+		//session->ioData.wsaBuf.buf = session->ioData.buffer;
+		//session->ioData.wsaBuf.len = sizeof(session->ioData.buffer);
 
-		server->iocp = CreateIoCompletionPort((HANDLE)acceptSocket, server->iocp, (ULONG_PTR)session, NULL);
-		if (!server->iocp) {
-			closesocket(acceptSocket);
-			return -1;
-		}
+		//server->iocp = CreateIoCompletionPort((HANDLE)acceptSocket, server->iocp, (ULONG_PTR)session, NULL);
+		//if (!server->iocp) {
+		//	closesocket(acceptSocket);
+		//	return -1;
+		//}
 
-		session->socket = acceptSocket;
-		IO_DATA ioData = session->ioData;
-		DWORD flags = 0;
-		DWORD recvBytes;
-		DWORD errorCode = WSARecv(acceptSocket, &(ioData.wsaBuf), 1, &recvBytes,
-			&flags, &ioData.overlapped, NULL);
-		if ((errorCode == SOCKET_ERROR) && (WSAGetLastError() != ERROR_IO_PENDING)) {
-			closesocket(session->socket);
-		}
+		//session->socket = acceptSocket;
+		//IO_DATA ioData = session->ioData;
+		//DWORD flags = 0;
+		//DWORD recvBytes;
+		//DWORD errorCode = WSARecv(acceptSocket, &(ioData.wsaBuf), 1, &recvBytes,
+		//	&flags, &ioData.overlapped, NULL);
+		//if ((errorCode == SOCKET_ERROR) && (WSAGetLastError() != ERROR_IO_PENDING)) {
+		//	closesocket(session->socket);
+		//}
 	}
 
 	return 0;
@@ -97,7 +97,7 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 	IOCPServer *server = static_cast<IOCPServer*>(serverPtr);
 
 	while (true) {
-		SOCKET_DATA *session;
+	/*	SOCKET_DATA *session;
 		IO_DATA *ioData;
 		DWORD trafficSize;
 
@@ -157,7 +157,7 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 			}
 
 			break;
-		}
+		}*/
 	}
 }
 

@@ -31,37 +31,29 @@ int IOBuffer::SetTotalBytes() {
 	return offset;
 }
 
-inline size_t IOBuffer::GetTotalBytes() const {
-	return totalBytes;
-}
-
-char* IOBuffer::GetBuffer() {
-	return buffer.data();
-}
-
-bool IOBuffer::SetBuffer(Stream& stream) {
-	this->Clear();
-
-	if (buffer.max_size() <= stream.size()) {
-		return false;
-	}
-;
-	char *data = buffer.data();
-	int32_t offset = 0;
-	int32_t packetLen = sizeof(int32_t) + (int32_t)stream.size();
-
-	memcpy_s((void*)(data + offset), buffer.max_size(),
-		(void*)&packetLen, sizeof(packetLen));
-	offset += sizeof(packetLen);
-
-	memcpy_s((void*)(data + offset), buffer.max_size(),
-		(void*)stream.data(), stream.size());
-	offset += (int32_t)stream.size();
-
-	totalBytes = offset;
-
-	return true;
-}
+//bool IOBuffer::SetBuffer(Stream& stream) {
+//	this->Clear();
+//
+//	if (buffer.max_size() <= stream.size()) {
+//		return false;
+//	}
+//;
+//	char *data = buffer.data();
+//	int32_t offset = 0;
+//	int32_t packetLen = sizeof(int32_t) + (int32_t)stream.size();
+//
+//	memcpy_s((void*)(data + offset), buffer.max_size(),
+//		(void*)&packetLen, sizeof(packetLen));
+//	offset += sizeof(packetLen);
+//
+//	memcpy_s((void*)(data + offset), buffer.max_size(),
+//		(void*)stream.data(), stream.size());
+//	offset += (int32_t)stream.size();
+//
+//	totalBytes = offset;
+//
+//	return true;
+//}
 
 inline WSABUF IOBuffer::CreateWsabuf() {
 	WSABUF wsaBuf;
@@ -69,10 +61,6 @@ inline WSABUF IOBuffer::CreateWsabuf() {
 	wsaBuf.len = (ULONG)(totalBytes - currentBytes);
 
 	return wsaBuf;
-}
-
-LPWSAOVERLAPPED IOBuffer::GetOvelapped() {
-	return &overlapped;
 }
 
 IOCPSession::IOCPSession() : Session() {

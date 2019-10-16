@@ -16,12 +16,10 @@ Json::~Json() {
 
 bool Json::ReadFile(const std::string& fileName) {	
 	errno_t err = ::fopen_s(&fp, fileName.c_str(), "rb");
-	if (err) {
-		return false;
-	}
+	if (err) return false;
 
-	char readBuffer[65536];
-	FileReadStream readStream(fp, readBuffer, _countof(readBuffer));
+	std::array<char, SIZE_256> readBuffer;
+	FileReadStream readStream(fp, readBuffer.data(), readBuffer.size());
 	bool result = !document.ParseStream(readStream).HasParseError();
 
 	::fclose(fp);
@@ -35,16 +33,12 @@ bool Json::WriteFile(const std::string& fileName) {
 		return false;
 	}
 
-	char writeBuffer[65536];
-	FileWriteStream writeStream(fp, writeBuffer, _countof(writeBuffer));
+	std::array<char, SIZE_256> writeBuffer;
+	FileWriteStream writeStream(fp, writeBuffer.data(), writeBuffer.size());
 	PrettyWriter<FileWriteStream> writer(writeStream);
 	document.Accept(writer);
 
 	::fclose(fp);
 
 	return true;
-}
-
-inline Document& Json::GetDocument() {
-	return document; 
 }

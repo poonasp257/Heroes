@@ -17,14 +17,14 @@ public:
 	virtual void Accept(SOCKET socket, SOCKADDR_IN addrInfo);
 
 	virtual void OnSend(size_t transferSize) = 0;
-	virtual void SendPacket(Packet *packet) = 0;
+	//virtual void SendPacket(Packet *packet) = 0;
 
-	virtual Package* OnRecv(size_t tranferSize) = 0;
+	//virtual Package* OnRecv(size_t tranferSize) = 0;
 	virtual void RecvStanBy() = 0;
 
 	virtual void Close();
 
-	SOCKET& GetSocket();
+	SOCKET& GetSocket() { return sessionInfo.socket; }
 	char* GetClientAddress();
 };
 

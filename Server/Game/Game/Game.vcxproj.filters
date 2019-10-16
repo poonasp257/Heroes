@@ -42,6 +42,9 @@
     <ClCompile Include="Util\Logger.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="Util\Clock.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -72,6 +75,9 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Clock.h">
       <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,11 +18,7 @@ void Session::Close() {
 	//SessionManager::GetInstance().CloseSession(this);
 }
 
-inline SOCKET& Session::GetSocket() {
-	return sessionInfo.socket;
-}
-
-inline char* Session::GetClientAddress() {
+char* Session::GetClientAddress() {
 	std::array<char, 16> ip;
 	inet_ntop(AF_INET, &(sessionInfo.addrInfo.sin_addr), ip.data(), ip.size());
 
