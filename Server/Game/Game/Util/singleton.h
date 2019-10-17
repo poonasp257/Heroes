@@ -11,7 +11,7 @@ public:
 	Singleton(const TYPE&) = delete;
 	TYPE& operator=(const TYPE&) = delete;
 
-	static TYPE& Instance() { 
+	static TYPE& GetInstance() { 
 		static TYPE instance;
 		return instance; 
 	}

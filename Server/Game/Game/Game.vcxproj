@@ -22,6 +22,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net\IOCPServer.cpp" />
     <ClCompile Include="Net\IOCPSession.cpp" />
+    <ClCompile Include="Net\Packet\Packet.cpp" />
+    <ClCompile Include="Net\Packet\Stream.cpp" />
     <ClCompile Include="Net\Server.cpp" />
     <ClCompile Include="Net\Session.cpp" />
     <ClCompile Include="Net\SessionManager.cpp" />
@@ -36,6 +38,8 @@
   <ItemGroup>
     <ClInclude Include="Net\IOCPServer.h" />
     <ClInclude Include="Net\IOCPSession.h" />
+    <ClInclude Include="Net\Packet\Packet.h" />
+    <ClInclude Include="Net\Packet\Stream.h" />
     <ClInclude Include="Net\Server.h" />
     <ClInclude Include="Net\Session.h" />
     <ClInclude Include="Net\SessionManager.h" />

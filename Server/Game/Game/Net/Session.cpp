@@ -15,7 +15,7 @@ void Session::Accept(SOCKET socket, SOCKADDR_IN addrInfo) {
 }
 
 void Session::Close() {
-	//SessionManager::GetInstance().CloseSession(this);
+	SessionManager::GetInstance().CloseSession(this);
 }
 
 char* Session::GetClientAddress() {

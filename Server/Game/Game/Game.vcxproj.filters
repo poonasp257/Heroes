@@ -13,6 +13,9 @@
     <Filter Include="Util">
       <UniqueIdentifier>{e5a9b18c-4372-42d9-837a-47fb8919756f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Net\Packet">
+      <UniqueIdentifier>{a0c2f783-79d4-4aa4-baf7-22205811d33b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="Util\Clock.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Stream.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Packet.cpp">
+      <Filter>Net\Packet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="Util\Clock.h">
       <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Stream.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Packet.h">
+      <Filter>Net\Packet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

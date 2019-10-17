@@ -7,6 +7,9 @@ enum class ServerStatus {
 	Ready
 };
 
+class Json;
+class FileLogger;
+
 class Server {
 protected:
 	std::array<char, SIZE_16> 	ip;

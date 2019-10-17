@@ -14,12 +14,14 @@ public:
 	~IOBuffer();
 
 	void Clear();
-	
+
+	bool NeedMoreIO(size_t transferSize);	
+
 	int32_t SetTotalBytes();
 	size_t GetTotalBytes() const { return totalBytes; }
 
 	char* GetBuffer() { return buffer.data(); }
-	//bool SetBuffer(Stream& stream);
+	bool SetBuffer(Stream& stream);
 	WSABUF CreateWsabuf();
 	LPWSAOVERLAPPED GetOvelapped() { return &overlapped; }
 };
@@ -30,20 +32,19 @@ private:
 	IOBuffer writeBuffer;
 
 private:
-	void CheckError(DWORD ret);
-	//void Recv(WSABUF wsaBuf);
-	//bool IsRecving(size_t transferSize);
-	//void Send(WSABUF wsaBuf);
+	void Recv(WSABUF wsaBuf);
+	bool IsRecving(size_t transferSize);
+	void Send(WSABUF wsaBuf);
 
 public:
 	IOCPSession();
 	~IOCPSession();
 
-	//virtual void OnSend(size_t transferSize);
-	//virtual void SendPacket(Packet *packet);
+	virtual void OnSend(size_t transferSize);
+	virtual void SendPacket(Packet *packet);
 
-	//virtual Package* OnRecv(size_t transferSize);
-	//virtual void RecvStanBy();
+	virtual Package* OnRecv(size_t transferSize);
+	virtual void RecvStanBy();
 };
 
 #endif

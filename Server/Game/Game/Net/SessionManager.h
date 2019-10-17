@@ -3,8 +3,16 @@
 
 class SessionManager : public Singleton<SessionManager> {
 public:
+	const size_t 		MaxConnection;
+	std::list<Session*> sessionList;
+
+public:
 	SessionManager();
-	~SessionManager();
+	virtual ~SessionManager();
+
+	bool AddSession(Session *session);
+	bool CloseSession(Session *session);
+	bool ForceCloseSession(Session *session);
 };
 
 #endif

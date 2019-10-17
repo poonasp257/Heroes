@@ -17,16 +17,19 @@ IOCPServer::~IOCPServer() {
 
 bool IOCPServer::Initialize(Json::Document& document) {
 	Json::Value& root = document["root"];
-	//if (root.Empty()) {
-	//	std::cerr << "\'root\' document is not exist.\n";
-	//	return;
-	//}
+	if (root.Empty()) {
+		SystemLogger::Log("\'root\' document is not exist", Logger::Error);
+		// assert
+		return false;
+	}
 
-	strcpy_s(ip.data(), root["IP"].GetString());
+	strcpy_s(ip.data(), ip.size(),root["IP"].GetString());
 	port = root["Port"].GetInt();
 	workerThreadCount = root["ThreadCount"].GetInt();
 
 	status = ServerStatus::Initialize;
+	
+	return true;
 }
 
 bool IOCPServer::CreateListenSocket() {
@@ -40,7 +43,11 @@ bool IOCPServer::CreateListenSocket() {
 	SOCKADDR_IN servAddr;
 	servAddr.sin_family = AF_INET;
 	servAddr.sin_port = htons(port);
-	inet_pton(AF_INET, ip, &(servAddr.sin_addr));
+	inet_pton(AF_INET, ip.data(), &(servAddr.sin_addr));
+
+	int opt = 1;
+	setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, 
+		(char*)&opt, sizeof(opt));
 
 	int socketError = bind(listenSocket, (SOCKADDR*)&servAddr, sizeof(servAddr));
 	if (socketError == SOCKET_ERROR) {
@@ -196,9 +203,9 @@ bool IOCPServer::Run() {
 
 	status = ServerStatus::Ready;
 
-	AcceptThread(this); // ¼öÁ¤ ÇÒ °Í
+	AcceptThread(this); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
 }
 
 void IOCPServer::OnAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
-	// Session Ã³¸®
+	// Session Ã³ï¿½ï¿½
 }
