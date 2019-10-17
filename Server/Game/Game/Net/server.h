@@ -7,19 +7,21 @@ enum class ServerStatus {
 	Ready
 };
 
-class Server
-{
+class Server {
 protected:
-	char			ip[16];
-	int				port;
-	int				workerThreadCount;
+	std::array<char, SIZE_16> 	ip;
+	int							port;
+	int							workerThreadCount;
 
-	ServerStatus	status;
+	Json						json;
+	FileLogger					logger;
+	ServerStatus				status;
+	
 public:
-	Server();
+	Server(const char *logFileName);
 	virtual ~Server();
 
-	virtual void Initialize(Json::Document& document);
+	virtual bool Initialize(Json::Document& document) = 0;
 	virtual bool Run() = 0;
 
 	ServerStatus GetStatus() { return status; };

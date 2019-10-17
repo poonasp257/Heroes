@@ -16,6 +16,7 @@ public:
 	IOCPServer();
 	virtual ~IOCPServer();
 
+	virtual bool Initialize(Json::Document& document);
 	virtual bool Run();
 
 	SOCKET	GetListenSocket() { return listenSocket; }

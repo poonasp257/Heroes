@@ -1,13 +1,32 @@
 #include "stdafx.h"
 #include "IOCPServer.h"
 
-
-IOCPServer::IOCPServer() {
+IOCPServer::IOCPServer() : Server("IOCPServer"),
+	listenSocket(INVALID_SOCKET), iocp(nullptr) {
+	bool result = this->Initialize(json.GetDocument());
+	if(!result) {
+		SystemLogger::Log("IOCP Server couldn't be started", Logger::Error);
+		// assert
+	}
 }
 
 IOCPServer::~IOCPServer() {
 	closesocket(listenSocket);
 	CloseHandle(iocp);
+}
+
+bool IOCPServer::Initialize(Json::Document& document) {
+	Json::Value& root = document["root"];
+	//if (root.Empty()) {
+	//	std::cerr << "\'root\' document is not exist.\n";
+	//	return;
+	//}
+
+	strcpy_s(ip.data(), root["IP"].GetString());
+	port = root["Port"].GetInt();
+	workerThreadCount = root["ThreadCount"].GetInt();
+
+	status = ServerStatus::Initialize;
 }
 
 bool IOCPServer::CreateListenSocket() {
