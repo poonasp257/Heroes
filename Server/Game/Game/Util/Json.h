@@ -18,7 +18,7 @@ public:
 
 	bool ReadFile(const std::string& fileName);
 	bool WriteFile(const std::string& fileName);
-	Document& GetDocument() { return document; }
+	Document& document() { return document; }
 };
 
 #endif

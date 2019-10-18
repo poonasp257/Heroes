@@ -15,7 +15,7 @@ public:
 	Byte* GetData() { return stream.data(); }
 	void SetData(Byte *data, size_t size);
 
-	size_t GetSize() const { return offset; }
+	size_t size() const { return offset; }
 
     // write
     template<class T>

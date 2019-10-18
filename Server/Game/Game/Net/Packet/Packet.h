@@ -11,8 +11,8 @@ public:
 
 	PacketType type() const { return type; }
 
-	virtual serialize() = 0;
-	virtual deserialize() = 0;
+	virtual Serialize() = 0;
+	virtual DeSerialize() = 0;
 };
 
 #endif

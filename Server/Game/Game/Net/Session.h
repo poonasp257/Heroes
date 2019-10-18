@@ -27,7 +27,7 @@ public:
 
 	virtual void Close();
 
-	SOCKET& GetSocket() { return sessionInfo.socket; }
+	SOCKET& socket() { return sessionInfo.socket; }
 	char* GetClientAddress();
 };
 

@@ -15,13 +15,25 @@ ConsoleLogger::~ConsoleLogger() {
 
 }
 
-void ConsoleLogger::Log(const char *message, Level level) {
+void ConsoleLogger::Log(Level level, const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+
+	this->Log(level, message, args);
+
+	va_end(args);
+}
+
+void ConsoleLogger::Log(Level level, const char* message, va_list args) {
 	std::string text;
+	std::array<char, SIZE_128> buf;
+
+	vsprintf(buf.data(), message, args);
 
 	text = "[" + logTypes[level] + "]";
 	text += "[" + Clock::NowTickToStr() + "]";
 	text += " ";
-	text += message;
+	text += buf.data();
 
 	std::cout << text << std::endl;
 }
@@ -55,7 +67,16 @@ FileLogger::~FileLogger() {
 	fs.close();
 }
 
-void FileLogger::Log(const char *message, Level level) {
+void FileLogger::Log(Level level, const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+
+	this->Log(level, message, args);
+
+	va_end(args);
+}
+
+void FileLogger::Log(Level level, const char* message, va_list args) {
 	std::string text;
 
 	text = "[" + logTypes[level] + "]";
@@ -69,6 +90,15 @@ void FileLogger::Log(const char *message, Level level) {
 
 ConsoleLogger SystemLogger::logger;
 
-void SystemLogger::Log(const char *message, Logger::Level level) {
-	logger.Log(message, level);
+void SystemLogger::Log(Logger::Level level, const char *message, ...) {
+	va_list args;
+	va_start(args, message);
+
+	Log(level, message, args);
+
+	va_end(args);
+}
+
+void SystemLogger::Log(Logger::Level level, const char *message, va_list args) {
+	logger.Log(level, message, args);
 }

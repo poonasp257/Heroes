@@ -14,7 +14,8 @@ public:
 	Logger(const Logger& other) = delete;
 	Logger& operator=(const Logger& other) = delete;
 
-	virtual void Log(const char *message, Level level = Info) = 0;
+	virtual void Log(Level level, const char *message, ...) = 0;
+	virtual void Log(Level level, const char *message, va_list args) = 0;
 	
 protected:
 	std::map<Level, std::string> logTypes;
@@ -25,7 +26,8 @@ public:
 	ConsoleLogger();
 	virtual ~ConsoleLogger();
 
-	virtual void Log(const char *message, Level level = Info);
+	virtual void Log(Level level, const char *message, ...);
+	virtual void Log(Level level, const char *message, va_list args);
 };
 
 class FileLogger : public Logger {
@@ -37,7 +39,8 @@ public:
 	FileLogger(const std::string& fileName);
 	virtual ~FileLogger();
 	
-	virtual void Log(const char *message, Level level = Info);
+	virtual void Log(Level level, const char *message, ...);
+	virtual void Log(Level level, const char *message, va_list args);
 };
 
 class SystemLogger {
@@ -45,7 +48,8 @@ private:
 	static ConsoleLogger logger;
 
 public:
-	static void Log(const char *message, Logger::Level level = Logger::Info);
+	static void Log(Logger::Level level, const char *message, ...);
+	static void Log(Logger::Level level, const char *message, va_list args);
 };
 
 #endif

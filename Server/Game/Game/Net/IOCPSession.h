@@ -20,10 +20,11 @@ public:
 	int32_t SetTotalBytes();
 	size_t GetTotalBytes() const { return totalBytes; }
 
-	char* GetBuffer() { return buffer.data(); }
 	bool SetBuffer(Stream& stream);
-	WSABUF CreateWsabuf();
-	LPWSAOVERLAPPED GetOvelapped() { return &overlapped; }
+	char* GetBuffer() { return buffer.data(); }
+
+	WSABUF wsabuf();
+	LPWSAOVERLAPPED overlapped() { return &overlapped; }
 };
 
 class IOCPSession : public Session {

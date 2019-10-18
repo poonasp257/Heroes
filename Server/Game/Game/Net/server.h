@@ -27,7 +27,7 @@ public:
 	virtual bool Initialize(Json::Document& document) = 0;
 	virtual bool Run() = 0;
 
-	ServerStatus GetStatus() { return status; };
+	ServerStatus status() { return status; };
 };
 
 #endif
