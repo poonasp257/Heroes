@@ -22,7 +22,7 @@
 
 ## Develop
 ### 1. 2019년 9월 25일 작업
-![Video Label](https://img.youtube.com/vi/rsNnGrNGuIc/0.jpg)(https://youtu.be/rsNnGrNGuIc)
+[![Video Label](https://img.youtube.com/vi/rsNnGrNGuIc/0.jpg)](https://youtu.be/rsNnGrNGuIc)
 
 ### Impelemtation
 1. 플레이어 3인칭 카메라  
@@ -35,7 +35,7 @@
   1-1. 마을 맵 구성
   
 ### 2. 2019년 10월 2일 작업
-![Video Label](https://img.youtube.com/vi/PKGwDd61of8/0.jpg)(https://youtu.be/PKGwDd61of8)
+[![Video Label](https://img.youtube.com/vi/PKGwDd61of8/0.jpg)](https://youtu.be/PKGwDd61of8)
 
 ### Impelemtation
 1. 플레이어 공격  
