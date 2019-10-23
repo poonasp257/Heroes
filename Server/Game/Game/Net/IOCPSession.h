@@ -1,30 +1,49 @@
 #ifndef IOCPSESSION_H
 #define IOCPSESSION_H
 
-#define SOCKET_BUFSIZE (1024 * 10)
+enum class IOType{
+	Read, Write, Error
+};
+
+// #pragma pack(push, 1)
+// union PacketBuffer {
+// 	struct {
+// 		UInt32 length; 
+// 		UInt32 type;
+// 		BYTE data[SOCKET_BUFSIZE - 8];
+// 	} Segment;
+
+// 	BYTE buffer[SOCKET_BUFSIZE];
+// };
 
 class IOBuffer {
 	size_t			totalBytes;
 	size_t			currentBytes;
 	OVERLAPPED		overlapped;
 	std::array<char, SOCKET_BUFSIZE> buffer;
+	IOType			ioType;
 
 public:
 	IOBuffer();
+	IOBuffer(IOType ioType);
 	~IOBuffer();
 
-	void Clear();
+	void clear();
 
-	bool NeedMoreIO(size_t transferSize);	
+	bool needMoreIO(size_t transferSize);	
 
-	int32_t SetTotalBytes();
-	size_t GetTotalBytes() const { return totalBytes; }
+	uint32_t setupTotalBytes();
+	size_t getTotalBytes() const { return totalBytes; }
 
-	bool SetBuffer(Stream& stream);
-	char* GetBuffer() { return buffer.data(); }
+	bool setBuffer(Stream& stream);
+	char* getBuffer() { return buffer.data(); }
+	size_t getBufferSize() const { return buffer.max_size(); }
 
-	WSABUF wsabuf();
-	LPWSAOVERLAPPED overlapped() { return &overlapped; }
+	IOType getType() { return ioType; }
+	void setType(IOType ioType) { this->ioType = ioType; }
+
+	WSABUF getWsaBuf();
+	LPWSAOVERLAPPED getOverlapped() { return &overlapped; }
 };
 
 class IOCPSession : public Session {
@@ -33,19 +52,19 @@ private:
 	IOBuffer writeBuffer;
 
 private:
-	void Recv(WSABUF wsaBuf);
-	bool IsRecving(size_t transferSize);
-	void Send(WSABUF wsaBuf);
+	void recv(WSABUF wsaBuf);
+	bool isRecving(size_t transferSize);
+	void send(WSABUF wsaBuf);
 
 public:
 	IOCPSession();
 	~IOCPSession();
 
-	virtual void OnSend(size_t transferSize);
-	virtual void SendPacket(Packet *packet);
+	virtual void onSend(size_t transferSize);
+	virtual void sendPacket(Packet *packet);
 
-	virtual Package* OnRecv(size_t transferSize);
-	virtual void RecvStanBy();
+	virtual Package* onRecv(size_t transferSize);
+	virtual void recvStanBy();
 };
 
 #endif

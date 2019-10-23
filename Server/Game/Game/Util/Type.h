@@ -14,12 +14,12 @@
 
 using Byte = unsigned char;
 using Char = char;
-using Int16 = INT16;
-using UInt16 = UINT16;
-using Int32 = INT32;
-using UInt32 = UINT32;
-using Int64 = INT64;
-using UInt64 = UINT64;
+using Int16 = int16_t;
+using UInt16 = uint16_t;
+using Int32 = int32_t;
+using UInt32 = uint32_t;
+using Int64 = int64_t;
+using UInt64 = uint64_t;
 using Float = float;
 
 #endif

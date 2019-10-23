@@ -16,9 +16,9 @@ public:
 	Json();
 	~Json();
 
-	bool ReadFile(const std::string& fileName);
-	bool WriteFile(const std::string& fileName);
-	Document& document() { return document; }
+	bool readFile(const std::string& fileName);
+	bool writeFile(const std::string& fileName);
+	Document& getDocument() { return document; }
 };
 
 #endif

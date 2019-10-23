@@ -14,7 +14,7 @@ Json::~Json() {
 
 }
 
-bool Json::ReadFile(const std::string& fileName) {	
+bool Json::readFile(const std::string& fileName) {	
 	errno_t err = ::fopen_s(&fp, fileName.c_str(), "rb");
 	if (err) return false;
 
@@ -27,7 +27,7 @@ bool Json::ReadFile(const std::string& fileName) {
 	return result;
 }
 
-bool Json::WriteFile(const std::string& fileName) {
+bool Json::writeFile(const std::string& fileName) {
 	errno_t err = ::fopen_s(&fp, fileName.c_str(), "wb");
 	if (err) {
 		return false;

@@ -1,14 +1,13 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+class ContentsProcess;
+
 enum class ServerStatus {
 	Stop,
 	Initialize,
 	Ready
 };
-
-class Json;
-class FileLogger;
 
 class Server {
 protected:
@@ -19,15 +18,20 @@ protected:
 	Json						json;
 	FileLogger					logger;
 	ServerStatus				status;
-	
+	ContentsProcess 			*process;
+
+protected:	
+	virtual bool initialize(Json::Document& document) = 0;
+
 public:
-	Server(const char *logFileName);
+	Server(const char *logFileName, ContentsProcess *process);
 	virtual ~Server();
 
-	virtual bool Initialize(Json::Document& document) = 0;
-	virtual bool Run() = 0;
+	virtual bool run() = 0;
 
-	ServerStatus status() { return status; };
+	ServerStatus getStatus() { return status; }
+
+	void putPackage(Package *package);
 };
 
 #endif

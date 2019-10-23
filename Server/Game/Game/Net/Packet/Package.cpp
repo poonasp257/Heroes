@@ -10,3 +10,11 @@ Package::~Package() {
     session = nullptr; // Session manager가 처리
     delete packet;
 }
+
+Session* Package::getSession() {
+    return session;
+}
+
+Packet* Package::getPacket() {
+    return packet;
+}

@@ -6,19 +6,19 @@ Session::Session() {
 }
 
 Session::~Session() {
-	this->Close();
+	this->onClose();
 }
 
-void Session::Accept(SOCKET socket, SOCKADDR_IN addrInfo) {
+bool Session::onAccept(SOCKET socket, SOCKADDR_IN addrInfo) {
 	sessionInfo.socket = socket;
 	sessionInfo.addrInfo = addrInfo;
 }
 
-void Session::Close() {
-	SessionManager::GetInstance().CloseSession(this);
+void Session::onClose() {
+	SessionManager::Instance().closeSession(this);
 }
 
-char* Session::GetClientAddress() {
+std::string Session::getClientAddress() {
 	std::array<char, 16> ip;
 	inet_ntop(AF_INET, &(sessionInfo.addrInfo.sin_addr), ip.data(), ip.size());
 

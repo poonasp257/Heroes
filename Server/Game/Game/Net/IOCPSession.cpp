@@ -1,33 +1,38 @@
 #include "stdafx.h"
 #include "IOCPSession.h"
 
-IOBuffer::IOBuffer() {
+IOBuffer::IOBuffer() : ioType(IOType::Error) {
 	ZeroMemory(&overlapped, sizeof(overlapped));
-	this->Clear();
+	this->clear();
+}
+
+IOBuffer::IOBuffer(IOType ioType) : ioType(ioType) {
+	ZeroMemory(&overlapped, sizeof(overlapped));
+	this->clear();
 }
 
 IOBuffer::~IOBuffer() {
 
 }
 
-void IOBuffer::Clear() {
+void IOBuffer::clear() {
 	buffer.fill(0);
 	totalBytes = 0;
 	currentBytes = 0;
 }
 
-bool IOBuffer::NeedMoreIO(size_t transferSize) {
+bool IOBuffer::needMoreIO(size_t transferSize) {
 	currentBytes += transferSize;
 	if(currentBytes < totalBytes) return true;
 
 	return false;
 }
 
-int IOBuffer::SetTotalBytes() {
+uint32_t IOBuffer::setupTotalBytes() {
 	if (totalBytes != 0) return 0;
 
-	int32_t packetLen = 0;
-	int32_t offset = 0;
+	uint32_t packetLen = 0;
+	uint32_t offset = 0;
 
 	memcpy_s((void*)&packetLen, sizeof(packetLen), (void*)buffer.data(), 
 		sizeof(packetLen));
@@ -37,39 +42,41 @@ int IOBuffer::SetTotalBytes() {
 	return offset;
 }
 
-bool IOBuffer::SetBuffer(Stream& stream) {
-	this->Clear();
+bool IOBuffer::setBuffer(Stream& stream) {
+	this->clear();
 
-	if (buffer.max_size() <= stream.GetSize()) {
+	if (buffer.max_size() <= stream.getSize()) {
+		SystemLogger::Log(Logger::Warning, "packet size is too big %d byte", stream.getSize());
 		return false;
 	}
 	
 	char *data = buffer.data();
-	int32_t offset = 0;
-	int32_t packetLen = sizeof(int32_t) + (int32_t)stream.GetSize();
+	uint32_t offset = 0;
+	uint32_t packetLen = sizeof(uint32_t) + (uint32_t)stream.getSize();
 
 	memcpy_s((void*)(data + offset), buffer.max_size(),
 		(void*)&packetLen, sizeof(packetLen));
 	offset += sizeof(packetLen);
 
 	memcpy_s((void*)(data + offset), buffer.max_size(),
-		(void*)stream.GetData(), stream.GetSize());
-	offset += (int32_t)stream.GetSize();
+		(void*)stream.getData(), stream.getSize());
+	offset += (uint32_t)stream.getSize();
 
 	totalBytes = offset;
 
 	return true;
 }
 
-WSABUF IOBuffer::CreateWsabuf() {
-	WSABUF wsaBuf;
-	wsaBuf.buf = buffer.data() + currentBytes;
-	wsaBuf.len = (ULONG)(totalBytes - currentBytes);
+WSABUF IOBuffer::getWsaBuf() {
+	WSABUF wsabuf;
+	wsabuf.buf = buffer.data() + currentBytes;
+	wsabuf.len = (ULONG)(totalBytes - currentBytes);
 
-	return wsaBuf;
+	return wsabuf;
 }
 
-IOCPSession::IOCPSession() : Session() {
+IOCPSession::IOCPSession() : Session(), readBuffer(IOType::Read), 
+	writeBuffer(IOType::Write) {
 
 }
 
@@ -77,30 +84,84 @@ IOCPSession::~IOCPSession() {
 
 }
 
-void IOCPSession::Recv(WSABUF wsaBuf) {
-
+void IOCPSession::recv(WSABUF wsaBuf) {
+	DWORD flags = 0;
+	DWORD recvBytes = 0;
+	DWORD errorCode = WSARecv(sessionInfo.socket, &wsaBuf, 1, &recvBytes, &flags,
+		readBuffer.getOverlapped(), NULL);
+	if (errorCode == SOCKET_ERROR
+		&& WSAGetLastError() != ERROR_IO_PENDING) {
+		SystemLogger::Log(Logger::Error, "socket error", WSAGetLastError());
+	}
 }
 
-bool IOCPSession::IsRecving(size_t transferSize) {
+bool IOCPSession::isRecving(size_t transferSize) {
+	if (readBuffer.needMoreIO(transferSize)) {
+		this->recv(readBuffer.getWsaBuf());
+		return true;
+	}
 
+	return false;
 }
 
-void IOCPSession::Send(WSABUF wsaBuf) {
+void IOCPSession::recvStanBy() {
+	readBuffer.clear();
+
+	WSABUF wsaBuf;
+	wsaBuf.buf = readBuffer.getBuffer();
+	wsaBuf.len = readBuffer.getBufferSize(); 
 	
+	this->recv(wsaBuf);
 }
 
-void IOCPSession::OnSend(size_t transferSize) {
-	
+void IOCPSession::send(WSABUF wsaBuf) {
+	DWORD flags = 0;
+	DWORD sendBytes = 0;
+	DWORD errorCode = WSARecv(sessionInfo.socket, &wsaBuf, 1, &sendBytes, &flags,
+		writeBuffer.getOverlapped(), NULL);
+	if (errorCode == SOCKET_ERROR
+		&& WSAGetLastError() != ERROR_IO_PENDING) {
+		SystemLogger::Log(Logger::Error, "socket error: %d", WSAGetLastError());
+	}
 }
 
-void IOCPSession::SendPacket(Packet *packet) {
-	
+void IOCPSession::onSend(size_t transferSize) {
+	if(writeBuffer.needMoreIO(transferSize)) {
+		this->send(writeBuffer.getWsaBuf());
+	}
 }
 
-Package* IOCPSession::OnRecv(size_t transferSize) {
+void IOCPSession::sendPacket(Packet *packet) {
+	Stream stream;
 	
+	packet->serialize(stream);
+	if(writeBuffer.setBuffer(stream)) return;
+
+	WSABUF wsaBuf;
+	wsaBuf.buf = writeBuffer.getBuffer();
+	wsaBuf.len = stream.getSize();
+
+	this->send(wsaBuf);
+	this->recvStanBy();
 }
 
-void IOCPSession::RecvStanBy() {
-	
+Package* IOCPSession::onRecv(size_t transferSize) {
+	uint32_t offset = 0;
+	offset += readBuffer.setupTotalBytes();
+
+	if(this->isRecving(transferSize)) {
+		return nullptr;
+	}
+
+	uint32_t packetDataSize = readBuffer.getTotalBytes() - sizeof(uint32_t);
+	Byte *packetData = (Byte*)readBuffer.getBuffer() + offset;
+	Packet *packet = PacketAnalyzer::Analyzer((const char*)packetData, packetDataSize);
+	if(!packet) {
+		SystemLogger::Log(Logger::Warning, "invalid packet");
+		this->onClose();
+		return nullptr;
+	}
+
+	Package *package = new Package(this, packet);
+	return package;
 }

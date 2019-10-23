@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "IOCPServer.h"
 
-IOCPServer::IOCPServer() : Server("IOCPServer"),
+IOCPServer::IOCPServer(ContentsProcess *process) : Server("IOCPServer", process),
 	listenSocket(INVALID_SOCKET), iocp(nullptr) {
-	bool result = this->Initialize(json.GetDocument());
+	bool result = this->initialize(json.getDocument());
 	if(!result) {
-		SystemLogger::Log("IOCP Server couldn't be started", Logger::Error);
+		SystemLogger::Log(Logger::Error, "IOCP Server couldn't be started");
 		// assert
 	}
 }
@@ -15,10 +15,10 @@ IOCPServer::~IOCPServer() {
 	CloseHandle(iocp);
 }
 
-bool IOCPServer::Initialize(Json::Document& document) {
+bool IOCPServer::initialize(Json::Document& document) {
 	Json::Value& root = document["root"];
 	if (root.Empty()) {
-		SystemLogger::Log("\'root\' document is not exist", Logger::Error);
+		SystemLogger::Log(Logger::Error, "\'root\' document is not exist");
 		// assert
 		return false;
 	}
@@ -32,11 +32,11 @@ bool IOCPServer::Initialize(Json::Document& document) {
 	return true;
 }
 
-bool IOCPServer::CreateListenSocket() {
+bool IOCPServer::createListenSocket() {
 	listenSocket = WSASocket(PF_INET, SOCK_STREAM, IPPROTO_TCP,
 		NULL, NULL, WSA_FLAG_OVERLAPPED);
 	if (listenSocket == INVALID_SOCKET) {
-		_tprintf(_T("WSASocekt() error!!\n"));
+		SystemLogger::Log(Logger::Error, "WSASocekt() error!!");
 		return false;
 	}
 
@@ -51,13 +51,13 @@ bool IOCPServer::CreateListenSocket() {
 
 	int socketError = bind(listenSocket, (SOCKADDR*)&servAddr, sizeof(servAddr));
 	if (socketError == SOCKET_ERROR) {
-		_tprintf(_T("bind() error!!\n"));
+		SystemLogger::Log(Logger::Error, "bind() error!!");
 		return false;
 	}
 
 	socketError = listen(listenSocket, 5);
 	if (socketError == SOCKET_ERROR) {
-		_tprintf(_T("listen() error!!\n"));
+		SystemLogger::Log(Logger::Error, "listen() error!!");
 		return false;
 	}
 
@@ -65,147 +65,128 @@ bool IOCPServer::CreateListenSocket() {
 }
 
 unsigned int WINAPI IOCPServer::AcceptThread(LPVOID serverPtr) {
-	IOCPServer *server = static_cast<IOCPServer*>(serverPtr);
+	IOCPServer *server = (IOCPServer*)serverPtr;
 
 	while (true) {
-		//SOCKET acceptSocket = INVALID_SOCKET;
-		//SOCKADDR_IN recvAddr;
-		//int addrLen = sizeof(recvAddr);
+		SOCKET acceptSocket = INVALID_SOCKET;
+		SOCKADDR_IN recvAddr;
+		int addrLen = sizeof(recvAddr);
 
-		//acceptSocket = WSAAccept(server->listenSocket, (SOCKADDR*)&recvAddr,
-		//	&addrLen, NULL, 0);
-		//if (acceptSocket == SOCKET_ERROR) {
-		//	_tprintf(_T("WSAAccept() error!!\n"));
-		//	continue;
-		//}
+		acceptSocket = WSAAccept(server->listenSocket, (SOCKADDR*)&recvAddr,
+			&addrLen, NULL, 0);
+		if (acceptSocket == SOCKET_ERROR) {
+			if(server->getStatus() == ServerStatus::Stop) {
+				SystemLogger::Log(Logger::Error, "Accept failed");
+				break;
+			}
+		}
 
-		//// IOCPSession
-		//char clientAddr[64];
-		//inet_ntop(AF_INET, &(recvAddr.sin_addr), clientAddr, _countof(clientAddr));
+		server->onAccept(acceptSocket, recvAddr);
 
-		//SOCKET_DATA *session = new SOCKET_DATA;
-		//if (!session) {
-		//	_tprintf(_T("memory alloac failed\n"));
-		//	return -1;
-		//}
-
-		//ZeroMemory(session, sizeof(SOCKET_DATA));
-		//session->socket = acceptSocket;
-		//strcpy(session->inAddress, clientAddr);
-
-		//session->ioData.ioMode = StreamMode::Read;
-		//session->ioData.totalBytes = sizeof(session->ioData.buffer);
-		//session->ioData.currentBytes = 0;
-		//session->ioData.wsaBuf.buf = session->ioData.buffer;
-		//session->ioData.wsaBuf.len = sizeof(session->ioData.buffer);
-
-		//server->iocp = CreateIoCompletionPort((HANDLE)acceptSocket, server->iocp, (ULONG_PTR)session, NULL);
-		//if (!server->iocp) {
-		//	closesocket(acceptSocket);
-		//	return -1;
-		//}
-
-		//session->socket = acceptSocket;
-		//IO_DATA ioData = session->ioData;
-		//DWORD flags = 0;
-		//DWORD recvBytes;
-		//DWORD errorCode = WSARecv(acceptSocket, &(ioData.wsaBuf), 1, &recvBytes,
-		//	&flags, &ioData.overlapped, NULL);
-		//if ((errorCode == SOCKET_ERROR) && (WSAGetLastError() != ERROR_IO_PENDING)) {
-		//	closesocket(session->socket);
-		//}
+		if(server->getStatus() != ServerStatus::Ready) {
+			break;
+		}
 	}
 
 	return 0;
 }
 
 unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
-	IOCPServer *server = static_cast<IOCPServer*>(serverPtr);
+	IOCPServer *server = (IOCPServer*)serverPtr;
 
 	while (true) {
-	/*	SOCKET_DATA *session;
-		IO_DATA *ioData;
-		DWORD trafficSize;
+		IOCPSession *session = nullptr;
+		IOBuffer *ioBuffer = nullptr;
+		DWORD transferSize;
 
-		int result = GetQueuedCompletionStatus(server->iocp, &trafficSize,
-			(PULONG_PTR)&session, (LPOVERLAPPED*)&ioData, INFINITE);
-		if (!result) {
-			_tprintf(_T(""));
-			continue;
-		}
+		BOOL result = GetQueuedCompletionStatus(server->getIOCP(), 
+			&transferSize, (PULONG_PTR)&session, (LPOVERLAPPED*)&ioBuffer, INFINITE);
+		if (!result) continue;
 
 		if (!session) {
-			_tprintf(_T("socket data broken\n"));
+			SystemLogger::Log(Logger::Error, "socket data broken");
 			return 0;
 		}
 
-		if (trafficSize == 0) {
-			_tprintf(_T("disconnected client..."));
-			closesocket(session->socket);
+		SessionManager& sessionManager = SessionManager::Instance();
+		if (transferSize == 0) {
+			SystemLogger::Log(Logger::Error, "disconnected client...");
+			sessionManager.closeSession(session);
 			continue;
 		}
 
-		ioData->currentBytes += trafficSize;
-		DWORD flags = 0;
+		switch (ioBuffer->getType()) {
+		case IOType::Write:
+			session->onSend((size_t)transferSize);
+			continue;
 
-		switch (ioData->ioMode) {
-		case StreamMode::Write:
-			ioData->wsaBuf.buf[trafficSize] = '\0';
-			_tprintf(L"0 send message: %s\n", ioData->wsaBuf.buf);
-			break;
-		case StreamMode::Read:
-			ioData->ioMode = StreamMode::Write;
-			ioData->wsaBuf.len = trafficSize;
-			flags = 0;
-
-			DWORD sendBytes;
-			DWORD errorCode = WSASend(session->socket, &ioData->wsaBuf, 1, &sendBytes,
-				flags, &ioData->overlapped, NULL);
-
-			if ((errorCode == SOCKET_ERROR) && (WSAGetLastError() != ERROR_IO_PENDING)) {
-				closesocket(session->socket);
-				_tprintf(_T("error code = %d\n"), errorCode);
+		case IOType::Read:
+			Package *package = session->onRecv((size_t)transferSize);
+			if(package != nullptr) {
+				server->putPackage(package);
 			}
+			continue;
 
-			ioData->wsaBuf.buf[trafficSize] = '\0';
-			_tprintf(_T("@ recv client message: %s\n"), ioData->wsaBuf.buf);
-
-			ioData->wsaBuf.len = SOCKET_BUFSIZE;
-			ZeroMemory(ioData->buffer, sizeof(ioData->buffer));
-
-			ioData->ioMode = StreamMode::Read;
-			DWORD recvBytes;
-			errorCode = WSARecv(session->socket, &ioData->wsaBuf, 1, &recvBytes,
-				&flags, &ioData->overlapped, NULL);
-			if ((errorCode == SOCKET_ERROR) && (WSAGetLastError() != ERROR_IO_PENDING)) {
-				closesocket(session->socket);
-				_tprintf(_T("error code = %d\n"), errorCode);
-			}
-
-			break;
-		}*/
+		case IOType::Error:
+			sessionManager.closeSession(session);
+			continue;
+		}
 	}
+
+	return 0;
 }
 
-bool IOCPServer::Run() {
+bool IOCPServer::run() {
 	iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, workerThreadCount);
 	if (!iocp) {
-		_tprintf(_T("CreateIoCompletionPort() error!!\n"));
+		SystemLogger::Log(Logger::Error, "CreateIoCompletionPort() error!!");
 		return false;
 	}
 
-	this->CreateListenSocket();
-
-	for (int i = 0; i < workerThreadCount; ++i) {
-		HANDLE thread = (HANDLE)_beginthreadex(NULL, 0, WorkerThread, this, 0, NULL);
-		CloseHandle(thread);
+	if (!this->createListenSocket()) {
+		SystemLogger::Log(Logger::Error, "CreateListenSocket() error!!");
+		return false;
 	}
 
+	HANDLE threadArr[10];
+
+	threadArr[0] = (HANDLE)_beginthreadex(NULL, 0, AcceptThread, this, 0, NULL);
+	for (int i = 0; i < workerThreadCount; ++i) {
+		threadArr[i + 1] = (HANDLE)_beginthreadex(NULL, 0, WorkerThread, this, 0, NULL);
+	}
 	status = ServerStatus::Ready;
 
-	AcceptThread(this); // ���� �� ��
+	WaitForMultipleObjects(9, threadArr, TRUE, INFINITE);
+	
+	return true;
 }
 
-void IOCPServer::OnAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
-	// Session ó��
+void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
+	IOCPSession *session = new IOCPSession();
+	if(!session) {
+		SystemLogger::Log(Logger::Warning, "session creatation failed");
+		return;
+	}
+
+	if(!session->onAccept(accepter, addrInfo)) {
+		delete session;
+		return;
+	}
+
+	SessionManager &sessionManager = SessionManager::Instance();
+	if(!sessionManager.addSession(session)) {
+		delete session;
+		return;
+	}
+	
+	HANDLE handle = CreateIoCompletionPort((HANDLE)accepter, this->getIOCP(),
+		(ULONG_PTR)session, NULL);
+	if(!handle) {
+		delete session;
+		return;
+	}
+
+	SystemLogger::Log(Logger::Info, "new client connected...[%s]",
+		session->getClientAddress().c_str());
+	session->recvStanBy();
 }

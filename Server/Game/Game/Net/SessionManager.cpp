@@ -10,41 +10,41 @@ SessionManager::~SessionManager() {
 
 }
 
-bool SessionManager::AddSession(Session *session) {
+bool SessionManager::addSession(Session *session) {
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found != sessionList.end()) return false;
-    if(MaxConnection <= sessionList.size()) {
-        SystemLogger::Log("No connections are available");
+    if(MaxConnection <= sessionList.getSize()) {
+        SystemLogger::Log(Logger::Info, "No connections are available");
         return false;
     }
     
     sessionList.push_back(session);
 }
 
-bool SessionManager::CloseSession(Session *session) {
+bool SessionManager::closeSession(Session *session) {
     if(!session) return false;
 
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found == sessionList.end()) return false;
 
     Session *delSession = *found;
-    SystemLogger::Log("Close connection ");
-    closesocket(delSession->GetSocket());
+    SystemLogger::Log(Logger::Info, "Close connection ");
+    closesocket(delSession->getSocket());
     sessionList.erase(found);
     delete delSession;
 
     return true;
 }
 
-bool SessionManager::ForceCloseSession(Session *session) {
+bool SessionManager::forceCloseSession(Session *session) {
     if(!session) return false;
 
     LINGER linger;
     linger.l_linger = 0;
     linger.l_onoff = 1;
 
-    setsockopt(session->GetSocket(), SOL_SOCKET, SO_LINGER, 
+    setsockopt(session->getSocket(), SOL_SOCKET, SO_LINGER, 
         (const char*)&linger, sizeof(linger));
 
-    return this->CloseSession(session);
+    return this->closeSession(session);
 }

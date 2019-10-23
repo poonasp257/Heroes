@@ -10,9 +10,9 @@ public:
 	SessionManager();
 	virtual ~SessionManager();
 
-	bool AddSession(Session *session);
-	bool CloseSession(Session *session);
-	bool ForceCloseSession(Session *session);
+	bool addSession(Session *session);
+	bool closeSession(Session *session);
+	bool forceCloseSession(Session *session);
 };
 
 #endif

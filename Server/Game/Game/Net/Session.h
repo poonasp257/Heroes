@@ -6,9 +6,6 @@ struct SessionInfo {
 	SOCKADDR_IN addrInfo;
 };
 
-class Packet;
-class Package;
-
 class Session {
 protected:
 	SessionInfo sessionInfo;
@@ -17,18 +14,17 @@ public:
 	Session();
 	virtual ~Session();
 
-	virtual void Accept(SOCKET socket, SOCKADDR_IN addrInfo);
+	virtual void onSend(size_t transferSize) = 0;
+	virtual void sendPacket(Packet *packet) = 0;
 
-	virtual void OnSend(size_t transferSize) = 0;
-	virtual void SendPacket(Packet *packet) = 0;
+	virtual Package* onRecv(size_t tranferSize) = 0;
+	virtual void recvStanBy() = 0;
 
-	virtual Package* OnRecv(size_t tranferSize) = 0;
-	virtual void RecvStanBy() = 0;
+	virtual bool onAccept(SOCKET socket, SOCKADDR_IN addrInfo);
+	virtual void onClose();
 
-	virtual void Close();
-
-	SOCKET& socket() { return sessionInfo.socket; }
-	char* GetClientAddress();
+	SOCKET& getSocket() { return sessionInfo.socket; }
+	std::string getClientAddress();
 };
 
 #endif

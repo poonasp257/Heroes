@@ -12,6 +12,9 @@ private:
 public:
     Package(Session *session, Packet *packet);
     ~Package();
+
+    Session* getSession();
+    Packet* getPacket();
 };
 
 #endif

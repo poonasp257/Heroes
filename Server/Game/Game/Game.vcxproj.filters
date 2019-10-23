@@ -16,6 +16,9 @@
     <Filter Include="Net\Packet">
       <UniqueIdentifier>{a0c2f783-79d4-4aa4-baf7-22205811d33b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{5ed6b11f-dcbb-43c4-bd0a-14c65734f6aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -23,9 +26,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Json.cpp">
-      <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="Net\IOCPServer.cpp">
       <Filter>Net</Filter>
@@ -42,25 +42,37 @@
     <ClCompile Include="Net\SessionManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="Util\Logger.cpp">
-      <Filter>Util</Filter>
+    <ClCompile Include="Net\Packet\Stream.cpp">
+      <Filter>Net\Packet</Filter>
     </ClCompile>
     <ClCompile Include="Util\Clock.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="Net\Packet\Stream.cpp">
+    <ClCompile Include="Util\Json.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Package.cpp">
       <Filter>Net\Packet</Filter>
     </ClCompile>
-    <ClCompile Include="Net\Packet\Packet.cpp">
+    <ClCompile Include="Net\Packet\PacketAnalyzer.cpp">
       <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\PacketFactory.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ContentsProcess.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\LoginProcess.cpp">
+      <Filter>Contents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Json.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Net\IOCPServer.h">
       <Filter>Net</Filter>
@@ -77,23 +89,44 @@
     <ClInclude Include="Net\SessionManager.h">
       <Filter>Net</Filter>
     </ClInclude>
+    <ClInclude Include="Net\Packet\Stream.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Packet.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Clock.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Json.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
     <ClInclude Include="Util\Singleton.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\Type.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Logger.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Clock.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Net\Packet\Stream.h">
+    <ClInclude Include="Net\Packet\Package.h">
       <Filter>Net\Packet</Filter>
     </ClInclude>
-    <ClInclude Include="Net\Packet\Packet.h">
+    <ClInclude Include="Net\Packet\PacketAnalyzer.h">
       <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketFactory.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketType.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\ContentsProcess.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\LoginProcess.h">
+      <Filter>Contents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

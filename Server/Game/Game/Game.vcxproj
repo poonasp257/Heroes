@@ -19,10 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Contents\ContentsProcess.cpp" />
+    <ClCompile Include="Contents\LoginProcess.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net\IOCPServer.cpp" />
     <ClCompile Include="Net\IOCPSession.cpp" />
-    <ClCompile Include="Net\Packet\Packet.cpp" />
+    <ClCompile Include="Net\Packet\Package.cpp" />
+    <ClCompile Include="Net\Packet\PacketAnalyzer.cpp" />
+    <ClCompile Include="Net\Packet\PacketFactory.cpp" />
     <ClCompile Include="Net\Packet\Stream.cpp" />
     <ClCompile Include="Net\Server.cpp" />
     <ClCompile Include="Net\Session.cpp" />
@@ -36,9 +40,15 @@
     <ClCompile Include="Util\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Contents\ContentsProcess.h" />
+    <ClInclude Include="Contents\LoginProcess.h" />
     <ClInclude Include="Net\IOCPServer.h" />
     <ClInclude Include="Net\IOCPSession.h" />
+    <ClInclude Include="Net\Packet\Package.h" />
     <ClInclude Include="Net\Packet\Packet.h" />
+    <ClInclude Include="Net\Packet\PacketAnalyzer.h" />
+    <ClInclude Include="Net\Packet\PacketFactory.h" />
+    <ClInclude Include="Net\Packet\PacketType.h" />
     <ClInclude Include="Net\Packet\Stream.h" />
     <ClInclude Include="Net\Server.h" />
     <ClInclude Include="Net\Session.h" />

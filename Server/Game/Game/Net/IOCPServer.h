@@ -7,21 +7,22 @@ private:
 	HANDLE iocp;
 
 private:
-	bool CreateListenSocket();
+	bool createListenSocket();
 
+	virtual bool initialize(Json::Document& document);
+	
 	static unsigned int WINAPI AcceptThread(LPVOID lpParam);
 	static unsigned int WINAPI WorkerThread(LPVOID lpParam);
 
 public:
-	IOCPServer();
+	IOCPServer(ContentsProcess *process);
 	virtual ~IOCPServer();
 
-	virtual bool Initialize(Json::Document& document);
-	virtual bool Run();
+	virtual bool run();
 
-	SOCKET	GetListenSocket() { return listenSocket; }
-	HANDLE	GetHandleIOCP() { return iocp; }
-	void	OnAccept(SOCKET accepter, SOCKADDR_IN addrInfo);
+	SOCKET	getListenSocket() { return listenSocket; }
+	HANDLE	getIOCP() { return iocp; }
+	void	onAccept(SOCKET accepter, SOCKADDR_IN addrInfo);
 };
 
 #endif
