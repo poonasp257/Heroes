@@ -7,6 +7,8 @@ IOCPServer::IOCPServer(ContentsProcess *process) : Server("IOCPServer", process)
 		SystemLogger::Log(Logger::Error, "IOCP Server couldn't be started");
 		// assert
 	}
+
+	SystemLogger::Log(Logger::Info, "IOCP Server start on port %d", port);
 }
 
 IOCPServer::~IOCPServer() {
