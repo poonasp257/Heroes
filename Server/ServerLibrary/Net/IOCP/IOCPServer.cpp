@@ -109,27 +109,28 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 
 		SessionManager& sessionManager = SessionManager::Instance();
 		if (transferSize == 0) {
-			SystemLogger::Log(Logger::Error, "disconnected client...");
+			SystemLogger::Log(Logger::Info, "disconnected client...");
 			sessionManager.closeSession(session);
 			continue;
 		}
 
 		switch (ioBuffer->getType()) {
-			case IOType::Write: {
-				session->onSend((size_t)transferSize);
-				continue;
-			}
-			case IOType::Read: {
+		case IOType::Write:
+			SystemLogger::Log(Logger::Info, "send bytes %d...", transferSize);
+			session->onSend((size_t)transferSize);
+			continue;
+
+		case IOType::Read: 
+			{
+				SystemLogger::Log(Logger::Info, "receive bytes %d...", transferSize);
 				Package *package = session->onRecv((size_t)transferSize);
-				if (package != nullptr) {
-					server->putPackage(package);
-				}
-				continue;
+				if (package != nullptr)  server->putPackage(package);
 			}
-			case IOType::Error: {
-				sessionManager.closeSession(session);
-				continue;
-			}
+			continue;
+
+		case IOType::Error:
+			sessionManager.closeSession(session);
+			continue;
 		}
 	}
 
@@ -156,7 +157,7 @@ bool IOCPServer::run() {
 	}
 	status = ServerStatus::Ready;
 
-	WaitForMultipleObjects(9, threadArr, TRUE, INFINITE);
+	while (true) {}
 	
 	return true;
 }
@@ -188,5 +189,5 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
 
 	SystemLogger::Log(Logger::Info, "new client connected...[%s]",
 		session->getClientAddress().c_str());
-	session->recvStanBy();
+	session->recvStandBy();
 }

@@ -10,8 +10,8 @@ class Packet {
 public:
     virtual PacketType type() const = 0;
 
-    virtual void serialize(Stream& stream) = 0;
-    virtual void deSerialize(Stream& stream) = 0;
+    virtual void serialize(Stream& stream) { stream << (UInt32)this->type(); }
+	virtual void deSerialize(Stream& stream) { }
 };
 
 class AuthLoginRequestPacket : public Packet {
@@ -20,15 +20,15 @@ public:
     std::string password;
 
 public:
-    virtual PacketType type() const { return PacketType::AuthLoginRequest; }
+    PacketType type() const { return PacketType::AuthLoginRequest; }
 
-    virtual void serialize(Stream& stream) {
+    void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << id;
         stream << password;
     }
 
-    virtual void deSerialize(Stream& stream) {
+    void deSerialize(Stream& stream) {
         stream >> &id;
         stream >> &password;
     }
@@ -36,19 +36,19 @@ public:
 
 class AuthLoginResponsePacket : public Packet {
 public:
-    BYTE result;
+	bool success;
 
 public:
-    virtual PacketType type() const { return PacketType::AuthLoginResponse; }
+    PacketType type() const { return PacketType::AuthLoginResponse; }
+	
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << success;
+	}
 
-    virtual void serialize(Stream& stream) {
-        stream << (UInt32)this->type();
-        stream << result;
-    }
-
-    virtual void deSerialize(Stream& stream) {
-        stream >> &result;
-    }
+	void deSerialize(Stream& stream) {
+		stream >> &success;
+	}
 };
 
 class AuthRegisterRequestPacket : public Packet {
@@ -57,15 +57,15 @@ public:
     std::string password;
 
 public:
-    virtual PacketType type() const { return PacketType::AuthRegisterRequest; }
+    PacketType type() const { return PacketType::AuthRegisterRequest; }
 
-    virtual void serialize(Stream& stream) {
+    void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << id;
         stream << password;
     }
 
-    virtual void deSerialize(Stream& stream) {
+    void deSerialize(Stream& stream) {
         stream >> &id;
         stream >> &password;
     }
@@ -73,19 +73,7 @@ public:
 
 class AuthRegisterResponsePacket : public Packet {
 public:
-    BYTE result;
-
-public:
-    virtual PacketType type() const { return PacketType::AuthLoginResponse; }
-
-    virtual void serialize(Stream& stream) {
-        stream << (UInt32)this->type();
-        stream << result;
-    }
-
-    virtual void deSerialize(Stream& stream) {
-        stream >> &result;
-    }
+    PacketType type() const { return PacketType::AuthLoginResponse; }
 };
 
 class AccountInfoRequestPacket : public Packet {
@@ -93,14 +81,14 @@ public:
     std::string id;
 
 public: 
-    virtual PacketType type() const { return PacketType::AccountInfoRequest; }
+     PacketType type() const { return PacketType::AccountInfoRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << id;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &id;
     }
 };
@@ -110,14 +98,14 @@ public:
     //std::vector<CharacterInfo> characterList;
 
 public: 
-    virtual PacketType type() const { return PacketType::AccountInfoResponse; }
+     PacketType type() const { return PacketType::AccountInfoResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         //stream << characterList;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         //stream >> &characterList;
     }
 };
@@ -129,16 +117,16 @@ public:
     std::string characterName;
 
 public: 
-    virtual PacketType type() const { return PacketType::CreateCharacterRequest; }
+     PacketType type() const { return PacketType::CreateCharacterRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         //stream << characterClass;
         stream << id;
         stream << characterName;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         //stream >> &characterClass;
         stream >> &id;
         stream >> &characterName;
@@ -150,14 +138,14 @@ public:
     BYTE result;
 
 public:
-    virtual PacketType type() const { return PacketType::CreateCharacterResponse; }
+     PacketType type() const { return PacketType::CreateCharacterResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << result;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &result;
     }
 };
@@ -168,15 +156,15 @@ public:
     std::string id;
 
 public:
-    virtual PacketType type() const { return PacketType::ConnectChanelRequest; }
+     PacketType type() const { return PacketType::ConnectChanelRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << chanel;
         stream << id;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &chanel;
         stream >> &id;
     }
@@ -187,14 +175,14 @@ public:
     BYTE result;
 
 public:
-    virtual PacketType type() const { return PacketType::ConnectChanelResponse; }
+     PacketType type() const { return PacketType::ConnectChanelResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << result;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &result;
     }
 };
@@ -205,15 +193,15 @@ public:
     std::string id;
 
 public:
-    virtual PacketType type() const { return PacketType::ConnectChanelRequest; }
+     PacketType type() const { return PacketType::ConnectChanelRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << chanel;
         stream << id;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &chanel;
         stream >> &id;
     }
@@ -224,14 +212,14 @@ public:
     BYTE result;
 
 public:
-    virtual PacketType type() const { return PacketType::ConnectChanelResponse; }
+     PacketType type() const { return PacketType::ConnectChanelResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << result;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &result;
     }
 };
@@ -243,16 +231,16 @@ public:
     std::string text;
 
 public:
-    virtual PacketType type() const { return PacketType::ChattingRequest; }
+     PacketType type() const { return PacketType::ChattingRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << chatType;
         stream << id;
         stream << text;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &chatType;
         stream >> &id;
         stream >> &text;
@@ -266,16 +254,16 @@ public:
     std::string text;
 
 public:
-    virtual PacketType type() const { return PacketType::ChattingResponse; }
+     PacketType type() const { return PacketType::ChattingResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << chatType;
         stream << id;
         stream << text;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &chatType;
         stream >> &id;
         stream >> &text;
@@ -288,15 +276,15 @@ public:
     std::string id;
 
 public:
-    virtual PacketType type() const { return PacketType::CharacterInfoRequest; }
+     PacketType type() const { return PacketType::CharacterInfoRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << characterNumber;
         stream << id;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &characterNumber;
         stream >> &id;
     }
@@ -307,14 +295,14 @@ public:
     //CharacterInfo characterInfo;
 
 public:
-    virtual PacketType type() const { return PacketType::CharacterInfoResponse; }
+     PacketType type() const { return PacketType::CharacterInfoResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
        //stream << characterInfo;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         //stream >> &characterInfo;
     }
 };
@@ -326,16 +314,16 @@ public:
     //CharacterStat stat;
 
 public:
-    virtual PacketType type() const { return PacketType::ApplyCharacterStatRequest; }
+     PacketType type() const { return PacketType::ApplyCharacterStatRequest; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << characterNumber;
         stream << id;
         //stream << stat;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &characterNumber;
         stream >> &id;
         //stream >> &stat;
@@ -347,38 +335,26 @@ public:
     BYTE result;
 
 public:
-    virtual PacketType type() const { return PacketType::ApplyCharacterStatResponse; }
+     PacketType type() const { return PacketType::ApplyCharacterStatResponse; }
 
-    virtual void serialize(Stream& stream) {
+     void serialize(Stream& stream) {
         stream << (UInt32)this->type();
         stream << result;
     }
 
-    virtual void deSerialize(Stream& stream) {
+     void deSerialize(Stream& stream) {
         stream >> &result;
     }
 };
 
 class ExitRequestPacket : public Packet {
 public:
-    virtual PacketType type() const { return PacketType::ExitRequest; }
-
-    virtual void serialize(Stream& stream) {
-        stream << (UInt32)this->type();
-    }
-
-    virtual void deSerialize(Stream& stream) {}
+     PacketType type() const { return PacketType::ExitRequest; }
 };
 
 class ExitResponsePacket : public Packet {
 public:
-    virtual PacketType type() const { return PacketType::ExitResponse; }
-
-    virtual void serialize(Stream& stream) {
-        stream << (UInt32)this->type();
-    }
-
-    virtual void deSerialize(Stream& stream) {}
+     PacketType type() const { return PacketType::ExitResponse; }
 };
 
 

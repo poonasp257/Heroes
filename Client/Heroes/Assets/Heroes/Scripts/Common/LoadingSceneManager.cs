@@ -6,14 +6,13 @@ using UnityEngine.SceneManagement;
 namespace Heroes {
 	public class LoadingSceneManager : MonoBehaviour {
 		private static string nextScene;
-		private GameObject player;
-		private GameObject monster;
+
+		private GameObject objects;
 
 		private void Start() {
-			StartCoroutine(LoadScene());
+			objects = GameObject.Find("Objects");
 
-			player = GameObject.Find("Player");
-			monster = GameObject.Find("Monster");
+			StartCoroutine(LoadScene());
 		}
 
 		public static void LoadScene(string sceneName) {
@@ -27,16 +26,21 @@ namespace Heroes {
 			AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
 			op.allowSceneActivation = false;
 
-			float timer = 0.0f;
 			while (!op.isDone) {
 				yield return null;
 
-				timer += Time.deltaTime;
+				Vector3 screenPos = Camera.main.WorldToScreenPoint(objects.transform.position);
+				Vector3 targetPos = screenPos;
+				targetPos.x = Camera.main.pixelWidth;
+
+				Vector3 movePos = Vector3.MoveTowards(screenPos, targetPos, 10.0f);
+				objects.transform.position = Camera.main.ScreenToWorldPoint(movePos);
+
 				if (op.progress >= 0.9f) {
-					op.allowSceneActivation = true;
-				}
-				else {
-					
+					if (targetPos.x < screenPos.x + 300.0f) {
+						op.allowSceneActivation = true;
+						yield break;
+					}
 				}
 			}
 		}

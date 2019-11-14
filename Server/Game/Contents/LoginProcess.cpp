@@ -23,18 +23,14 @@ void LoginProcess::run(Package *package) {
 void LoginProcess::Login(Session *session, Packet *rowPacket) { 
     AuthLoginRequestPacket *packet = (AuthLoginRequestPacket*)rowPacket;
 
+	// DB
+	// Magic code...
     std::string id = "poona";
     std::string password = "1234";
-    Byte result;
+	//////////////////////////////
 
-    if(id.compare(packet->id) == 0 
-        && password.compare(packet->password) == 0) {
-            result = 1;
-        }   
-    else result = 0;
-
-    AuthLoginResponsePacket responsePacket;
-    responsePacket.result = result;
+	AuthLoginResponsePacket responsePacket;
+	responsePacket.success = (id == packet->id) && (password == packet->password);
 
     session->sendPacket(&responsePacket);
 }

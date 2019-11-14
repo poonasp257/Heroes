@@ -1,48 +1,78 @@
-﻿using System.Runtime.InteropServices;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.IO;
 
 namespace Heroes {
 	public abstract class Packet {
-		protected PacketType type;
-		public PacketType Type { get { return type; } }
-		public abstract byte[] Serialize();
-		public abstract void DeSerialize(byte[] bytes);
+		protected MemoryStream stream = new MemoryStream();
+
+		public MemoryStream getStream() { return stream; }
+				
+		public virtual void serialize() { Serializer.serialize(stream, type()); }
+		public virtual void deserialize(Byte[] data, Int32 offset) { }
+			   
+		public abstract PacketType type();
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public class LoginAuthRequest : Packet {
+	public class AuthLoginRequestPacket : Packet {
 		public string id;
 		public string password;
 
-		public LoginAuthRequest() {
-			type = PacketType.PK_LOGIN_AUTH_REQ;
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, id);
+			Serializer.serialize(stream, password);
 		}
 
-		public override byte[] Serialize() {
-			return new byte[1];
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out id);
+			Serializer.deserialize(data, ref offset, out password);
 		}
 
-		public override void DeSerialize(byte[] bytes) {
-
-		}
+		public override PacketType type() { return PacketType.AuthLoginRequest; }
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public class LoginAuthAnswer : Packet {
-		public bool result;
+	public class AuthLoginResponsePacket : Packet {
+		public bool success;
 
-		public LoginAuthAnswer() {
-			type = PacketType.PK_LOGIN_AUTH_ANS;
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, success);
 		}
 
-		public override byte[] Serialize() {
-			return new byte[1];
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out success);
 		}
 
-		public override void DeSerialize(byte[] bytes) {
+		public override PacketType type() { return PacketType.AuthLoginResponse; }
+	}
+	
+	public class AuthRegisterRequestPacket : Packet {
+		public string id;
+		public string password;
 
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, id);
+			Serializer.serialize(stream, password);
 		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out id);
+			Serializer.deserialize(data, ref offset, out password);
+		}
+
+		public override PacketType type() { return PacketType.AuthRegisterRequest; }
+	}
+
+	public class AuthRegisterResponsePacket : Packet {
+		public override PacketType type() { return PacketType.AuthRegisterResponse; }
+	}
+
+	public class ExitRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ExitRequest; }
+	}
+
+	public class ExitResponsePacket : Packet {
+		public override PacketType type() { return PacketType.ExitResponse; }
 	}
 }

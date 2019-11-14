@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class AuthenticationManager : MonoBehaviour {
@@ -11,9 +10,17 @@ namespace Heroes {
 
 		private string userId;
 		private string password;
-		
+
+		private const string ip = "127.0.0.1";
+		private const uint port = 9000;
+
 		private void Start() {
 			Initialize();
+
+			networkManager.connect(ip, port);
+
+			networkManager.RegisterNotification(PacketType.AuthLoginResponse, ResponseLogin);
+			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, ResponseRegister);
 		}
 		
 		private void Update() {
@@ -22,9 +29,7 @@ namespace Heroes {
  		}
 
 		private void Initialize() {
-//			networkManager = new NetworkManager(9000, "127.0.0.1");
-//			networkManager.CreateTCPSocket();
-//			networkManager.Connect();
+			networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 
 			GameObject inputField = GameObject.Find("UserIdField");
 			if (!inputField) return;
@@ -36,7 +41,8 @@ namespace Heroes {
 		}
 		
 		private void ProcessInput() {
-			if(Input.GetKeyDown(KeyCode.KeypadEnter)) {
+			if(Input.GetKeyDown(KeyCode.Return)
+				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
 				RequestLogin();
 			}
 
@@ -68,13 +74,42 @@ namespace Heroes {
 					return;
 				}
 
-			Debug.Log(userId);
-			Debug.Log(password);
+			AuthLoginRequestPacket packet = new AuthLoginRequestPacket();
+			packet.id = userId;
+			packet.password = password;
+			networkManager.send(packet);
 		}
 
-		public void RequestRegister() {
-			Debug.Log(userId);
-			Debug.Log(password);
+		public void RequestRegister() {		
+			if(string.IsNullOrEmpty(userId)
+				|| string.IsNullOrEmpty(password)) {
+					Debug.Log("fill the input field");
+					return;
+				}
+				
+			AuthRegisterRequestPacket packet = new AuthRegisterRequestPacket();
+			packet.id = userId;
+			packet.password = password;
+			networkManager.send(packet);
+		}
+
+		public void ResponseLogin(PacketType type, Packet rowPacket) {
+			AuthLoginResponsePacket packet = rowPacket as AuthLoginResponsePacket;
+			if(packet == null) {
+				Debug.Log("invalid packet");
+				return;
+			}
+
+			if(!packet.success) {
+				Debug.Log("Login Failed");
+				return;
+			}
+
+			LoadingSceneManager.LoadScene("Town");
+		}
+
+		public void ResponseRegister(PacketType type, Packet rowPacket) {
+			Debug.Log("responsed Register request...");
 		}
 	}
 }

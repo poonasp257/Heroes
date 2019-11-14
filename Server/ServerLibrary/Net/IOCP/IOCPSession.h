@@ -5,23 +5,13 @@ enum class IOType{
 	Read, Write, Error
 };
 
-// #pragma pack(push, 1)
-// union PacketBuffer {
-// 	struct {
-// 		UInt32 length; 
-// 		UInt32 type;
-// 		BYTE data[SOCKET_BUFSIZE - 8];
-// 	} Segment;
-
-// 	BYTE buffer[SOCKET_BUFSIZE];
-// };
-
 class IOBuffer {
+private:
+	OVERLAPPED		overlapped;
+	IOType			ioType;
 	size_t			totalBytes;
 	size_t			currentBytes;
-	OVERLAPPED		overlapped;
 	std::array<char, SOCKET_BUFSIZE> buffer;
-	IOType			ioType;
 
 public:
 	IOBuffer();
@@ -32,10 +22,10 @@ public:
 
 	bool needMoreIO(size_t transferSize);	
 
-	uint32_t setupTotalBytes();
+	int32_t setupTotalBytes();
 	size_t getTotalBytes() const { return totalBytes; }
 
-	bool setBuffer(Stream& stream);
+	void setBuffer(Stream& stream);
 	char* getBuffer() { return buffer.data(); }
 	size_t getBufferSize() const { return buffer.max_size(); }
 
@@ -48,8 +38,7 @@ public:
 
 class IOCPSession : public Session {
 private:
-	IOBuffer readBuffer;
-	IOBuffer writeBuffer;
+	std::map<IOType, IOBuffer> ioBuffer;
 
 private:
 	void recv(WSABUF wsaBuf);
@@ -64,7 +53,7 @@ public:
 	virtual void sendPacket(Packet *packet);
 
 	virtual Package* onRecv(size_t transferSize);
-	virtual void recvStanBy();
+	virtual void recvStandBy();
 };
 
 #endif

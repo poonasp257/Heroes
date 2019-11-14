@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 ContentsProcess::ContentsProcess() {
-    for(int i = 0; i < 3; ++i) {
+    for(int i = 0; i < 1; ++i) {
         processThreads[i] = (HANDLE)_beginthreadex(NULL, 0, process, this, 0, NULL);
     }
 }

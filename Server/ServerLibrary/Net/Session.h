@@ -19,7 +19,7 @@ public:
 	virtual void sendPacket(Packet *packet) = 0;
 
 	virtual Package* onRecv(size_t tranferSize) = 0;
-	virtual void recvStanBy() = 0;
+	virtual void recvStandBy() = 0;
 
 	virtual bool onAccept(SOCKET socket, SOCKADDR_IN addrInfo);
 	virtual void onClose();
