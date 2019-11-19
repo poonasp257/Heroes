@@ -1,6 +1,13 @@
 ﻿using System;
 
 namespace Heroes {
+	public enum CharacterClass {
+		Warrior,
+		Archer,
+		Assassin,
+		Mage
+	}
+
 	public enum ActionType {
 		WeakAttack, SmashAttack, Roll
 	}
