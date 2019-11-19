@@ -22,4 +22,12 @@ using Int64 = int64_t;
 using UInt64 = uint64_t;
 using Float = float;
 
+using threadId = std::thread::id;
+
+// struct in game...
+struct ChanelStatus {
+	Int32 id; // or name
+	Int32 traffic;
+};
+
 #endif

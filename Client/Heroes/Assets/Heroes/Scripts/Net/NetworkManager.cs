@@ -39,6 +39,10 @@ namespace Heroes {
 			DontDestroyOnLoad(this.gameObject);
 		}
 
+		private void Start() {
+			this.connect("127.0.0.1", 9000); // Connect Relay Server
+		}
+
 		private void Update() {
 			if (!isConnected()) return;
 	

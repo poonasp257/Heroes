@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Heroes {
 	public static class Serializer {		
@@ -49,6 +50,18 @@ namespace Heroes {
 			stream.Write(Encoding.UTF8.GetBytes(str), 0, str.Length);
 		}
 
+		public static void serialize(MemoryStream stream, ChanelStatus value) {
+			serialize(stream, value.id);
+			serialize(stream, value.traffic);
+		}
+
+		public static void serialize(MemoryStream stream, List<ChanelStatus> list) {
+			serialize(stream, list.Count);
+			foreach(ChanelStatus value in list) {
+				serialize(stream, value);
+			}
+		}
+		
 		public static void deserialize(byte[] data, ref Int32 offset, out bool value) {
 			value = BitConverter.ToBoolean(data, offset); 
 			offset += sizeof(bool);
@@ -100,5 +113,21 @@ namespace Heroes {
 			value = Encoding.ASCII.GetString(data, offset, strLen);
 			offset += strLen;
 		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out ChanelStatus value) {
+			deserialize(data, ref offset, out value.id);
+			deserialize(data, ref offset, out value.traffic);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChanelStatus> list) {
+			Int32 size;
+			deserialize(data, ref offset, out size);
+
+			ChanelStatus value;
+			for(int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out value);
+				list.Add(value);
+			}
+		} 
 	}
 }

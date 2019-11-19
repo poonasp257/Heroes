@@ -11,13 +11,8 @@ namespace Heroes {
 		private string userId;
 		private string password;
 
-		private const string ip = "127.0.0.1";
-		private const uint port = 9000;
-
 		private void Start() {
 			Initialize();
-
-			networkManager.connect(ip, port);
 
 			networkManager.RegisterNotification(PacketType.AuthLoginResponse, ResponseLogin);
 			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, ResponseRegister);
@@ -105,11 +100,22 @@ namespace Heroes {
 				return;
 			}
 
-			LoadingSceneManager.LoadScene("Town");
+			SceneManager.LoadScene("Select");
 		}
 
 		public void ResponseRegister(PacketType type, Packet rowPacket) {
-			Debug.Log("responsed Register request...");
+			AuthRegisterResponsePacket packet = rowPacket as AuthRegisterResponsePacket;
+			if(packet == null) {
+				Debug.Log("invalid packet");
+				return;
+			}
+
+			if(!packet.success) {
+				Debug.Log("Login Failed");
+				return;
+			}
+
+			LoadingSceneManager.LoadScene("Town");
 		}
 	}
 }

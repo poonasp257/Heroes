@@ -28,10 +28,11 @@ bool SessionManager::closeSession(Session *session) {
     if(found == sessionList.end()) return false;
 
     Session *delSession = *found;
-    SystemLogger::Log(Logger::Info, "Close connection ");
     closesocket(delSession->getSocket());
     sessionList.erase(found);
     delete delSession;
+
+	SystemLogger::Log(Logger::Info, "Close connection ");
 
     return true;
 }

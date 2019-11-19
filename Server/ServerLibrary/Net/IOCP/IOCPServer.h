@@ -5,6 +5,8 @@ class IOCPServer : public Server, public Singleton<IOCPServer> {
 private:
 	SOCKET listenSocket;
 	HANDLE iocp;
+	std::unique_ptr<Thread> acceptThread;
+	std::array<std::unique_ptr<Thread>, SIZE_16> workerThreads;
 
 private:
 	bool createListenSocket();

@@ -38,7 +38,7 @@ public:
 
 class IOCPSession : public Session {
 private:
-	std::map<IOType, IOBuffer> ioBuffer;
+	std::unordered_map<IOType, IOBuffer> ioBuffer;
 
 private:
 	void recv(WSABUF wsaBuf);

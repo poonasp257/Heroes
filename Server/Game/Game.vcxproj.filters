@@ -9,22 +9,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Contents\LoginProcess.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Contents\MainProcess.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Contents\LoginProcess.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\MainProcess.h">
+      <Filter>Contents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

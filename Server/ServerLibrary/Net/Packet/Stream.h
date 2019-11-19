@@ -48,7 +48,7 @@ public:
     bool checkWriteBound(size_t len);
     bool checkReadBound(size_t len);
     
-    // write
+    //////////////////////////////////Write/////////////////////////////////////////
     template<class T>
 	void operator<<(const T& value) {
 		this->write(value);
@@ -59,8 +59,11 @@ public:
 		*this << (int32_t)value.size();
 		for (auto i : value) *this << i;
 	}
-    void operator<<(const std::string& value);
 
+    void operator<<(const std::string& value);
+	void operator<<(const ChanelStatus& value);
+
+	///////////////////////////////////Read///////////////////////////////////////	
     template<class T>
     void operator>>(T *retVal) {
 		this->read(retVal);
@@ -79,5 +82,6 @@ public:
 	}
 
     void operator>>(std::string *retVal);
+	void operator>>(ChanelStatus *value);
 };
 #endif

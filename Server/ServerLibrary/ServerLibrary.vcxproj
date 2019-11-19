@@ -168,6 +168,8 @@
     <ClInclude Include="Util\Json.h" />
     <ClInclude Include="Util\Logger.h" />
     <ClInclude Include="Util\Singleton.h" />
+    <ClInclude Include="Util\Thread.h" />
+    <ClInclude Include="Util\ThreadJobQueue.h" />
     <ClInclude Include="Util\Type.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +192,7 @@
     <ClCompile Include="Util\Clock.cpp" />
     <ClCompile Include="Util\Json.cpp" />
     <ClCompile Include="Util\Logger.cpp" />
+    <ClCompile Include="Util\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

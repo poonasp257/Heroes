@@ -80,6 +80,12 @@
     <ClInclude Include="ServerLibraryh.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Util\Thread.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ThreadJobQueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -122,6 +128,9 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread.cpp">
       <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>

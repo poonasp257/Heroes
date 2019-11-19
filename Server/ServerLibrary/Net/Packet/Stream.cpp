@@ -46,6 +46,11 @@ void Stream::operator<<(const std::string& value) {
 	for(auto i : value) *this << i;
 }
 
+void Stream::operator<<(const ChanelStatus& value) {
+	*this << value.id;
+	*this << value.traffic;
+}
+
 void Stream::operator>>(std::string *retVal) {
 	int32_t size;
 	*this >> &size;
@@ -62,4 +67,9 @@ void Stream::operator>>(std::string *retVal) {
 	*retVal = buf;
 	
 	delete buf;
+}
+
+void Stream::operator>>(ChanelStatus *value) {
+	*this >> &value->id;
+	*this >> &value->traffic;
 }

@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "Contents/LoginProcess.h"
+#include "Contents/MainProcess.h"
 
 int _tmain() {
 	WSADATA wsaData;
@@ -7,7 +7,7 @@ int _tmain() {
 		return -1;
 	}
 
-	std::shared_ptr<Server> server(new IOCPServer(new LoginProcess()));
+	std::shared_ptr<Server> server(new IOCPServer(new MainProcess()));
 	if (!server->run()) {
 		SystemLogger::Log(Logger::Error, "iocp server closed...");
 		return -1;

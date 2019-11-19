@@ -3,23 +3,25 @@
 
 class ContentsProcess {
 private:
-    std::queue<Package*> packageQueue;
-    HANDLE               processThreads[3]; // thread pool...
-    //array<Thread, 10> threadPool;
+	ThreadJobQueue<Package*> *packageQueue;
+	std::array<std::unique_ptr<Thread>, SIZE_16> threadPool;
 
 private:
+	void initialize(Json::Document& document);
+	void run(Package *package);
     void execute();
+	void process();
 
 protected:
-    virtual void run(Package *package) = 0; // hash map을 이용해서 PacketType과 함수를 pair로 묶기
+	typedef void(*PacketProcess)(Session *session, Packet *rowPacket);
+	std::unordered_map<PacketType, PacketProcess> processTable;
+
+	void registerPacketProcess(PacketType type, PacketProcess process);
 
 public:
     ContentsProcess();
     ~ContentsProcess();
     
-    static unsigned int WINAPI process(LPVOID lpParam); 
-
     void putPackage(Package *package);
 };
-
 #endif

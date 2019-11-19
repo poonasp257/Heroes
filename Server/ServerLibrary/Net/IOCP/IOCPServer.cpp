@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 IOCPServer::IOCPServer(ContentsProcess *process) : Server("IOCPServer", process),
-	listenSocket(INVALID_SOCKET), iocp(nullptr) {
+	listenSocket(INVALID_SOCKET), iocp(nullptr), acceptThread(nullptr) {
 	bool result = this->initialize(json.getDocument());
 	if(!result) {
 		SystemLogger::Log(Logger::Error, "IOCP Server couldn't be started");
@@ -151,15 +151,18 @@ bool IOCPServer::run() {
 		return false;
 	}
 
-	HANDLE threadArr[10];
-
-	threadArr[0] = (HANDLE)_beginthreadex(NULL, 0, AcceptThread, this, 0, NULL);
+	acceptThread = std::make_unique<Thread>(new std::thread(&AcceptThread, this));
 	for (int i = 0; i < workerThreadCount; ++i) {
-		threadArr[i + 1] = (HANDLE)_beginthreadex(NULL, 0, WorkerThread, this, 0, NULL);
+		workerThreads[i] = std::make_unique<Thread>(new std::thread(&WorkerThread, this));
 	}
 	status = ServerStatus::Ready;
 
-	while (true) {}
+	int key = 0;
+	while (true) {
+		/*if (!_kbhit()) continue;
+
+		key = _getch();*/
+	}
 	
 	return true;
 }
@@ -172,20 +175,20 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
 	}
 
 	if(!session->onAccept(accepter, addrInfo)) {
-		delete session;
+		if(session) delete session;
 		return;
 	}
 
 	SessionManager &sessionManager = SessionManager::Instance();
 	if(!sessionManager.addSession(session)) {
-		delete session;
+		if (session) delete session;
 		return;
 	}
 	
 	HANDLE handle = CreateIoCompletionPort((HANDLE)accepter, this->getIOCP(),
 		(ULONG_PTR)session, NULL);
 	if(!handle) {
-		delete session;
+		if (session) delete session;
 		return;
 	}
 
