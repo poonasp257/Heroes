@@ -135,7 +135,16 @@ namespace Heroes {
 	}
 
 	public class AccountInfoResponsePacket : Packet {
-		// ArrayList<CharacterStatus>...characters
+		List<CharacterStatus> characters;
+		
+		//public override void serialize() {
+		//	Serializer.serialize(stream, type());
+		//	Serializer.serialize(stream, characters);
+		//}
+
+		//public override void deserialize(Byte[] data, Int32 offset) {
+		//	Serializer.deserialize(data, ref offset, ref characters);
+		//}
 
 		public override PacketType type() { return PacketType.AccountInfoResponse; }
 	}

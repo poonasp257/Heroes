@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class AuthenticationManager : MonoBehaviour {
+		private MessageBox		msgBox;
 		private NetworkManager	networkManager;
 		private InputField		userIdField;
 		private InputField		passwordField;
@@ -12,18 +13,19 @@ namespace Heroes {
 		private string password;
 
 		private void Start() {
-			Initialize();
+			initialize();
 
 			networkManager.RegisterNotification(PacketType.AuthLoginResponse, ResponseLogin);
 			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, ResponseRegister);
 		}
 		
 		private void Update() {
-			UpdateInputField();
-			ProcessInput();
+			updateInputField();
+			processInput();
  		}
 
-		private void Initialize() {
+		private void initialize() {
+			msgBox = GetComponent<MessageBox>();
 			networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 
 			GameObject inputField = GameObject.Find("UserIdField");
@@ -35,23 +37,23 @@ namespace Heroes {
 			passwordField = inputField.GetComponent<InputField>();
 		}
 		
-		private void ProcessInput() {
+		private void processInput() {
 			if(Input.GetKeyDown(KeyCode.Return)
 				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
 				RequestLogin();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Tab)) { 
-				ChangeFocus();
+				changeFocus();
 			}
 		}
 
-		private void UpdateInputField() {
+		private void updateInputField() {
 			userId = userIdField.text;
 			password = passwordField.text;
 		}	
 
-		private void ChangeFocus() {
+		private void changeFocus() {
 			if(userIdField.isFocused) {
 				passwordField.Select();
 				passwordField.ActivateInputField();
@@ -62,12 +64,18 @@ namespace Heroes {
 			}
 		}
 
-		public void RequestLogin() {
-			if(string.IsNullOrEmpty(userId)
+		private bool checkInputField() {
+			if(string.IsNullOrEmpty(userId) 
 				|| string.IsNullOrEmpty(password)) {
-					Debug.Log("fill the input field");
-					return;
+					msgBox.Show("잘못된 입력입니다.", MessageType.Alert);
+					return false;
 				}
+
+			return true;
+		} 
+
+		public void RequestLogin() {
+			if (!checkInputField()) return;
 
 			AuthLoginRequestPacket packet = new AuthLoginRequestPacket();
 			packet.id = userId;
@@ -76,11 +84,7 @@ namespace Heroes {
 		}
 
 		public void RequestRegister() {		
-			if(string.IsNullOrEmpty(userId)
-				|| string.IsNullOrEmpty(password)) {
-					Debug.Log("fill the input field");
-					return;
-				}
+			if (!checkInputField()) return;
 				
 			AuthRegisterRequestPacket packet = new AuthRegisterRequestPacket();
 			packet.id = userId;
@@ -100,7 +104,11 @@ namespace Heroes {
 				return;
 			}
 
-			SceneManager.LoadScene("Select");
+			GameObject obj = new GameObject();
+			obj.AddComponent<LobbyManager>();
+			DontDestroyOnLoad(obj);
+
+			SceneManager.LoadScene("Chanel");
 		}
 
 		public void ResponseRegister(PacketType type, Packet rowPacket) {
@@ -111,11 +119,11 @@ namespace Heroes {
 			}
 
 			if(!packet.success) {
-				Debug.Log("Login Failed");
+				Debug.Log("Register Failed");
 				return;
 			}
 
-			LoadingSceneManager.LoadScene("Town");
+			//SceneManager.LoadScene("Chanel");
 		}
 	}
 }

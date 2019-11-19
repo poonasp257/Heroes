@@ -12,8 +12,18 @@ namespace Heroes {
 		WeakAttack, SmashAttack, Roll
 	}
 
+	public enum MessageType {
+		Alert,
+		Confirm,
+		Notice
+	}
+
 	public struct ChanelStatus {
 		public Int32 id;
 		public Int32 traffic;
+	}
+
+	public struct CharacterStatus {
+		
 	}
 }

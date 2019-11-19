@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Heroes/Scenes/Login.unity
     guid: 10dc86eeefdf2b64cb55bfcfd1eb6201
   - enabled: 1
+    path: Assets/Heroes/Scenes/Chanel.unity
+    guid: 891358f698b5c1e47a5506d22503e80d
+  - enabled: 1
     path: Assets/Heroes/Scenes/Select.unity
     guid: c55b0232d346aed4a853c2976b87593b
   - enabled: 1

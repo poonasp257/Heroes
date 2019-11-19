@@ -12,7 +12,7 @@ namespace Heroes {
 		private void Start() {
 			objects = GameObject.Find("Objects");
 
-			StartCoroutine(LoadScene());
+			StartCoroutine(LoadingScene());
 		}
 
 		public static void LoadScene(string sceneName) {
@@ -20,7 +20,7 @@ namespace Heroes {
 			SceneManager.LoadScene("Loading");
 		}
 
-		IEnumerator LoadScene() {
+		public IEnumerator LoadingScene() {
 			yield return null;
 
 			AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);

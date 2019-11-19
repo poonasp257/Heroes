@@ -61,6 +61,18 @@ namespace Heroes {
 				serialize(stream, value);
 			}
 		}
+
+		//public static void serialize(MemoryStream stream, CharacterStatus value) {
+		//	serialize(stream, value.id);
+		//	serialize(stream, value.traffic);
+		//}
+
+		//public static void serialize(MemoryStream stream, List<CharacterStatus> list) {
+		//	serialize(stream, list.Count);
+		//	foreach(CharacterStatus value in list) {
+		//		serialize(stream, value);
+		//	}
+		//}
 		
 		public static void deserialize(byte[] data, ref Int32 offset, out bool value) {
 			value = BitConverter.ToBoolean(data, offset); 

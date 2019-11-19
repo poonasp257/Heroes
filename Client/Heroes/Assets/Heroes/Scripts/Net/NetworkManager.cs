@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Heroes {
 	public class NetworkManager : MonoBehaviour {
-		public enum NetState {
+		private enum NetState {
 			Started,
 			Connected,
 			Disconnected,
@@ -57,11 +57,9 @@ namespace Heroes {
 			if (packetQueue.Count == 0) return;
 
 			Packet packet = null;
-
 			lock(lockObject) {
 				packet = packetQueue.Dequeue();
 			}
-
 			notifierMap[packet.type()](packet.type(), packet);
 		}
 
