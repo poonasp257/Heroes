@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.Events;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,48 +7,73 @@ namespace Heroes {
 		[SerializeField] private GameObject alertMsgBox;
 		[SerializeField] private GameObject confirmMsgBox;
 		[SerializeField] private GameObject noticeMsgBox;
-
-		private bool isOpened;
+		
 		private GameObject msgBox;
-		private Dictionary<MessageType, GameObject> msgBoxes;
 
 		private void Start() {
-			isOpened = false;
-
-			msgBoxes = new Dictionary<MessageType, GameObject>();
-			msgBoxes.Add(MessageType.Alert, alertMsgBox);
-			msgBoxes.Add(MessageType.Confirm, confirmMsgBox);
-			msgBoxes.Add(MessageType.Notice, noticeMsgBox);
+			DontDestroyOnLoad(this.gameObject);
 		}
 
-		public void Show(string msg, MessageType type) {
-			if (isOpened) return;
-
-			StartCoroutine(ShowMessageBox(msg, type));
+		private void OnDestroy() {
+			if(msgBox) Destroy(msgBox);
 		}
 
-		public void Close() {
-			if (!isOpened) return;
+		private void setupMsgBox(GameObject prefab, string msg) {
+			GameObject canvas = GameObject.Find("Canvas");
+			msgBox = Instantiate(prefab, canvas.transform);
 
+			Text message = msgBox.transform.Find("Content/Message").GetComponent<Text>();
+			message.text = msg;
+		}
+
+		private void destroyMsgBox() {
 			Destroy(msgBox);
 			msgBox = null;
 		}
 
-		public IEnumerator ShowMessageBox(string msg, MessageType type) {
-			yield return null;
-			GameObject canvas = GameObject.Find("Canvas");
-			msgBox = Instantiate(msgBoxes[type], canvas.transform);
+		public bool isExist() {
+			return msgBox != null; 
+		}
 
-			Text message = msgBox.transform.Find("Message").GetComponent<Text>();
-			message.text = msg;
+		public void alert(string msg) {
+			if (msgBox) this.close();
 
-			isOpened = true;
-			while(msgBox != null) {
-				
-				
-			}
+			setupMsgBox(alertMsgBox, msg);
 
-			isOpened = false;
+			GameObject button = msgBox.transform.Find("Content/OK").gameObject;
+			Button okButton = button.GetComponent<Button>();
+			okButton.onClick.AddListener(destroyMsgBox);
+		}
+
+		public bool confirm(string msg, UnityAction yesEvent, UnityAction noEvent) {
+			if (msgBox) this.close();
+
+			setupMsgBox(confirmMsgBox, msg);
+			
+			GameObject button = msgBox.transform.Find("Content/Buttons/Yes").gameObject;
+			Button yesButton = button.GetComponent<Button>();
+			yesButton.onClick.AddListener(yesEvent);
+			yesButton.onClick.AddListener(destroyMsgBox);
+
+			button = msgBox.transform.Find("Content/Buttons/No").gameObject;
+			Button noButton = button.GetComponent<Button>();
+			noButton.onClick.AddListener(noEvent);
+			noButton.onClick.AddListener(destroyMsgBox);
+
+			return true;
+		}
+
+		public void notice(string msg) {
+			if (msgBox) this.close();
+
+			setupMsgBox(noticeMsgBox, msg);
+		}
+
+		public void close() {
+			if (!msgBox) return;
+
+			Destroy(msgBox);
+			msgBox = null;
 		}
 	}
 }

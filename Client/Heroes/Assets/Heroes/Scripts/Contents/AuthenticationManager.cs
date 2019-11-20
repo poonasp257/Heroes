@@ -15,8 +15,8 @@ namespace Heroes {
 		private void Start() {
 			initialize();
 
-			networkManager.RegisterNotification(PacketType.AuthLoginResponse, ResponseLogin);
-			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, ResponseRegister);
+			networkManager.RegisterNotification(PacketType.AuthLoginResponse, AuthLoginResponse);
+			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, AuthRegisterResponse);
 		}
 		
 		private void Update() {
@@ -25,7 +25,7 @@ namespace Heroes {
  		}
 
 		private void initialize() {
-			msgBox = GetComponent<MessageBox>();
+			msgBox = GameObject.Find("MessageHandler").GetComponent<MessageBox>();
 			networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 
 			GameObject inputField = GameObject.Find("UserIdField");
@@ -35,9 +35,13 @@ namespace Heroes {
 			inputField = GameObject.Find("PasswordField");
 			if (!inputField) return;
 			passwordField = inputField.GetComponent<InputField>();
+
+			userIdField.Select();
 		}
 		
 		private void processInput() {
+			if (msgBox.isExist()) return;
+
 			if(Input.GetKeyDown(KeyCode.Return)
 				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
 				RequestLogin();
@@ -53,46 +57,62 @@ namespace Heroes {
 			password = passwordField.text;
 		}	
 
+		private void clearInputField() {
+			userIdField.text = "";
+			passwordField.text = "";
+		}
+
 		private void changeFocus() {
 			if(userIdField.isFocused) {
 				passwordField.Select();
-				passwordField.ActivateInputField();
+//				passwordField.ActivateInputField();
 			}
 			else {
 				userIdField.Select();
-				userIdField.ActivateInputField();	
+	//			userIdField.ActivateInputField();	
 			}
 		}
 
 		private bool checkInputField() {
 			if(string.IsNullOrEmpty(userId) 
 				|| string.IsNullOrEmpty(password)) {
-					msgBox.Show("잘못된 입력입니다.", MessageType.Alert);
-					return false;
-				}
+				return false;
+			}
 
 			return true;
 		} 
 
 		public void RequestLogin() {
-			if (!checkInputField()) return;
+			if (!checkInputField()) {
+				msgBox.alert("잘못된 입력입니다.");
+				return;
+			}
 
 			AuthLoginRequestPacket packet = new AuthLoginRequestPacket();
 			packet.id = userId;
 			packet.password = password;
+
 			networkManager.send(packet);
+			clearInputField();
+
+			msgBox.notice("서버 요청을 기다리고 있습니다.");
 		}
 
 		public void RequestRegister() {		
-			if (!checkInputField()) return;
+			if (!checkInputField()) {
+				msgBox.alert("잘못된 입력입니다.");
+				return;
+			}
 				
 			AuthRegisterRequestPacket packet = new AuthRegisterRequestPacket();
 			packet.id = userId;
 			packet.password = password;
+
 			networkManager.send(packet);
+			clearInputField();
 		}
 
-		public void ResponseLogin(PacketType type, Packet rowPacket) {
+		public void AuthLoginResponse(PacketType type, Packet rowPacket) {
 			AuthLoginResponsePacket packet = rowPacket as AuthLoginResponsePacket;
 			if(packet == null) {
 				Debug.Log("invalid packet");
@@ -100,10 +120,10 @@ namespace Heroes {
 			}
 
 			if(!packet.success) {
-				Debug.Log("Login Failed");
+				msgBox.alert("로그인 정보가 일치하지 않습니다.");
 				return;
 			}
-
+			
 			GameObject obj = new GameObject();
 			obj.AddComponent<LobbyManager>();
 			DontDestroyOnLoad(obj);
@@ -111,7 +131,7 @@ namespace Heroes {
 			SceneManager.LoadScene("Chanel");
 		}
 
-		public void ResponseRegister(PacketType type, Packet rowPacket) {
+		public void AuthRegisterResponse(PacketType type, Packet rowPacket) {
 			AuthRegisterResponsePacket packet = rowPacket as AuthRegisterResponsePacket;
 			if(packet == null) {
 				Debug.Log("invalid packet");
@@ -122,6 +142,8 @@ namespace Heroes {
 				Debug.Log("Register Failed");
 				return;
 			}
+
+			msgBox.close();
 
 			//SceneManager.LoadScene("Chanel");
 		}

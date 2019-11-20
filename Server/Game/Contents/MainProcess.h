@@ -10,7 +10,12 @@ public:
 	MainProcess();
     ~MainProcess();
 
-	static void Login(Session *session, Packet *rowPacket);
+	static void AuthLoginRequest(Session *session, Packet *rowPacket);
+	static void AuthRegisterRequest(Session *session, Packet *rowPacket);
+	static void ChanelStatusRequest(Session *session, Packet *rowPacket);
+	static void ConnectChanelRequest(Session *session, Packet *rowPacket);
+	static void DisconnectChanelRequest(Session *session, Packet *rowPacket);
+	static void AccountInfoRequest(Session *session, Packet *rowPacket);
 };
 
 #endif

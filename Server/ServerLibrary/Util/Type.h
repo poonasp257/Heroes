@@ -26,8 +26,8 @@ using threadId = std::thread::id;
 
 // struct in game...
 struct ChanelStatus {
-	Int32 id; // or name
 	Int32 traffic;
+	std::string id;
 };
 
 #endif

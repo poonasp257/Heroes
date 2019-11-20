@@ -19,8 +19,8 @@ namespace Heroes {
 	}
 
 	public struct ChanelStatus {
-		public Int32 id;
 		public Int32 traffic;
+		public string id;
 	}
 
 	public struct CharacterStatus {

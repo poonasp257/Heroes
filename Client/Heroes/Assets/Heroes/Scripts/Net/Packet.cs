@@ -86,7 +86,7 @@ namespace Heroes {
 	}
 
 	public class ChanelStatusResponsePacket : Packet {
-		List<ChanelStatus> chanelList = new List<ChanelStatus>();
+		public List<ChanelStatus> chanelList = new List<ChanelStatus>();
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());

@@ -73,7 +73,7 @@ public:
 
 class AuthRegisterResponsePacket : public Packet {
 public:
-    PacketType type() const { return PacketType::AuthLoginResponse; }
+    PacketType type() const { return PacketType::AuthRegisterResponse; }
 };
 
 class ChanelStatusRequestPacket : public Packet {

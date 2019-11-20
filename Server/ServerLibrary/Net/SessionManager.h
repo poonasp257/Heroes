@@ -2,7 +2,7 @@
 #define SESSIONMANAGER_H
 
 class SessionManager : public Singleton<SessionManager> {
-public:
+private:
 	const size_t 		MaxConnection;
 	std::list<Session*> sessionList;
 
@@ -13,5 +13,7 @@ public:
 	bool addSession(Session *session);
 	bool closeSession(Session *session);
 	bool forceCloseSession(Session *session);
+
+	size_t getConnectionCount() const { return sessionList.size(); }
 };
 #endif

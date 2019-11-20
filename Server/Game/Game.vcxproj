@@ -86,8 +86,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\JunYoung\Desktop\Github\Heroes\Server\ServerLibrary;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\JunYoung\Desktop\Github\Heroes\Server\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ServerLibrary;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
