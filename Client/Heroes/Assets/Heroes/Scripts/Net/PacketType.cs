@@ -2,20 +2,22 @@
 
 namespace Heroes {
 	public enum PacketType : UInt32 {
+		ExitRequest,
+		ExitResponse,
 		AuthLoginRequest,
 		AuthLoginResponse,
 		AuthRegisterRequest,
 		AuthRegisterResponse,
 		ChanelStatusRequest,
 		ChanelStatusResponse,
-		ConnectChanelRequest,
-		ConnectChanelResponse,
-		DisconnectChanelRequest,
-		DisconnectChanelResponse,
 		AccountInfoRequest,
 		AccountInfoResponse,
 		CreateCharacterRequest,
 		CreateCharacterResponse,
+		ConnectChanelRequest,
+		ConnectChanelResponse,
+		DisconnectChanelRequest,
+		DisconnectChanelResponse,
 		ChattingRequest,
 		ChattingResponse,
 		CharacterInfoRequest,
@@ -49,8 +51,6 @@ namespace Heroes {
 		SellItemAtMarketRequest,
 		SellItemAtMarketResponse,
 		LogoutRequest,
-		LogoutResponse,
-		ExitRequest,
-		ExitResponse
+		LogoutResponse
 	}
 }

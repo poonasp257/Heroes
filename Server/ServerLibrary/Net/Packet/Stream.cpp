@@ -51,6 +51,13 @@ void Stream::operator<<(const ChanelStatus& value) {
 	*this << value.traffic;
 }
 
+void Stream::operator<<(const CharacterInfo& value) {
+	*this << value.characterClass;
+	*this << value.level;
+	*this << value.characterName;
+	*this << value.location;
+}
+
 void Stream::operator>>(std::string *retVal) {
 	int32_t size;
 	*this >> &size;
@@ -69,7 +76,14 @@ void Stream::operator>>(std::string *retVal) {
 	delete buf;
 }
 
-void Stream::operator>>(ChanelStatus *value) {
-	*this >> &value->id;
-	*this >> &value->traffic;
+void Stream::operator>>(ChanelStatus *retVal) {
+	*this >> &retVal->id;
+	*this >> &retVal->traffic;
+}
+
+void Stream::operator>>(CharacterInfo *retVal) {
+	*this >> &retVal->characterClass;
+	*this >> &retVal->level;
+	*this >> &retVal->characterName;
+	*this >> &retVal->location;
 }

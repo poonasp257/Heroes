@@ -62,6 +62,7 @@ public:
 
     void operator<<(const std::string& value);
 	void operator<<(const ChanelStatus& value);
+	void operator<<(const CharacterInfo& value);
 
 	///////////////////////////////////Read///////////////////////////////////////	
     template<class T>
@@ -82,6 +83,7 @@ public:
 	}
 
     void operator>>(std::string *retVal);
-	void operator>>(ChanelStatus *value);
+	void operator>>(ChanelStatus *retVal);
+	void operator>>(CharacterInfo *retVal);
 };
 #endif

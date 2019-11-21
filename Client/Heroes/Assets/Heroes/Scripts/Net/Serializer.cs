@@ -50,29 +50,31 @@ namespace Heroes {
 			stream.Write(Encoding.UTF8.GetBytes(str), 0, str.Length);
 		}
 
-		public static void serialize(MemoryStream stream, ChanelStatus value) {
+		public static void serialize(MemoryStream stream, ChanelInfo value) {
 			serialize(stream, value.id);
 			serialize(stream, value.traffic);
 		}
 
-		public static void serialize(MemoryStream stream, List<ChanelStatus> list) {
+		public static void serialize(MemoryStream stream, List<ChanelInfo> list) {
 			serialize(stream, list.Count);
-			foreach(ChanelStatus value in list) {
+			foreach(ChanelInfo value in list) {
 				serialize(stream, value);
 			}
 		}
 
-		//public static void serialize(MemoryStream stream, CharacterStatus value) {
-		//	serialize(stream, value.id);
-		//	serialize(stream, value.traffic);
-		//}
+		public static void serialize(MemoryStream stream, CharacterInfo value) {
+			serialize(stream, value.characterClass);
+			serialize(stream, value.level);
+			serialize(stream, value.characterName);
+			serialize(stream, value.location);
+		}
 
-		//public static void serialize(MemoryStream stream, List<CharacterStatus> list) {
-		//	serialize(stream, list.Count);
-		//	foreach(CharacterStatus value in list) {
-		//		serialize(stream, value);
-		//	}
-		//}
+		public static void serialize(MemoryStream stream, List<CharacterInfo> list) {
+			serialize(stream, list.Count);
+			foreach(CharacterInfo value in list) {
+				serialize(stream, value);
+			}
+		}
 		
 		public static void deserialize(byte[] data, ref Int32 offset, out bool value) {
 			value = BitConverter.ToBoolean(data, offset); 
@@ -126,16 +128,34 @@ namespace Heroes {
 			offset += strLen;
 		}
 
-		public static void deserialize(byte[] data, ref Int32 offset, out ChanelStatus value) {
+		public static void deserialize(byte[] data, ref Int32 offset, out ChanelInfo value) {
 			deserialize(data, ref offset, out value.id);
 			deserialize(data, ref offset, out value.traffic);
 		}
 
-		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChanelStatus> list) {
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChanelInfo> list) {
 			Int32 size;
 			deserialize(data, ref offset, out size);
 
-			ChanelStatus value;
+			ChanelInfo value;
+			for(int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out value);
+				list.Add(value);
+			}
+		} 
+
+		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {
+			deserialize(data, ref offset, out value.characterClass);
+			deserialize(data, ref offset, out value.level);
+			deserialize(data, ref offset, out value.characterName);
+			deserialize(data, ref offset, out value.location);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<CharacterInfo> list) {
+			Int32 size;
+			deserialize(data, ref offset, out size);
+
+			CharacterInfo value;
 			for(int i = 0; i < size; ++i) {
 				deserialize(data, ref offset, out value);
 				list.Add(value);

@@ -1,42 +1,111 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class LobbyManager : MonoBehaviour {
 		private NetworkManager networkManager;
 		private MessageBox msgBox;
 
-		//private UInt64 accountId;
-		//private string accountId;
+		private GameObject chanelInfoPrefab;
+		private GameObject characterInfoPrefab;
 
-		public string AccountId { get; set; }
+		//private UInt64 accountId;
+		public UInt64 AccountId { get; set; }
+
+		//private string selectedChanel;
+		public string SelectedChanel { get; set; }
 		
 		private void Start() {
-			networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
-			msgBox = GameObject.Find("MessageHandler").GetComponent<MessageBox>();
+			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
+			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
 
+			chanelInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Chanel/Chanel Info");
+			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Character Info");
+
+			this.chanelStatusRequest();
+
+			networkManager.RegisterNotification(PacketType.ChanelStatusResponse, chanelStatusResponse);
+			networkManager.RegisterNotification(PacketType.AccountInfoResponse, accountInfoResponse);
+		}
+
+		private void chanelStatusRequest() {
 			ChanelStatusRequestPacket packet = new ChanelStatusRequestPacket();
 			networkManager.send(packet);
 
-			networkManager.RegisterNotification(PacketType.ChanelStatusResponse, ChanelStatusResponse);
-		}
-		
-		private void Update() {
-			
+			msgBox.notice("채널 정보를 불러오고 있습니다.");
 		}
 
-		public void ChanelStatusResponse(PacketType type, Packet rowPacket) {
+		public void accountInfoRequest() {
+			AccountInfoRequestPacket packet = new AccountInfoRequestPacket();
+			packet.accountId = this.AccountId;
+					   
+			networkManager.send(packet);
+			msgBox.notice("캐릭터 정보를 불러오고 있습니다.");
+		}
+
+		public void chanelStatusResponse(PacketType type, Packet rowPacket) {
+			msgBox.close();
+
 			ChanelStatusResponsePacket packet = rowPacket as ChanelStatusResponsePacket;	
 			if(packet == null) {
 				Debug.Log("invalid packet");
 				return;
 			}
 
+			GameObject contents = GameObject.Find("Contents");			
+			foreach(ChanelInfo info in packet.chanelList) {
+				GameObject chanel = Instantiate(chanelInfoPrefab, contents.transform);
+				UIChanelInfo chanelInfo = chanel.GetComponent<UIChanelInfo>();
+				chanelInfo.ID = info.id;
+				chanelInfo.Traffic = info.traffic;
+			}
+		}
+
+		public void accountInfoResponse(PacketType type, Packet rowPacket) {
 			msgBox.close();
+
+			AccountInfoResponsePacket packet = rowPacket as AccountInfoResponsePacket;
+			if(packet == null) {
+				Debug.Log("invalid packet");
+				return;
+			}
+
+			StartCoroutine(LoadSelectSceneProcess(packet.familyName, packet.characterList));
+		}
+
+		public IEnumerator LoadSelectSceneProcess(string familyName, List<CharacterInfo> characterList) {
+			yield return StartCoroutine(LoadSelectScene(familyName, characterList)); yield return null;
 			
-			foreach(ChanelStatus status in packet.chanelList) {
-				Debug.Log(status.traffic);
-				Debug.Log(status.id);
+			UISelectedCharacter selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
+			selectedCharacterUI.FamilyName = familyName;
+
+			GameObject contents = GameObject.Find("Contents");			
+			foreach(CharacterInfo info in characterList) {
+				GameObject character = Instantiate(characterInfoPrefab, contents.transform);
+				UICharacterInfo characterInfo = character.GetComponent<UICharacterInfo>();
+				//characterInfo.Class = info.characterClass;
+				characterInfo.Level = info.level;
+				characterInfo.CharacterName = info.characterName;
+				characterInfo.Location = info.location;
+
+				Debug.Log(info.characterName);
+			}
+		}
+
+		public IEnumerator LoadSelectScene(string familyName, List<CharacterInfo> characterList) {
+			AsyncOperation op = SceneManager.LoadSceneAsync("Select");
+			op.allowSceneActivation = false;
+
+			while (!op.isDone){
+				yield return null;
+
+				if (op.progress >= 0.9f) {
+					op.allowSceneActivation = true;
+					yield break;
+				}
 			}
 		}
 	}

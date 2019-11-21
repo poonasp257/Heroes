@@ -118,13 +118,13 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 
 		switch (ioBuffer->getType()) {
 		case IOType::Write:
-			SystemLogger::Log(Logger::Info, "send bytes %d...", transferSize);
+			SystemLogger::Log(Logger::Info, "*send %d bytes...", transferSize);
 			session->onSend((size_t)transferSize);
 			continue;
 
 		case IOType::Read: 
 			{
-				SystemLogger::Log(Logger::Info, "receive bytes %d...", transferSize);
+				SystemLogger::Log(Logger::Info, "*receive %d bytes...", transferSize);
 				Package *package = session->onRecv((size_t)transferSize);
 				if (package != nullptr)  server->putPackage(package);
 			}

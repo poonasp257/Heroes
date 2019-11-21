@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Heroes {
-	public enum CharacterClass {
+	public enum CharacterClass : UInt16 {
 		Warrior,
 		Archer,
 		Assassin,
@@ -18,12 +18,15 @@ namespace Heroes {
 		Notice
 	}
 
-	public struct ChanelStatus {
+	public struct ChanelInfo {
 		public Int32 traffic;
 		public string id;
 	}
 
-	public struct CharacterStatus {
-		
+	public struct CharacterInfo {
+		public UInt16 characterClass;
+		public UInt32 level;
+		public string characterName;
+		public string location;
 	}
 }

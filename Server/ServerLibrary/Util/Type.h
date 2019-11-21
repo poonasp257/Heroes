@@ -24,10 +24,25 @@ using Float = float;
 
 using threadId = std::thread::id;
 
+// enum type
+enum class CharacterClass : UInt16 {
+	Warrior, 
+	Archer, 
+	Assassin, 
+	Mage
+};
+
 // struct in game...
 struct ChanelStatus {
 	Int32 traffic;
-	std::string id;
+	std::string id; // wstring
+};
+
+struct CharacterInfo {
+	UInt16 characterClass;
+	UInt32 level;
+	std::string characterName; // wstring
+	std::string location; // zone name
 };
 
 #endif

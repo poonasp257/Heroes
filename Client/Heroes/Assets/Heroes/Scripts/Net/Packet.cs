@@ -15,6 +15,14 @@ namespace Heroes {
 		public abstract PacketType type();
 	}
 
+	public class ExitRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ExitRequest; }
+	}
+
+	public class ExitResponsePacket : Packet {
+		public override PacketType type() { return PacketType.ExitResponse; }
+	}
+
 	public class AuthLoginRequestPacket : Packet {
 		public string id;
 		public string password;
@@ -34,15 +42,18 @@ namespace Heroes {
 	}
 
 	public class AuthLoginResponsePacket : Packet {
-		public bool success;
+		public Int16 errorCode;
+		public UInt64 accountId;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, success);
+			Serializer.serialize(stream, errorCode);
+			Serializer.serialize(stream, accountId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out success);
+			Serializer.deserialize(data, ref offset, out errorCode);
+			Serializer.deserialize(data, ref offset, out accountId);
 		}
 
 		public override PacketType type() { return PacketType.AuthLoginResponse; }
@@ -67,15 +78,18 @@ namespace Heroes {
 	}
 
 	public class AuthRegisterResponsePacket : Packet {
-		public bool success;
+		public Int16 errorCode;
+		public UInt64 accountId;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, success);
+			Serializer.serialize(stream, errorCode);
+			Serializer.serialize(stream, accountId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out success);
+			Serializer.deserialize(data, ref offset, out errorCode);
+			Serializer.deserialize(data, ref offset, out accountId);
 		}
 
 		public override PacketType type() { return PacketType.AuthRegisterResponse; }
@@ -86,7 +100,7 @@ namespace Heroes {
 	}
 
 	public class ChanelStatusResponsePacket : Packet {
-		public List<ChanelStatus> chanelList = new List<ChanelStatus>();
+		public List<ChanelInfo> chanelList = new List<ChanelInfo>();
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
@@ -131,20 +145,34 @@ namespace Heroes {
 	}
 
 	public class AccountInfoRequestPacket : Packet {
+		public UInt64 accountId;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out accountId);
+		}
+
 		public override PacketType type() { return PacketType.AccountInfoRequest; }
 	}
 
 	public class AccountInfoResponsePacket : Packet {
-		List<CharacterStatus> characters;
+		public string familyName;
+		public List<CharacterInfo> characterList = new List<CharacterInfo>();
 		
-		//public override void serialize() {
-		//	Serializer.serialize(stream, type());
-		//	Serializer.serialize(stream, characters);
-		//}
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, familyName);
+			Serializer.serialize(stream, characterList);
+		}
 
-		//public override void deserialize(Byte[] data, Int32 offset) {
-		//	Serializer.deserialize(data, ref offset, ref characters);
-		//}
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out familyName);
+			Serializer.deserialize(data, ref offset, ref characterList);
+		}
 
 		public override PacketType type() { return PacketType.AccountInfoResponse; }
 	}
@@ -177,13 +205,5 @@ namespace Heroes {
 		public Vector3 rotation;
 		
 		public override PacketType type() { return PacketType.CharacterMoveResponse; }
-	}
-
-	public class ExitRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ExitRequest; }
-	}
-
-	public class ExitResponsePacket : Packet {
-		public override PacketType type() { return PacketType.ExitResponse; }
 	}
 }

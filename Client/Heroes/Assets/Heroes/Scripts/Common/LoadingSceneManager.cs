@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Heroes {
-	public class LoadingSceneManager : MonoBehaviour {
+	public class SceneLoadManager : MonoBehaviour {
 		private static string nextScene;
 
 		private GameObject objects;
@@ -12,17 +12,23 @@ namespace Heroes {
 		private void Start() {
 			objects = GameObject.Find("Objects");
 
-			StartCoroutine(LoadingScene());
+			StartCoroutine(AsyncLoading());
 		}
+		//public IEnumerator LoadScene(string sceneName) {
+		//	nextScene = sceneName;
+		//	//yield return StartCoroutine(Loading());
+		//}
 
-		public static void LoadScene(string sceneName) {
+		public static void AsyncLoadScene(string sceneName) {
 			nextScene = sceneName;
 			SceneManager.LoadScene("Loading");
 		}
 
-		public IEnumerator LoadingScene() {
-			yield return null;
+		//public IEnumerator Loading() {
+			
+		//}
 
+		public IEnumerator AsyncLoading() {
 			AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
 			op.allowSceneActivation = false;
 

@@ -2,20 +2,22 @@
 
 Packet* PacketFactory::CreatePacket(PacketType type) {
     switch(type) {
+        case PacketType::ExitRequest: return new ExitRequestPacket;
+        case PacketType::ExitResponse: return new ExitResponsePacket;
 		case PacketType::AuthLoginRequest: return new AuthLoginRequestPacket();
 		case PacketType::AuthLoginResponse: return new AuthLoginResponsePacket();
 		case PacketType::AuthRegisterRequest: return new AuthRegisterRequestPacket();
 		case PacketType::AuthRegisterResponse: return new AuthRegisterResponsePacket();
 		case PacketType::ChanelStatusRequest: return new ChanelStatusRequestPacket();
 		case PacketType::ChanelStatusResponse: return new ChanelStatusResponsePacket();
-		case PacketType::ConnectChanelRequest: return new ConnectChanelRequestPacket();
-		case PacketType::ConnectChanelResponse: return new ConnectChanelResponsePacket();
-		case PacketType::DisconnectChanelRequest: return new DisconnectChanelRequestPacket();
-		case PacketType::DisconnectChanelResponse: return new DisconnectChanelResponsePacket();
 		case PacketType::AccountInfoRequest: return new AccountInfoRequestPacket();
 		case PacketType::AccountInfoResponse: return new AccountInfoResponsePacket();
 		case PacketType::CreateCharacterRequest: return new CreateCharacterRequestPacket();
 		case PacketType::CreateCharacterResponse: return new CreateCharacterResponsePacket();
+		case PacketType::ConnectChanelRequest: return new ConnectChanelRequestPacket();
+		case PacketType::ConnectChanelResponse: return new ConnectChanelResponsePacket();
+		case PacketType::DisconnectChanelRequest: return new DisconnectChanelRequestPacket();
+		case PacketType::DisconnectChanelResponse: return new DisconnectChanelResponsePacket();
 		case PacketType::CharacterMoveRequest: return new CharacterMoveRequestPacket();
 		case PacketType::CharacterMoveResponse: return new CharacterMoveResponsePacket();
         // case PacketType::CharacterMoveRequest: return new CharacterMoveRequest;
@@ -48,8 +50,6 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
         // case PacketType::SellItemAtMarketResponse: return new SellItemAtMarketResponse;
         // case PacketType::LogoutRequest: return new LogoutRequest;
         // case PacketType::LogoutResponse: return new LogoutResponse;
-        case PacketType::ExitRequest: return new ExitRequestPacket;
-        case PacketType::ExitResponse: return new ExitResponsePacket;
     }
 
     return nullptr;

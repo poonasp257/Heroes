@@ -139,14 +139,14 @@ namespace Heroes {
 			stream.Write(buffer, 0, buffer.Length);
 			stream.Flush();
 
-			Debug.Log("buffer length: " + buffer.Length);
+			Debug.Log("*send " + buffer.Length + " bytes");
 		}
 
 		// receive thread
 		public void recieve() {
-			while (isConnected()) {
-				Byte[] buffer = new Byte[client.ReceiveBufferSize];
+			Byte[] buffer = new Byte[client.ReceiveBufferSize];
 
+			while (isConnected()) {
 				int offset = 0;
 				int readLen = stream.Read(buffer, offset, buffer.Length);
 
@@ -154,6 +154,7 @@ namespace Heroes {
 				while (readLen < packetLen) {
 					readLen += stream.Read(buffer, offset, buffer.Length - readLen);
 				}
+				Debug.Log("*receive " + readLen + " bytes");
 
 				Byte[] packetData = new Byte[packetLen];
 				Buffer.BlockCopy(buffer, offset, packetData, 0, packetLen);

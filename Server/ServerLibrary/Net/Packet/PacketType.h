@@ -2,20 +2,22 @@
 #define PACKET_TYPE_H
 
 enum class PacketType : UInt32 {
+	ExitRequest,
+	ExitResponse,
 	AuthLoginRequest,
 	AuthLoginResponse,
 	AuthRegisterRequest,
 	AuthRegisterResponse,
 	ChanelStatusRequest,
 	ChanelStatusResponse,
-	ConnectChanelRequest,
-	ConnectChanelResponse,
-	DisconnectChanelRequest,
-	DisconnectChanelResponse,
 	AccountInfoRequest,
 	AccountInfoResponse,
 	CreateCharacterRequest,
 	CreateCharacterResponse,
+	ConnectChanelRequest,
+	ConnectChanelResponse,
+	DisconnectChanelRequest,
+	DisconnectChanelResponse,
 	ChattingRequest,
 	ChattingResponse,
 	CharacterInfoRequest,
@@ -49,9 +51,7 @@ enum class PacketType : UInt32 {
 	SellItemAtMarketRequest,
 	SellItemAtMarketResponse,
 	LogoutRequest,
-	LogoutResponse,
-	ExitRequest,
-	ExitResponse
+	LogoutResponse
 };
 
 #endif

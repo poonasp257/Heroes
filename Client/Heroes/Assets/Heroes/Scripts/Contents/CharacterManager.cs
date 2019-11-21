@@ -7,7 +7,7 @@ namespace Heroes {
 		private NetworkManager networkManager;
 		
 		private void Start() {
-			networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
 
 			//networkManager.RegisterNotification(PacketType.ConnectChanelResponse);
 			//networkManager.RegisterNotification(PacketType.CharacterMoveResponse);
