@@ -16,6 +16,9 @@ namespace Heroes {
 
 		private readonly object lockObject = new object();
 
+		private readonly string IP = "127.0.0.1";
+		private readonly UInt16 Port = 9000;
+
 		public delegate void Notifier(PacketType type, Packet rowPacket);
 		private Dictionary<PacketType, Notifier> notifierMap;
 
@@ -25,6 +28,8 @@ namespace Heroes {
 		private NetworkStream stream;
 		private TcpClient client;
 		private NetState state;
+
+		private MessageBox msgBox;
 
 		private void Awake() {
 			notifierMap = new Dictionary<PacketType, Notifier>();
@@ -40,11 +45,16 @@ namespace Heroes {
 		}
 
 		private void Start() {
-			this.connect("127.0.0.1", 9000); // Connect Relay Server
+			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
 		}
 
 		private void Update() {
-			if (!isConnected()) return;
+			if (!isConnected()) {
+				this.connect(IP, Port);
+			}
+			else {
+				if (msgBox.IsExist) msgBox.close();
+			}
 	
 			PacketProcess();
 		}
@@ -85,7 +95,7 @@ namespace Heroes {
 			return state == NetState.Connected;
 		}
 
-		public bool connect(string ip, uint port) {
+		public bool connect(string ip, UInt16 port) {
 			if (string.IsNullOrWhiteSpace(ip)) {
 				Debug.Log("IP address is null or empty");
 				return false;
@@ -99,6 +109,7 @@ namespace Heroes {
 			}
 			catch (Exception err) {
 				Debug.Log(err);
+				msgBox.notice("재접속을 시도합니다.");
 				return false;
 			}
 
@@ -148,7 +159,15 @@ namespace Heroes {
 
 			while (isConnected()) {
 				int offset = 0;
-				int readLen = stream.Read(buffer, offset, buffer.Length);
+				int readLen = 0;
+
+				try { 
+					readLen = stream.Read(buffer, offset, buffer.Length);
+				}
+				catch(Exception err) {
+					Debug.Log(err);
+					break;
+				}
 
 				Int32 packetLen = PacketUtil.GetHeader(buffer, ref offset); 				
 				while (readLen < packetLen) {

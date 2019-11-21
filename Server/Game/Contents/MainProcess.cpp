@@ -82,12 +82,13 @@ void MainProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 
 	AccountInfoResponsePacket responsePacket;
 	responsePacket.familyName = "티끌모아태산";
+	responsePacket.creatableCharacters = 10;
 
 	CharacterInfo characterInfo;
 	characterInfo.characterName = "지피지기백전백승";
 	characterInfo.location = "벨리아 마을";
 
-	for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		characterInfo.characterClass = (UInt16)CharacterClass::Warrior;
 		characterInfo.level = rand() % 60;
 		responsePacket.characterList.push_back(characterInfo);

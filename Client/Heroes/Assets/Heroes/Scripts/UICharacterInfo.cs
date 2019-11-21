@@ -13,9 +13,9 @@ namespace Heroes {
 		private Text characterName;
 		private Text location;
 
-		//public UINT16 Class {
-		//	get { } set { }
-		//}
+		public UInt16 Class {
+			get; set;
+		}
 	
 		public UInt32 Level {				
 			get {
@@ -43,7 +43,7 @@ namespace Heroes {
 				location.text = value;
 			}
 		}
-		
+
 		private void Awake() {
 			classIcon = transform.Find("Class Icon").GetComponent<Image>();
 			level = transform.Find("Level").GetComponent<Text>();
@@ -53,11 +53,14 @@ namespace Heroes {
 
 		private void Start() {
 			selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
+
 			scrollRect = GetComponentInParent<ScrollRect>();
 		}
 
 		public void OnClick() {
 			selectedCharacterUI.CharacterName = characterName.text;
+			CharacterClass myclass = (CharacterClass)Class;
+			Debug.Log(myclass.ToString());
 		}		
 
 		public void OnScroll(PointerEventData eventData) {

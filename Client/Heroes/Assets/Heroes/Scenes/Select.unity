@@ -1557,7 +1557,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\uB2C8\uC0DD\uAC01\uBCF4\uB2E8"
+  m_Text: "\uCE90\uB9AD\uD130\uBA85"
 --- !u!222 &1324747203
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1769,8 +1769,9 @@ GameObject:
   - component: {fileID: 1504410899}
   - component: {fileID: 1504410901}
   - component: {fileID: 1504410900}
+  - component: {fileID: 1504410902}
   m_Layer: 5
-  m_Name: Count
+  m_Name: Character Counter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1826,7 +1827,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: (13/13)
+  m_Text: (0/?)
 --- !u!222 &1504410901
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1835,6 +1836,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1504410898}
   m_CullTransparentMesh: 0
+--- !u!114 &1504410902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504410898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3701cfe8758a8d4abb95b3c9102d59b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1518244123
 GameObject:
   m_ObjectHideFlags: 0
@@ -1903,7 +1916,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\uD2F0\uB04C\uBAA8\uC544\uBA3C\uC9C0"
+  m_Text: "\uAC00\uBB38\uBA85"
 --- !u!222 &1518244126
 CanvasRenderer:
   m_ObjectHideFlags: 0

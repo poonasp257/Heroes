@@ -25,7 +25,7 @@ namespace Heroes {
 		}
 		
 		private void Update() {
-			if (msgBox.isExist()) return;
+			if (msgBox.IsExist) return;
 
 			activateInteractableUI();
 			updateInputField();

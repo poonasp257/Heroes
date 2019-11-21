@@ -24,7 +24,7 @@ namespace Heroes {
 			}
 		}
 
-		private void Start() {
+		private void Awake() {
 			familyName = transform.Find("Family Name").GetComponent<Text>();
 			characterName = transform.Find("Character Name").GetComponent<Text>();
 		}

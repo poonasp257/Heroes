@@ -7,8 +7,10 @@ namespace Heroes {
 		[SerializeField] private GameObject alertMsgBox;
 		[SerializeField] private GameObject confirmMsgBox;
 		[SerializeField] private GameObject noticeMsgBox;
-		
+
 		private GameObject msgBox;
+
+		public bool IsExist { get { return msgBox != null; } }
 
 		private void Start() {
 			DontDestroyOnLoad(this.gameObject);
@@ -27,14 +29,12 @@ namespace Heroes {
 		}
 
 		private void destroyMsgBox() {
+			if (!msgBox) return;
+
 			Destroy(msgBox);
 			msgBox = null;
 		}
-
-		public bool isExist() {
-			return msgBox != null; 
-		}
-
+		
 		public void alert(string msg) {
 			if (msgBox) this.close();
 
@@ -43,6 +43,17 @@ namespace Heroes {
 			GameObject button = msgBox.transform.Find("Content/OK").gameObject;
 			Button okButton = button.GetComponent<Button>();
 			okButton.onClick.AddListener(destroyMsgBox);
+		}
+
+		public void alert(string msg, UnityAction okEvent) {
+			if (msgBox) this.close();
+
+			setupMsgBox(alertMsgBox, msg);
+
+			GameObject button = msgBox.transform.Find("Content/OK").gameObject;
+			Button okButton = button.GetComponent<Button>();
+			okButton.onClick.AddListener(destroyMsgBox);
+			okButton.onClick.AddListener(okEvent);
 		}
 
 		public bool confirm(string msg, UnityAction yesEvent, UnityAction noEvent) {

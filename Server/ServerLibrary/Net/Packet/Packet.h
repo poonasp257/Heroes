@@ -145,6 +145,7 @@ public:
 
 class AccountInfoResponsePacket : public Packet {
 public:
+	UInt16 creatableCharacters;
 	std::string familyName;
 	std::vector<CharacterInfo> characterList;
 
@@ -153,11 +154,13 @@ public:
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
+		stream << creatableCharacters;
 		stream << familyName;
 		stream << characterList;
 	}
 
 	void deSerialize(Stream& stream) {
+		stream >> &creatableCharacters;
 		stream >> &familyName;
 		stream >> &characterList;
 	}

@@ -17,14 +17,16 @@ namespace Heroes {
 
 		//private string selectedChanel;
 		public string SelectedChanel { get; set; }
-		
+
+		private void Awake() {
+			chanelInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Chanel/Chanel Info");
+			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Character Info");
+		}
+
 		private void Start() {
 			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
 			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
-
-			chanelInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Chanel/Chanel Info");
-			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Character Info");
-
+			
 			this.chanelStatusRequest();
 
 			networkManager.RegisterNotification(PacketType.ChanelStatusResponse, chanelStatusResponse);
@@ -73,11 +75,15 @@ namespace Heroes {
 				return;
 			}
 
-			StartCoroutine(LoadSelectSceneProcess(packet.familyName, packet.characterList));
+			StartCoroutine(LoadSelectSceneProcess(packet.creatableCharacters, packet.familyName, packet.characterList));
 		}
 
-		public IEnumerator LoadSelectSceneProcess(string familyName, List<CharacterInfo> characterList) {
-			yield return StartCoroutine(LoadSelectScene(familyName, characterList)); yield return null;
+		public IEnumerator LoadSelectSceneProcess(Int32 creatableCharacters, string familyName, List<CharacterInfo> characterList) {
+			yield return StartCoroutine(LoadSelectScene()); yield return null;
+
+			UICharacterCounter characterCounterUI = GameObject.Find("Character Counter").GetComponent<UICharacterCounter>();
+			characterCounterUI.CreatedCount = characterList.Count;
+			characterCounterUI.CreatableCount = creatableCharacters;
 			
 			UISelectedCharacter selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
 			selectedCharacterUI.FamilyName = familyName;
@@ -86,16 +92,14 @@ namespace Heroes {
 			foreach(CharacterInfo info in characterList) {
 				GameObject character = Instantiate(characterInfoPrefab, contents.transform);
 				UICharacterInfo characterInfo = character.GetComponent<UICharacterInfo>();
-				//characterInfo.Class = info.characterClass;
+				characterInfo.Class = info.characterClass;
 				characterInfo.Level = info.level;
 				characterInfo.CharacterName = info.characterName;
 				characterInfo.Location = info.location;
-
-				Debug.Log(info.characterName);
 			}
 		}
 
-		public IEnumerator LoadSelectScene(string familyName, List<CharacterInfo> characterList) {
+		public IEnumerator LoadSelectScene() {
 			AsyncOperation op = SceneManager.LoadSceneAsync("Select");
 			op.allowSceneActivation = false;
 

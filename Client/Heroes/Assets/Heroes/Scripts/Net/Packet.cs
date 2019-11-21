@@ -160,16 +160,19 @@ namespace Heroes {
 	}
 
 	public class AccountInfoResponsePacket : Packet {
+		public UInt16 creatableCharacters;
 		public string familyName;
 		public List<CharacterInfo> characterList = new List<CharacterInfo>();
 		
 		public override void serialize() {
 			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, creatableCharacters);
 			Serializer.serialize(stream, familyName);
 			Serializer.serialize(stream, characterList);
 		}
 
-		public override void deserialize(Byte[] data, Int32 offset) {
+		public override void deserialize(Byte[] data, Int32 offset) { 
+			Serializer.deserialize(data, ref offset, out creatableCharacters);
 			Serializer.deserialize(data, ref offset, out familyName);
 			Serializer.deserialize(data, ref offset, ref characterList);
 		}
