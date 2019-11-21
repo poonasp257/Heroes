@@ -10,8 +10,11 @@ SessionManager::~SessionManager() {
 }
 
 bool SessionManager::addSession(Session *session) {
+	std::lock_guard<std::mutex> guard(lock);
+
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found != sessionList.end()) return false;
+	
     if(MaxConnection <= sessionList.size()) {
         SystemLogger::Log(Logger::Info, "No connections are available");
         return false;
@@ -22,6 +25,8 @@ bool SessionManager::addSession(Session *session) {
 }
 
 bool SessionManager::closeSession(Session *session) {
+	std::lock_guard<std::mutex> guard(lock);
+
     if(!session) return false;
 
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
@@ -38,6 +43,8 @@ bool SessionManager::closeSession(Session *session) {
 }
 
 bool SessionManager::forceCloseSession(Session *session) {
+	std::lock_guard<std::mutex> guard(lock);
+
     if(!session) return false;
 
     LINGER linger;

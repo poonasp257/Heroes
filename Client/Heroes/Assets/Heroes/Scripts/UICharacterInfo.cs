@@ -13,6 +13,10 @@ namespace Heroes {
 		private Text characterName;
 		private Text location;
 
+		public UInt64 ID {
+			get; set;
+		}
+
 		public UInt16 Class {
 			get; set;
 		}
@@ -59,9 +63,12 @@ namespace Heroes {
 
 		public void OnClick() {
 			selectedCharacterUI.CharacterName = characterName.text;
-			CharacterClass myclass = (CharacterClass)Class;
-			Debug.Log(myclass.ToString());
 		}		
+				
+		public void OnConnectButtonClick() {
+			LobbyManager lobbyManager = GameObject.Find("Lobby Manager").GetComponent<LobbyManager>();
+			lobbyManager.connectChanelRequest();
+		}
 
 		public void OnScroll(PointerEventData eventData) {
 			scrollRect.OnScroll(eventData);

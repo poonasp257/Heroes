@@ -1,11 +1,6 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-//class CharacterInfo {};
-//class CharacterStat {};
-//class CharcaterSkill {};
-//enum class CharacterClass {};
-
 class Packet {
 public:
 	virtual PacketType type() const = 0;
@@ -26,8 +21,8 @@ public:
 
 class AuthLoginRequestPacket : public Packet {
 public:
-	std::string id;
-	std::string password;
+	std::wstring id;
+	std::wstring password;
 
 public:
 	PacketType type() const { return PacketType::AuthLoginRequest; }
@@ -66,8 +61,8 @@ public:
 
 class AuthRegisterRequestPacket : public Packet {
 public:
-	std::string id;
-	std::string password;
+	std::wstring id;
+	std::wstring password;
 
 public:
 	PacketType type() const { return PacketType::AuthRegisterRequest; }
@@ -111,7 +106,7 @@ public:
 
 class ChanelStatusResponsePacket : public Packet {
 public:
-	std::vector<ChanelStatus> chanelList;
+	std::vector<ChanelInfo> chanelList;
 
 public:
 	PacketType type() const { return PacketType::ChanelStatusResponse; }
@@ -146,7 +141,7 @@ public:
 class AccountInfoResponsePacket : public Packet {
 public:
 	UInt16 creatableCharacters;
-	std::string familyName;
+	std::wstring familyName;
 	std::vector<CharacterInfo> characterList;
 
 public:
@@ -176,14 +171,51 @@ public:
 	PacketType type() const { return PacketType::CreateCharacterResponse; }
 };
 
+class DeleteCharacterRequestPacket : public Packet {
+public:
+	PacketType type() const { return PacketType::DeleteCharacterRequest; }
+};
+
+class DeleteCharacterResponsePacket : public Packet {
+public:
+	PacketType type() const { return PacketType::DeleteCharacterResponse; }
+};
+
 class ConnectChanelRequestPacket : public Packet {
 public:
+	Int32 characterId;
+	std::wstring chanelId; // chanel..oid?
+
+public:
 	PacketType type() const { return PacketType::ConnectChanelRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << characterId;
+		stream << chanelId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &characterId;
+		stream >> &chanelId;
+	}
 };
 
 class ConnectChanelResponsePacket : public Packet {
 public:
+	CharacterStatus status;
+
+public:
 	PacketType type() const { return PacketType::ConnectChanelResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << status;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &status;
+	}
 };
 
 class DisconnectChanelRequestPacket : public Packet {

@@ -11,6 +11,8 @@ namespace Heroes {
 
 		private GameObject chanelInfoPrefab;
 		private GameObject characterInfoPrefab;
+		private GameObject creatableItemPrefab;
+		private GameObject lockedItemPrefab;
 
 		//private UInt64 accountId;
 		public UInt64 AccountId { get; set; }
@@ -18,9 +20,14 @@ namespace Heroes {
 		//private string selectedChanel;
 		public string SelectedChanel { get; set; }
 
+		//private string selectedCharacter;
+		public string SelectedCharacter { get; set; }
+
 		private void Awake() {
 			chanelInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Chanel/Chanel Info");
-			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Character Info");
+			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/CharacterInfo Item");
+			creatableItemPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Creatable Item");
+			lockedItemPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Locked Item");
 		}
 
 		private void Start() {
@@ -78,24 +85,44 @@ namespace Heroes {
 			StartCoroutine(LoadSelectSceneProcess(packet.creatableCharacters, packet.familyName, packet.characterList));
 		}
 
+		public void connectChanelRequest() {
+				
+		}
+		
 		public IEnumerator LoadSelectSceneProcess(Int32 creatableCharacters, string familyName, List<CharacterInfo> characterList) {
-			yield return StartCoroutine(LoadSelectScene()); yield return null;
+			yield return StartCoroutine(LoadSelectScene()); yield return null; yield return null;
 
 			UICharacterCounter characterCounterUI = GameObject.Find("Character Counter").GetComponent<UICharacterCounter>();
 			characterCounterUI.CreatedCount = characterList.Count;
 			characterCounterUI.CreatableCount = creatableCharacters;
-			
-			UISelectedCharacter selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
-			selectedCharacterUI.FamilyName = familyName;
 
-			GameObject contents = GameObject.Find("Contents");			
-			foreach(CharacterInfo info in characterList) {
-				GameObject character = Instantiate(characterInfoPrefab, contents.transform);
-				UICharacterInfo characterInfo = character.GetComponent<UICharacterInfo>();
-				characterInfo.Class = info.characterClass;
-				characterInfo.Level = info.level;
-				characterInfo.CharacterName = info.characterName;
-				characterInfo.Location = info.location;
+			GameObject list = GameObject.Find("List");
+
+			if (characterList.Count != 0) {
+				UISelectedCharacter selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
+				selectedCharacterUI.FamilyName = familyName;
+				selectedCharacterUI.CharacterName = characterList[0].characterName;
+
+				foreach (CharacterInfo info in characterList) {
+					GameObject character = Instantiate(characterInfoPrefab, list.transform);
+					UICharacterInfo characterInfo = character.GetComponent<UICharacterInfo>();
+
+					characterInfo.ID = info.characterId;
+					characterInfo.Class = info.characterClass;
+					characterInfo.Level = info.level;
+					characterInfo.CharacterName = info.characterName;
+					characterInfo.Location = info.location;
+				}
+			}
+
+			if (creatableCharacters == characterList.Count) yield break;
+
+			Instantiate(creatableItemPrefab, list.transform);
+			--creatableCharacters;
+
+			int lockedItemCount = creatableCharacters - characterList.Count;
+			for (int i = 0; i < lockedItemCount; ++i) {
+				Instantiate(lockedItemPrefab, list.transform);
 			}
 		}
 

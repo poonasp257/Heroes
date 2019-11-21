@@ -33,16 +33,31 @@ enum class CharacterClass : UInt16 {
 };
 
 // struct in game...
-struct ChanelStatus {
+struct Vector3 {
+	float x;
+	float y;
+	float z;
+};
+
+struct ChanelInfo {
 	Int32 traffic;
-	std::string id; // wstring
+	std::wstring id; // wstring
 };
 
 struct CharacterInfo {
+	UINT64 characterId;
 	UInt16 characterClass;
 	UInt32 level;
-	std::string characterName; // wstring
-	std::string location; // zone name
+	std::wstring characterName; // wstring
+	std::wstring location; // zone name
+};
+
+struct CharacterStatus {
+	Int64 hp;
+	Int64 mp;
+	Int64 exp;
+	Vector3 position;
+	Vector3 rotation;
 };
 
 #endif

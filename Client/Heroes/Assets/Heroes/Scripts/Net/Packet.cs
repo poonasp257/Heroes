@@ -114,36 +114,6 @@ namespace Heroes {
 		public override PacketType type() { return PacketType.ChanelStatusResponse; }
 	}
 
-	public class ConnectChanelRequestPacket : Packet {
-		Int32 characterId;
-		
-		public override void serialize() {
-			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, characterId);
-		}
-
-		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out characterId);
-		}
-
-		public override PacketType type() { return PacketType.ConnectChanelRequest; }
-	}
-
-	public class ConnectChanelResponsePacket : Packet {
-		// character transform
-		// character status { hp, mp, exp, level, class... }  
-
-		public override PacketType type() { return PacketType.ConnectChanelResponse; }
-	}
-
-	public class DisconnectChanelRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelRequest; }
-	}
-
-	public class DisconnectChanelResponsePacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelResponse; }
-	}
-
 	public class AccountInfoRequestPacket : Packet {
 		public UInt64 accountId;
 
@@ -161,7 +131,7 @@ namespace Heroes {
 
 	public class AccountInfoResponsePacket : Packet {
 		public UInt16 creatableCharacters;
-		public string familyName;
+		public string familyName;	
 		public List<CharacterInfo> characterList = new List<CharacterInfo>();
 		
 		public override void serialize() {
@@ -181,19 +151,62 @@ namespace Heroes {
 	}
 
 	public class CreateCharacterRequestPacket : Packet {
-		// character name
-		// character class
-
 		public override PacketType type() { return PacketType.CreateCharacterRequest; }
 	}
 	
 	public class CreateCharacterResponsePacket : Packet {
-		// bool success
-		// int errorCode..
-
 		public override PacketType type() { return PacketType.CreateCharacterResponse; }
 	}
 
+	public class DeleteCharacterRequestPacket : Packet {
+		public override PacketType type() { return PacketType.DeleteCharacterRequest; }
+	};
+
+	public class DeleteCharacterResponsePacket : Packet {
+		public override PacketType type() { return PacketType.DeleteCharacterResponse; }
+	};
+
+	public class ConnectChanelRequestPacket : Packet {
+		public Int32 characterId;
+		public string chanelId; // chanel..oid?
+				
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, characterId);
+			Serializer.serialize(stream, chanelId);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out characterId);
+			Serializer.deserialize(data, ref offset, out chanelId);
+		}
+
+		public override PacketType type() { return PacketType.ConnectChanelRequest; }
+	}
+
+	public class ConnectChanelResponsePacket : Packet {
+		public CharacterStatus status;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, status);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out status);
+		}
+
+		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+	}
+
+	public class DisconnectChanelRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChanelRequest; }
+	}
+
+	public class DisconnectChanelResponsePacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+	}
+	
 	public class CharacterMoveRequestPacket : Packet {
 		public Int32 characterId;
 		public Vector3 position;

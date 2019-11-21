@@ -14,6 +14,8 @@ namespace Heroes {
 		AccountInfoResponse,
 		CreateCharacterRequest,
 		CreateCharacterResponse,
+		DeleteCharacterRequest,
+		DeleteCharacterResponse,
 		ConnectChanelRequest,
 		ConnectChanelResponse,
 		DisconnectChanelRequest,

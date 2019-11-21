@@ -46,29 +46,51 @@ void Stream::operator<<(const std::string& value) {
 	for(auto i : value) *this << i;
 }
 
-void Stream::operator<<(const ChanelStatus& value) {
-	*this << value.id;
+void Stream::operator<<(const std::wstring& value) {
+	*this << (int32_t)value.length();
+	for (auto i : value) *this << i;
+}
+
+void Stream::operator<<(const Vector3& value) {
+	*this << value.x;
+	*this << value.y;
+	*this << value.z;
+}
+
+void Stream::operator<<(const ChanelInfo& value) {
 	*this << value.traffic;
+	*this << value.id;
 }
 
 void Stream::operator<<(const CharacterInfo& value) {
+	*this << value.characterId;
 	*this << value.characterClass;
 	*this << value.level;
 	*this << value.characterName;
 	*this << value.location;
 }
 
+void Stream::operator<<(const CharacterStatus& value) {
+	*this << value.hp;
+	*this << value.mp;
+	*this << value.exp;
+	*this << value.position;
+	*this << value.rotation;
+}
+
 void Stream::operator>>(std::string *retVal) {
-	int32_t size;
-	*this >> &size;
-	if(this->checkReadBound(size) == false) { 
+	int32_t len;
+	*this >> &len;
+	if(this->checkReadBound(len) == false) {
 		return;
 	} 
 
-	char *buf = new char[size + 1];
+	char *buf = new char[len + 1];
+	size_t size = len * sizeof(char);
+
 	memcpy_s((void*)buf, size, (void*)(stream.data() + readOffset), size);
 	readOffset += size;
-	buf[size] = '\0';
+	buf[len] = '\0';
 
 	retVal->clear();
 	*retVal = buf;
@@ -76,14 +98,49 @@ void Stream::operator>>(std::string *retVal) {
 	delete buf;
 }
 
-void Stream::operator>>(ChanelStatus *retVal) {
-	*this >> &retVal->id;
+void Stream::operator>>(std::wstring *retVal) {
+	int32_t len;
+	*this >> &len;
+	if(this->checkReadBound(len) == false) {
+		return;
+	} 
+
+	WCHAR *buf = new wchar_t[len + 1];
+	size_t size = len * sizeof(wchar_t);
+	
+	memcpy_s((void*)buf, size, (void*)(stream.data() + readOffset), size);
+	readOffset += size;
+	buf[len] = L'\0';
+
+	retVal->clear();
+	*retVal = buf;
+	
+	delete buf;
+}
+
+void Stream::operator>>(Vector3 *retVal) {
+	*this >> &retVal->x;
+	*this >> &retVal->y;
+	*this >> &retVal->z;
+}
+
+void Stream::operator>>(ChanelInfo *retVal) {
 	*this >> &retVal->traffic;
+	*this >> &retVal->id;
 }
 
 void Stream::operator>>(CharacterInfo *retVal) {
+	*this >> &retVal->characterId;
 	*this >> &retVal->characterClass;
 	*this >> &retVal->level;
 	*this >> &retVal->characterName;
 	*this >> &retVal->location;
+}
+
+void Stream::operator>>(CharacterStatus *retVal) {
+	*this >> &retVal->hp;
+	*this >> &retVal->mp;
+	*this >> &retVal->exp;
+	*this >> &retVal->position;
+	*this >> &retVal->rotation;
 }

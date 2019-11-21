@@ -14,6 +14,8 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::AccountInfoResponse: return new AccountInfoResponsePacket();
 		case PacketType::CreateCharacterRequest: return new CreateCharacterRequestPacket();
 		case PacketType::CreateCharacterResponse: return new CreateCharacterResponsePacket();
+		case PacketType::DeleteCharacterRequest: return new DeleteCharacterRequestPacket();
+		case PacketType::DeleteCharacterResponse: return new DeleteCharacterResponsePacket();
 		case PacketType::ConnectChanelRequest: return new ConnectChanelRequestPacket();
 		case PacketType::ConnectChanelResponse: return new ConnectChanelResponsePacket();
 		case PacketType::DisconnectChanelRequest: return new DisconnectChanelRequestPacket();

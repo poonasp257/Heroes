@@ -19,19 +19,14 @@ void MainProcess::AuthLoginRequest(Session *session, Packet *rowPacket) {
 
 	// DB
 	// Magic code...
-    std::string id = "poona";
-    std::string password = "1234";
+    std::wstring id = L"poona";
+    std::wstring password = L"1234";
 	Int64 accountId = 0;
 	//////////////////////////////
 
-	/*	Error code
-		#1 id doesn't exist
-		#2 password incorrect
-	*/
-
 	AuthLoginResponsePacket responsePacket;
-	if (id == packet->id
-		&& password == packet->password) {
+	if (id.compare(packet->id) == 0
+		&& password.compare(packet->password) == 0) {
 		responsePacket.accountId = accountId; // DB account object id
 		responsePacket.errorCode = 0;
 	}
@@ -54,12 +49,12 @@ void MainProcess::ChanelStatusRequest(Session *session, Packet *rowPacket) {
 	ChanelStatusResponsePacket responsePacket;
 	
 	// temporary...
-	ChanelStatus status;
+	ChanelInfo info;
 	for (int i = 0; i < 10; ++i) {
-		status.id = "CH-" + std::to_string(i + 1);
-		status.traffic = 0; // chanelserver->SessionManager::Instance::getSessionCount..
-
-		responsePacket.chanelList.push_back(status);
+		info.id = L"CH." + std::to_wstring(i + 1);
+		info.traffic = rand() % 5000; // chanelserver->SessionManager::Instance::getSessionCount..
+		
+		responsePacket.chanelList.push_back(info);
 	}
 	//////////////////////////
 
@@ -81,16 +76,17 @@ void MainProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 	*/
 
 	AccountInfoResponsePacket responsePacket;
-	responsePacket.familyName = "티끌모아태산";
+	responsePacket.familyName = L"펄어비스";
 	responsePacket.creatableCharacters = 10;
 
 	CharacterInfo characterInfo;
-	characterInfo.characterName = "지피지기백전백승";
-	characterInfo.location = "벨리아 마을";
 
-	for (int i = 0; i < 10; ++i) {
-		characterInfo.characterClass = (UInt16)CharacterClass::Warrior;
+	for (int i = 0; i < 4; ++i) {
+		characterInfo.characterId = i;
+		characterInfo.characterClass = (UInt16)rand() % 4;
 		characterInfo.level = rand() % 60;
+		characterInfo.characterName = L"검은사막" + std::to_wstring(i + 1);
+		characterInfo.location = L"벨리아 마을";
 		responsePacket.characterList.push_back(characterInfo);
 	}
 
@@ -102,5 +98,9 @@ void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
 }
 
 void MainProcess::DisconnectChanelRequest(Session *session, Packet *rowPacket) {
+
+}
+
+void MainProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 
 }

@@ -52,10 +52,7 @@ namespace Heroes {
 			if (!isConnected()) {
 				this.connect(IP, Port);
 			}
-			else {
-				if (msgBox.IsExist) msgBox.close();
-			}
-	
+			
 			PacketProcess();
 		}
 
@@ -95,10 +92,10 @@ namespace Heroes {
 			return state == NetState.Connected;
 		}
 
-		public bool connect(string ip, UInt16 port) {
+		public void connect(string ip, UInt16 port) {
 			if (string.IsNullOrWhiteSpace(ip)) {
 				Debug.Log("IP address is null or empty");
-				return false;
+				return;
 			}
 
 			if (isConnected()) this.close();
@@ -106,11 +103,12 @@ namespace Heroes {
 			try { 
 				client = new TcpClient();
 				client.Connect(ip, Convert.ToInt32(port));
+				if (msgBox.IsExist) msgBox.close();
 			}
 			catch (Exception err) {
 				Debug.Log(err);
-				msgBox.notice("재접속을 시도합니다.");
-				return false;
+				msgBox.notice("서버 상태가 원활하지 않습니다.");
+				return;
 			}
 
 			receiveWorker = new Thread(new ThreadStart(recieve));
@@ -119,8 +117,6 @@ namespace Heroes {
 			stream = client.GetStream();
 
 			state = NetState.Connected;
-
-			return true;
 		}
 
 		public void disConnect() {
@@ -149,8 +145,6 @@ namespace Heroes {
 			Byte[] buffer = packetStream.ToArray();
 			stream.Write(buffer, 0, buffer.Length);
 			stream.Flush();
-
-			Debug.Log("*send " + buffer.Length + " bytes");
 		}
 
 		// receive thread
@@ -173,7 +167,6 @@ namespace Heroes {
 				while (readLen < packetLen) {
 					readLen += stream.Read(buffer, offset, buffer.Length - readLen);
 				}
-				Debug.Log("*receive " + readLen + " bytes");
 
 				Byte[] packetData = new Byte[packetLen];
 				Buffer.BlockCopy(buffer, offset, packetData, 0, packetLen);

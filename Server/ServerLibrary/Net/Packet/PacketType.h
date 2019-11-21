@@ -14,6 +14,8 @@ enum class PacketType : UInt32 {
 	AccountInfoResponse,
 	CreateCharacterRequest,
 	CreateCharacterResponse,
+	DeleteCharacterRequest,
+	DeleteCharacterResponse,
 	ConnectChanelRequest,
 	ConnectChanelResponse,
 	DisconnectChanelRequest,

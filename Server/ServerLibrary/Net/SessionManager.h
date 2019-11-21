@@ -5,6 +5,7 @@ class SessionManager : public Singleton<SessionManager> {
 private:
 	const size_t 		MaxConnection;
 	std::list<Session*> sessionList;
+	std::mutex			lock;
 
 public:
 	SessionManager();
