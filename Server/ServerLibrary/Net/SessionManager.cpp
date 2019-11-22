@@ -34,8 +34,8 @@ bool SessionManager::closeSession(Session *session) {
 
     Session *delSession = *found;
     closesocket(delSession->getSocket());
-    sessionList.erase(found);
-    delete delSession;
+    sessionList.remove(delSession);
+	if (delSession) { delete delSession; delSession = nullptr }
 
 	SystemLogger::Log(Logger::Info, "Close connection ");
 

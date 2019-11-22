@@ -67,6 +67,7 @@ namespace Heroes {
 				
 		public void OnConnectButtonClick() {
 			LobbyManager lobbyManager = GameObject.Find("Lobby Manager").GetComponent<LobbyManager>();
+			lobbyManager.SelectedCharacter = ID;
 			lobbyManager.connectChanelRequest();
 		}
 

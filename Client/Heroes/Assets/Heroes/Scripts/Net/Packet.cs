@@ -167,7 +167,7 @@ namespace Heroes {
 	};
 
 	public class ConnectChanelRequestPacket : Packet {
-		public Int32 characterId;
+		public UInt64 characterId;
 		public string chanelId; // chanel..oid?
 				
 		public override void serialize() {

@@ -17,6 +17,7 @@ public:
 	static void ConnectChanelRequest(Session *session, Packet *rowPacket);
 	static void DisconnectChanelRequest(Session *session, Packet *rowPacket); 
 	static void CreateCharacterRequest(Session *session, Packet *rowPacket);
+	static void DeleteCharacterRequest(Session *session, Packet *rowPacket);
 };
 
 #endif

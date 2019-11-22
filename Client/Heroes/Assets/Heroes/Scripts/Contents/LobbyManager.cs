@@ -9,10 +9,10 @@ namespace Heroes {
 		private NetworkManager networkManager;
 		private MessageBox msgBox;
 
-		private GameObject chanelInfoPrefab;
-		private GameObject characterInfoPrefab;
-		private GameObject creatableItemPrefab;
-		private GameObject lockedItemPrefab;
+		private GameObject chanelInfoItem;
+		private GameObject characterInfoItem;
+		private GameObject creatableItem;
+		private GameObject lockedItem;
 
 		//private UInt64 accountId;
 		public UInt64 AccountId { get; set; }
@@ -21,23 +21,24 @@ namespace Heroes {
 		public string SelectedChanel { get; set; }
 
 		//private string selectedCharacter;
-		public string SelectedCharacter { get; set; }
+		public UInt64 SelectedCharacter { get; set; }
 
 		private void Awake() {
-			chanelInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Chanel/Chanel Info");
-			characterInfoPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/CharacterInfo Item");
-			creatableItemPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Creatable Item");
-			lockedItemPrefab = Resources.Load<GameObject>("UI/Prefab/Character List/Locked Item");
-		}
+			chanelInfoItem = Resources.Load<GameObject>("UI/Prefab/Chanel/ChanelInfo Item");
+			characterInfoItem = Resources.Load<GameObject>("UI/Prefab/Character List/CharacterInfo Item");
+			creatableItem = Resources.Load<GameObject>("UI/Prefab/Character List/Creatable Item");
+			lockedItem = Resources.Load<GameObject>("UI/Prefab/Character List/Locked Item");
 
-		private void Start() {
 			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
 			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
-			
-			this.chanelStatusRequest();
 
 			networkManager.RegisterNotification(PacketType.ChanelStatusResponse, chanelStatusResponse);
 			networkManager.RegisterNotification(PacketType.AccountInfoResponse, accountInfoResponse);
+			networkManager.RegisterNotification(PacketType.ConnectChanelResponse, connectChanelResponse);
+		}
+
+		private void Start() {
+			this.chanelStatusRequest();
 		}
 
 		private void chanelStatusRequest() {
@@ -55,6 +56,15 @@ namespace Heroes {
 			msgBox.notice("캐릭터 정보를 불러오고 있습니다.");
 		}
 
+		
+		public void connectChanelRequest() {
+			ConnectChanelRequestPacket packet = new ConnectChanelRequestPacket();
+			packet.chanelId = SelectedChanel;
+			packet.characterId = SelectedCharacter;
+
+			networkManager.send(packet);
+		}
+
 		public void chanelStatusResponse(PacketType type, Packet rowPacket) {
 			msgBox.close();
 
@@ -64,9 +74,9 @@ namespace Heroes {
 				return;
 			}
 
-			GameObject contents = GameObject.Find("Contents");			
+			GameObject list = GameObject.Find("List");			
 			foreach(ChanelInfo info in packet.chanelList) {
-				GameObject chanel = Instantiate(chanelInfoPrefab, contents.transform);
+				GameObject chanel = Instantiate(chanelInfoItem, list.transform);
 				UIChanelInfo chanelInfo = chanel.GetComponent<UIChanelInfo>();
 				chanelInfo.ID = info.id;
 				chanelInfo.Traffic = info.traffic;
@@ -84,9 +94,11 @@ namespace Heroes {
 
 			StartCoroutine(LoadSelectSceneProcess(packet.creatableCharacters, packet.familyName, packet.characterList));
 		}
+		
+		public void connectChanelResponse(PacketType type, Packet rowPacket) {
+			ConnectChanelResponsePacket packet = rowPacket as ConnectChanelResponsePacket;
 
-		public void connectChanelRequest() {
-				
+			Debug.Log(packet.status.hp);
 		}
 		
 		public IEnumerator LoadSelectSceneProcess(Int32 creatableCharacters, string familyName, List<CharacterInfo> characterList) {
@@ -104,7 +116,7 @@ namespace Heroes {
 				selectedCharacterUI.CharacterName = characterList[0].characterName;
 
 				foreach (CharacterInfo info in characterList) {
-					GameObject character = Instantiate(characterInfoPrefab, list.transform);
+					GameObject character = Instantiate(characterInfoItem, list.transform);
 					UICharacterInfo characterInfo = character.GetComponent<UICharacterInfo>();
 
 					characterInfo.ID = info.characterId;
@@ -117,12 +129,12 @@ namespace Heroes {
 
 			if (creatableCharacters == characterList.Count) yield break;
 
-			Instantiate(creatableItemPrefab, list.transform);
+			Instantiate(creatableItem, list.transform);
 			--creatableCharacters;
 
 			int lockedItemCount = creatableCharacters - characterList.Count;
 			for (int i = 0; i < lockedItemCount; ++i) {
-				Instantiate(lockedItemPrefab, list.transform);
+				Instantiate(lockedItem, list.transform);
 			}
 		}
 

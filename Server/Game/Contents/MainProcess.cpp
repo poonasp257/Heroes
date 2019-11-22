@@ -5,9 +5,11 @@ MainProcess::MainProcess() {
 	registerPacketProcess(PacketType::AuthLoginRequest, &MainProcess::AuthLoginRequest);
 	registerPacketProcess(PacketType::AuthRegisterRequest, &MainProcess::AuthRegisterRequest);
 	registerPacketProcess(PacketType::ChanelStatusRequest, &MainProcess::ChanelStatusRequest);
+	registerPacketProcess(PacketType::AccountInfoRequest, &MainProcess::AccountInfoRequest);
+	registerPacketProcess(PacketType::CreateCharacterRequest, &MainProcess::CreateCharacterRequest);
+	registerPacketProcess(PacketType::DeleteCharacterRequest, &MainProcess::DeleteCharacterRequest);
 	registerPacketProcess(PacketType::ConnectChanelRequest, &MainProcess::ConnectChanelRequest);
 	registerPacketProcess(PacketType::DisconnectChanelRequest, &MainProcess::DisconnectChanelRequest);
-	registerPacketProcess(PacketType::AccountInfoRequest, &MainProcess::AccountInfoRequest);
 }
 
 MainProcess::~MainProcess() {
@@ -93,14 +95,27 @@ void MainProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 	session->sendPacket(&responsePacket);
 }
 
-void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
+void MainProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 
+}
+
+void MainProcess::DeleteCharacterRequest(Session *session, Packet *rowPacket) {
+
+}
+
+void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
+	ConnectChanelRequestPacket *packet = dynamic_cast<ConnectChanelRequestPacket*>(rowPacket);
+
+	ConnectChanelResponsePacket responsePacket;
+	responsePacket.status.hp = 100;
+	responsePacket.status.mp = 100;
+	responsePacket.status.exp = 0;
+	responsePacket.status.position = { 10.0f, 10.0f, 10.0f };
+	responsePacket.status.rotation = { 0.0f, 0.0f, 0.0f };
+
+	session->sendPacket(&responsePacket);
 }
 
 void MainProcess::DisconnectChanelRequest(Session *session, Packet *rowPacket) {
-
-}
-
-void MainProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 
 }

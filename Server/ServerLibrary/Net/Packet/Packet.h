@@ -183,7 +183,7 @@ public:
 
 class ConnectChanelRequestPacket : public Packet {
 public:
-	Int32 characterId;
+	UInt64 characterId;
 	std::wstring chanelId; // chanel..oid?
 
 public:
