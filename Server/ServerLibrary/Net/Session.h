@@ -2,7 +2,7 @@
 #define SESSION_H
 
 class Session {
-private:
+protected:
 	struct SessionInfo {
 		SOCKET		socket;
 		SOCKADDR_IN addrInfo;
@@ -10,6 +10,7 @@ private:
 
 protected:
 	SessionInfo sessionInfo;
+	oid_t	id;
 
 public:
 	Session();
@@ -26,6 +27,9 @@ public:
 
 	SOCKET& getSocket() { return sessionInfo.socket; }
 	std::string getClientAddress();
+
+	oid_t getId() const { return id; }
+	void	 setId(oid_t id) { this->id = id; }
 };
 
 #endif

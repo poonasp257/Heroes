@@ -58,22 +58,27 @@ void Stream::operator<<(const Vector3& value) {
 }
 
 void Stream::operator<<(const ChanelInfo& value) {
-	*this << value.traffic;
 	*this << value.id;
+	*this << value.traffic;
+	*this << value.name;
 }
 
 void Stream::operator<<(const CharacterInfo& value) {
 	*this << value.characterId;
-	*this << value.characterClass;
 	*this << value.level;
+	*this << value.hp;
+	*this << value.mp;
+	*this << value.exp;
+	*this << value.position;
+	*this << value.rotation;
+	*this << (UInt16)value.characterClass;
+	*this << value.familyName;
 	*this << value.characterName;
 	*this << value.location;
 }
 
-void Stream::operator<<(const CharacterStatus& value) {
-	*this << value.hp;
-	*this << value.mp;
-	*this << value.exp;
+void Stream::operator<<(const CharacterMovement& value) {
+	*this << value.moveAmount;
 	*this << value.position;
 	*this << value.rotation;
 }
@@ -125,22 +130,27 @@ void Stream::operator>>(Vector3 *retVal) {
 }
 
 void Stream::operator>>(ChanelInfo *retVal) {
-	*this >> &retVal->traffic;
 	*this >> &retVal->id;
+	*this >> &retVal->traffic;
+	*this >> &retVal->name;
 }
 
 void Stream::operator>>(CharacterInfo *retVal) {
 	*this >> &retVal->characterId;
-	*this >> &retVal->characterClass;
 	*this >> &retVal->level;
+	*this >> &retVal->hp;
+	*this >> &retVal->mp;
+	*this >> &retVal->exp;
+	*this >> &retVal->position;
+	*this >> &retVal->rotation;
+	*this >> (UInt16*)&retVal->characterClass;
+	*this >> &retVal->familyName;
 	*this >> &retVal->characterName;
 	*this >> &retVal->location;
 }
 
-void Stream::operator>>(CharacterStatus *retVal) {
-	*this >> &retVal->hp;
-	*this >> &retVal->mp;
-	*this >> &retVal->exp;
+void Stream::operator>>(CharacterMovement *retVal) {
+	*this >> &retVal->moveAmount;
 	*this >> &retVal->position;
 	*this >> &retVal->rotation;
 }

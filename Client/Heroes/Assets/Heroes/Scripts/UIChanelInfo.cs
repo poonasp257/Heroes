@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class UIChanelInfo : MonoBehaviour, IScrollHandler {
@@ -10,7 +11,9 @@ namespace Heroes {
 
 		private ScrollRect scrollRect;
 
-		public string ID {
+		public UInt16 ID { get; set; }
+
+		public string Name {
 			get {
 				return chanelName.text;
 			}
@@ -38,9 +41,8 @@ namespace Heroes {
 		}
 
 		public void OnConnectButtonClick() {
-			LobbyManager lobbyManager = GameObject.Find("Lobby Manager").GetComponent<LobbyManager>();
-			lobbyManager.SelectedChanel = chanelName.text;
-			lobbyManager.accountInfoRequest();
+			PlayerData.Instance.ChanelId = ID;
+			SceneManager.LoadScene("Select");
 		}
 
 		public void OnScroll(PointerEventData eventData) {

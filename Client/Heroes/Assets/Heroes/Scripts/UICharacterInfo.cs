@@ -8,43 +8,22 @@ namespace Heroes {
 		private UISelectedCharacter selectedCharacterUI;
 		private ScrollRect scrollRect;
 
+		private CharacterInfo characterInfo;
+
 		private Image classIcon;
 		private Text level;
 		private Text characterName;
 		private Text location;
 
-		public UInt64 ID {
-			get; set;
-		}
+		public UInt64 CharacterID { get; set; }
 
-		public UInt16 Class {
-			get; set;
-		}
-	
-		public UInt32 Level {				
-			get {
-				return UInt32.Parse(level.text);
-			}
+		public CharacterInfo Info {
+			get { return characterInfo; }
 			set {
-				level.text = value.ToString();
-			}
-		}
-
-		public string CharacterName {		
-			get {
-				return characterName.text;
-			}
-			set {
-				characterName.text = value;
-			}
-		}
-
-		public string Location {
-			get {
-				return location.text;
-			}
-			set {
-				location.text = value;
+				level.text = value.level.ToString();
+				characterName.text = value.characterName;
+				location.text = value.location;
+				characterInfo = value;
 			}
 		}
 
@@ -57,18 +36,18 @@ namespace Heroes {
 
 		private void Start() {
 			selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
-
 			scrollRect = GetComponentInParent<ScrollRect>();
 		}
 
 		public void OnClick() {
+			selectedCharacterUI.FamilyName = Info.familyName.ToString();
 			selectedCharacterUI.CharacterName = characterName.text;
 		}		
 				
 		public void OnConnectButtonClick() {
-			LobbyManager lobbyManager = GameObject.Find("Lobby Manager").GetComponent<LobbyManager>();
-			lobbyManager.SelectedCharacter = ID;
-			lobbyManager.connectChanelRequest();
+			PlayerData.Instance.CharacterId = CharacterID;
+			PlayerData.Instance.CharacterInfomation = Info;
+			LoadingSceneManager.LoadScene("Town");
 		}
 
 		public void OnScroll(PointerEventData eventData) {

@@ -141,8 +141,7 @@ public:
 class AccountInfoResponsePacket : public Packet {
 public:
 	UInt16 creatableCharacters;
-	std::wstring familyName;
-	std::vector<CharacterInfo> characterList;
+	std::unordered_map<UInt64, CharacterInfo> characterTable;
 
 public:
 	PacketType type() const { return PacketType::AccountInfoResponse; }
@@ -150,14 +149,12 @@ public:
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
 		stream << creatableCharacters;
-		stream << familyName;
-		stream << characterList;
+		stream << characterTable;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &creatableCharacters;
-		stream >> &familyName;
-		stream >> &characterList;
+		stream >> &characterTable;
 	}
 };
 
@@ -183,38 +180,61 @@ public:
 
 class ConnectChanelRequestPacket : public Packet {
 public:
+	UInt16 chanelId;
+	UInt64 accountId;
 	UInt64 characterId;
-	std::wstring chanelId; // chanel..oid?
 
 public:
 	PacketType type() const { return PacketType::ConnectChanelRequest; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << characterId;
 		stream << chanelId;
+		stream << accountId;
+		stream << characterId;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &characterId;
 		stream >> &chanelId;
+		stream >> &accountId;
+		stream >> &characterId;
 	}
 };
 
 class ConnectChanelResponsePacket : public Packet {
 public:
-	CharacterStatus status;
+	std::unordered_map<UInt64, CharacterInfo> playerTable;
 
 public:
 	PacketType type() const { return PacketType::ConnectChanelResponse; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << status;
+		stream << playerTable;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &status;
+		stream >> &playerTable;
+	}
+};
+
+class NotifyNewConnectPacket : public Packet {
+public:
+	UInt64 accountId;
+	CharacterInfo characterInfo;
+
+public:
+	PacketType type() const { return PacketType::NotifyNewConnect; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << accountId;
+		stream << characterInfo;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+		stream >> &characterInfo;
 	}
 };
 
@@ -228,14 +248,44 @@ public:
 	PacketType type() const { return PacketType::DisconnectChanelResponse; }
 };
 
-class CharacterMoveRequestPacket : public Packet {
+class NotifyCharacterMovementPacket : public Packet {
 public:
-	PacketType type() const { return PacketType::CharacterMoveRequest; }
+	UInt64 accountId;
+	CharacterMovement movement;
+
+public:
+	PacketType type() const { return PacketType::NotifyCharacterMovement; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << accountId;
+		stream << movement;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+		stream >> &movement;
+	}
 };
 
-class CharacterMoveResponsePacket : public Packet {
+class NotifyCharacterActionPacket : public Packet {
 public:
-	PacketType type() const { return PacketType::CharacterMoveResponse; }
+	UInt64 accountId;
+	ActionType actionType;
+
+public:
+	PacketType type() const { return PacketType::NotifyCharacterAction; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << accountId;
+		stream << (UInt16)actionType;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+		stream >> (UInt16*)&actionType;
+	}
 };
 
 #endif

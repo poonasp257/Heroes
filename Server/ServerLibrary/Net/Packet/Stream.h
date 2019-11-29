@@ -57,15 +57,24 @@ public:
     template<class T>
     void operator<<(const std::vector<T>& value) {
 		*this << (int32_t)value.size();
-		for (auto i : value) *this << i;
+		for (const auto& i : value) *this << i;
+	}
+
+	template<class KEY, class VALUE>
+	void operator<<(const std::unordered_map<KEY, VALUE>& table) {
+		*this << (int32_t)table.size();
+		for(const auto& pair : table) {
+			*this << pair.first;
+			*this << pair.second;
+		}
 	}
 
     void operator<<(const std::string& value);
 	void operator<<(const std::wstring& value);
 	void operator<<(const Vector3& value);
 	void operator<<(const ChanelInfo& value);
-	void operator<<(const CharacterInfo& value); 
-	void operator<<(const CharacterStatus& value);
+	void operator<<(const CharacterInfo& value);
+	void operator<<(const CharacterMovement& value);
 
 	///////////////////////////////////Read///////////////////////////////////////	
     template<class T>
@@ -85,11 +94,24 @@ public:
 		}
 	}
 
+	template<class KEY, class VALUE>
+	void operator>>(std::unordered_map<KEY, VALUE> *retVal) {
+		int32_t size;
+		*this >> &size;
+
+		for(int32_t i = 0; i < size; ++i) {
+			KEY key;
+			*this >> &key;
+			VALUE value;
+			retVal->insert(std::make_pair(key, value));
+		}
+	}
+
     void operator>>(std::string *retVal);
 	void operator>>(std::wstring *retVal);
 	void operator>>(Vector3 *retVal);
-	void operator>>(ChanelInfo *retVal);
+	void operator>>(ChanelInfo *retVal); 
 	void operator>>(CharacterInfo *retVal);
-	void operator>>(CharacterStatus *retVal);
+	void operator>>(CharacterMovement *retVal);
 };
 #endif

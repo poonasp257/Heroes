@@ -131,20 +131,17 @@ namespace Heroes {
 
 	public class AccountInfoResponsePacket : Packet {
 		public UInt16 creatableCharacters;
-		public string familyName;	
-		public List<CharacterInfo> characterList = new List<CharacterInfo>();
+		public Dictionary<UInt64, CharacterInfo> characterTable = new Dictionary<UInt64, CharacterInfo>();
 		
 		public override void serialize() {
 			Serializer.serialize(stream, type());
 			Serializer.serialize(stream, creatableCharacters);
-			Serializer.serialize(stream, familyName);
-			Serializer.serialize(stream, characterList);
+			Serializer.serialize(stream, characterTable);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) { 
 			Serializer.deserialize(data, ref offset, out creatableCharacters);
-			Serializer.deserialize(data, ref offset, out familyName);
-			Serializer.deserialize(data, ref offset, ref characterList);
+			Serializer.deserialize(data, ref offset, ref characterTable);
 		}
 
 		public override PacketType type() { return PacketType.AccountInfoResponse; }
@@ -167,36 +164,57 @@ namespace Heroes {
 	};
 
 	public class ConnectChanelRequestPacket : Packet {
+		public UInt16 chanelId; 
+		public UInt64 accountId;
 		public UInt64 characterId;
-		public string chanelId; // chanel..oid?
 				
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, characterId);
 			Serializer.serialize(stream, chanelId);
+			Serializer.serialize(stream, accountId);
+			Serializer.serialize(stream, characterId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out characterId);
 			Serializer.deserialize(data, ref offset, out chanelId);
+			Serializer.deserialize(data, ref offset, out accountId);
+			Serializer.deserialize(data, ref offset, out characterId);
 		}
 
 		public override PacketType type() { return PacketType.ConnectChanelRequest; }
 	}
 
 	public class ConnectChanelResponsePacket : Packet {
-		public CharacterStatus status;
+		public Dictionary<UInt64, CharacterInfo> playerTable = new Dictionary<UInt64, CharacterInfo>();
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, status);
+			Serializer.serialize(stream, playerTable);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out status);
+			Serializer.deserialize(data, ref offset, ref playerTable);
 		}
 
 		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+	}
+
+	public class NotifyNewConnectPacket : Packet {
+		public UInt64 accountId;
+		public CharacterInfo characterInfo;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+			Serializer.serialize(stream, characterInfo);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out accountId);
+			Serializer.deserialize(data, ref offset, out characterInfo);
+		}
+
+		public override PacketType type() { return PacketType.NotifyNewConnect; }
 	}
 
 	public class DisconnectChanelRequestPacket : Packet {
@@ -207,19 +225,39 @@ namespace Heroes {
 		public override PacketType type() { return PacketType.ConnectChanelResponse; }
 	}
 	
-	public class CharacterMoveRequestPacket : Packet {
-		public Int32 characterId;
-		public Vector3 position;
-		public Vector3 rotatition;
+	public class NotifyCharacterMovementPacket : Packet {
+		public UInt64 accountId;
+		public CharacterMovement movement;
 		
-		public override PacketType type() { return PacketType.CharacterMoveRequest;	}
+		public override PacketType type() { return PacketType.NotifyCharacterMovement; }
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+			Serializer.serialize(stream, movement);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out accountId);
+			Serializer.deserialize(data, ref offset, out movement);
+		}
 	}
 
-	public class CharacterMoveResponsePacket : Packet {
-		public Int32 characterId;
-		public Vector3 position;
-		public Vector3 rotation;
-		
-		public override PacketType type() { return PacketType.CharacterMoveResponse; }
+	public class NotifyCharacterActionPacket : Packet {
+		public UInt64 accountId;
+		public ActionType actionType;
+
+		public override PacketType type() { return PacketType.NotifyCharacterAction; }
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+			Serializer.serialize(stream, actionType);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out accountId);
+			Serializer.deserialize(data, ref offset, out actionType);
+		}
 	}
 }

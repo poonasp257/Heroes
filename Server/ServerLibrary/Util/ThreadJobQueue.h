@@ -16,26 +16,8 @@ private:
 
 	std::mutex lock;
 
-public:
-	ThreadJobQueue() {
-		readQueue = &queue[Read];
-		writeQueue = &queue[Write];
-	}
-
-	~ThreadJobQueue() {
-
-	}
-
-	bool empty() { return size() == 0; }
-
-	size_t size() {
-		const std::lock_guard<std::mutex> guard(lock);
-		return readQueue->size() + writeQueue->size();
-	}
-
+private:
 	void swap() {
-		const std::lock_guard<std::mutex> guard(lock);
-
 		if (writeQueue == &queue[Write]) {
 			writeQueue = &queue[Read];
 			readQueue = &queue[Write];
@@ -46,19 +28,42 @@ public:
 		}
 	}
 
+	size_t size() const {
+		return readQueue->size() + writeQueue->size();
+	}
+
+public:
+	ThreadJobQueue() {
+		readQueue = &queue[Read];
+		writeQueue = &queue[Write];
+	}
+
+	~ThreadJobQueue() {
+
+	}
+
 	void push(const T& value) {
 		std::lock_guard<std::mutex> guard(lock);
 		writeQueue->push(value);
 	}
 
 	void pop(T& t) {
+		std::lock_guard<std::mutex> guard(lock);
+		if (this->size() == 0) {
+			return;
+		}
+
 		if (readQueue->empty()) {
 			this->swap();
 		}
 		
-		std::lock_guard<std::mutex> guard(lock);
 		t = readQueue->front();
 		readQueue->pop();
+	}
+	 
+	bool isEmpty() const { 
+		const std::lock_guard<std::mutex> guard(lock);
+		return size() == 0;
 	}
 };
 #endif

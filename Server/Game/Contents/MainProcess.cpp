@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MainProcess.h"
 
+std::unordered_map<oid_t, CharacterInfo> MainProcess::playerTable;
+
 MainProcess::MainProcess() {
 	registerPacketProcess(PacketType::AuthLoginRequest, &MainProcess::AuthLoginRequest);
 	registerPacketProcess(PacketType::AuthRegisterRequest, &MainProcess::AuthRegisterRequest);
@@ -10,6 +12,8 @@ MainProcess::MainProcess() {
 	registerPacketProcess(PacketType::DeleteCharacterRequest, &MainProcess::DeleteCharacterRequest);
 	registerPacketProcess(PacketType::ConnectChanelRequest, &MainProcess::ConnectChanelRequest);
 	registerPacketProcess(PacketType::DisconnectChanelRequest, &MainProcess::DisconnectChanelRequest);
+	registerPacketProcess(PacketType::NotifyCharacterMovement, &MainProcess::NotifyCharacterMovement);
+	registerPacketProcess(PacketType::NotifyCharacterAction, &MainProcess::NotifyCharacterAction);
 }
 
 MainProcess::~MainProcess() {
@@ -17,24 +21,32 @@ MainProcess::~MainProcess() {
 }
 
 void MainProcess::AuthLoginRequest(Session *session, Packet *rowPacket) {
-    AuthLoginRequestPacket *packet = dynamic_cast<AuthLoginRequestPacket*>(rowPacket);
+	AuthLoginRequestPacket *packet = dynamic_cast<AuthLoginRequestPacket*>(rowPacket);
 
 	// DB
 	// Magic code...
-    std::wstring id = L"poona";
-    std::wstring password = L"1234";
-	Int64 accountId = 0;
+	std::wstring id[2] = { L"poona", L"test" };
+	std::wstring password[2] = { L"1234", L"1234" };
+	Int64 accountId[2] = { 1, 2 };
 	//////////////////////////////
 
 	AuthLoginResponsePacket responsePacket;
-	if (id.compare(packet->id) == 0
-		&& password.compare(packet->password) == 0) {
-		responsePacket.accountId = accountId; // DB account object id
-		responsePacket.errorCode = 0;
+	for (int i = 0; i < 2; ++i) {
+		if (id[i].compare(packet->id) == 0
+			&& password[i].compare(packet->password) == 0) {
+			responsePacket.accountId = accountId[i]; // DB account object id
+			responsePacket.errorCode = 0;
+			break;
+		}
+		else {
+			responsePacket.errorCode = -1;
+		}
 	}
-	else {
-		responsePacket.errorCode = -1;
-	}
+
+	//if (playerTable.find(accountId) != playerTable.end()) {
+	//	disconnect...
+	//	erase player in playerTable
+	//}
 	
     session->sendPacket(&responsePacket);
 }
@@ -53,8 +65,9 @@ void MainProcess::ChanelStatusRequest(Session *session, Packet *rowPacket) {
 	// temporary...
 	ChanelInfo info;
 	for (int i = 0; i < 10; ++i) {
-		info.id = L"CH." + std::to_wstring(i + 1);
-		info.traffic = rand() % 5000; // chanelserver->SessionManager::Instance::getSessionCount..
+		info.id = i;
+		info.traffic = 0; // chanelserver->SessionManager::Instance::getSessionCount..
+		info.name = L"CH." + std::to_wstring(i + 1);
 		
 		responsePacket.chanelList.push_back(info);
 	}
@@ -76,20 +89,19 @@ void MainProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 		이름 레벨 직업 위치
 		+ 장착 중인 외형, 장비
 	*/
+	
 
 	AccountInfoResponsePacket responsePacket;
-	responsePacket.familyName = L"펄어비스";
 	responsePacket.creatableCharacters = 10;
-
 	CharacterInfo characterInfo;
-
 	for (int i = 0; i < 4; ++i) {
-		characterInfo.characterId = i;
-		characterInfo.characterClass = (UInt16)rand() % 4;
+		characterInfo.characterClass = (CharacterClass)(rand() % 4);
 		characterInfo.level = rand() % 60;
-		characterInfo.characterName = L"검은사막" + std::to_wstring(i + 1);
+		characterInfo.familyName = L"펄어비스";
+		characterInfo.characterName = L"캐릭터" + std::to_wstring(i + 1);
 		characterInfo.location = L"벨리아 마을";
-		responsePacket.characterList.push_back(characterInfo);
+
+		responsePacket.characterTable.insert(std::make_pair(i, characterInfo));
 	}
 
 	session->sendPacket(&responsePacket);
@@ -100,22 +112,62 @@ void MainProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 }
 
 void MainProcess::DeleteCharacterRequest(Session *session, Packet *rowPacket) {
-
+	
 }
 
 void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
 	ConnectChanelRequestPacket *packet = dynamic_cast<ConnectChanelRequestPacket*>(rowPacket);
+	//packet->chanelId;
+	//packet->characterId;
+
+	//1.DB Query packet->characterId....
+	//2.session를 제외한 세션들에게 접속한 캐릭 정보 브로드 캐스팅
+	//3.session에게 map 정보 보내기
+	
+	CharacterInfo characterInfo;
+	characterInfo.characterId = 0;
+	characterInfo.level = 1;
+	characterInfo.hp = 100;
+	characterInfo.mp = 100;
+	characterInfo.exp = 0;
+	characterInfo.position = { 130.0f, 21.75f, 30.0f };
+	characterInfo.rotation = { 0, 0, 0 };
+	characterInfo.characterClass = CharacterClass::Warrior;
+	characterInfo.familyName = L"김씨";
+	characterInfo.characterName = L"Kim";
+	characterInfo.location = L"밸리아";
+
+	auto foundPlayer = playerTable.find(packet->accountId);
+	if (foundPlayer == playerTable.end()) {
+		playerTable.insert(std::make_pair(packet->accountId, characterInfo));
+	}
 
 	ConnectChanelResponsePacket responsePacket;
-	responsePacket.status.hp = 100;
-	responsePacket.status.mp = 100;
-	responsePacket.status.exp = 0;
-	responsePacket.status.position = { 10.0f, 10.0f, 10.0f };
-	responsePacket.status.rotation = { 0.0f, 0.0f, 0.0f };
-
+	responsePacket.playerTable = playerTable;
 	session->sendPacket(&responsePacket);
+
+	NotifyNewConnectPacket notifyPacket;
+	notifyPacket.accountId = packet->accountId;
+	notifyPacket.characterInfo = characterInfo;
+
+	SessionManager::Instance().BroadcastPacket(&notifyPacket);
 }
 
 void MainProcess::DisconnectChanelRequest(Session *session, Packet *rowPacket) {
+	DisconnectChanelRequestPacket *packet = dynamic_cast<DisconnectChanelRequestPacket*>(rowPacket);
+}
 
+void MainProcess::NotifyCharacterMovement(Session *session, Packet *rowPacket) {
+	NotifyCharacterMovementPacket *packet = dynamic_cast<NotifyCharacterMovementPacket*>(rowPacket);
+	
+	playerTable[packet->accountId].position = packet->movement.position;
+	playerTable[packet->accountId].rotation = packet->movement.rotation;
+
+	SessionManager::Instance().BroadcastPacket(packet);
+}
+
+void MainProcess::NotifyCharacterAction(Session *session, Packet *rowPacket) {
+	NotifyCharacterActionPacket *packet = dynamic_cast<NotifyCharacterActionPacket*>(rowPacket);
+
+	SessionManager::Instance().BroadcastPacket(packet);
 }

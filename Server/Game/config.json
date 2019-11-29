@@ -4,10 +4,10 @@
     "Server": {
       "IP": "127.0.0.1",
       "Port": 9000,
-      "ThreadCount": 1
+      "ThreadCount": 6
     },
     "Contents": {
-      "ThreadCount": 1
+      "ThreadCount": 3
     }
   }
 }

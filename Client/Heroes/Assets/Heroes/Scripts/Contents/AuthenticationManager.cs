@@ -130,8 +130,6 @@ namespace Heroes {
 		}
 
 		public void authLoginResponse(PacketType type, Packet rowPacket) {
-			msgBox.close();
-
 			AuthLoginResponsePacket packet = rowPacket as AuthLoginResponsePacket;
 			if(packet == null) {
 				Debug.Log("invalid packet");
@@ -143,12 +141,11 @@ namespace Heroes {
 				return;
 			}
 
-			StartCoroutine(LoadChanelScene(packet.accountId));
+			PlayerData.Instance.AccountId = packet.accountId;
+			StartCoroutine(LoadChanelScene());
 		}
 
 		public void authRegisterResponse(PacketType type, Packet rowPacket) {
-			msgBox.close();
-
 			AuthRegisterResponsePacket packet = rowPacket as AuthRegisterResponsePacket;
 			if(packet == null) {
 				Debug.Log("invalid packet");
@@ -159,11 +156,12 @@ namespace Heroes {
 				msgBox.alert("잘못된 입력 정보입니다.");
 				return;
 			}
-			
-			StartCoroutine(LoadChanelScene(packet.accountId));
+
+			PlayerData.Instance.AccountId = packet.accountId;
+			StartCoroutine(LoadChanelScene());
 		}
 
-		public IEnumerator LoadChanelScene(UInt64 accountId) {
+		public IEnumerator LoadChanelScene() {
 			AsyncOperation op = SceneManager.LoadSceneAsync("Chanel");
 			op.allowSceneActivation = false;
 
@@ -171,12 +169,8 @@ namespace Heroes {
 				yield return null;
 
 				if (op.progress >= 0.9f) {
-					GameObject lobbyManager = new GameObject("Lobby Manager");
-					var component = lobbyManager.AddComponent<LobbyManager>();
-					component.AccountId = accountId;
-					DontDestroyOnLoad(lobbyManager);
-
 					op.allowSceneActivation = true;
+					msgBox.close();
 					yield break;
 				}
 			}						

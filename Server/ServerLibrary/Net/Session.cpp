@@ -5,7 +5,7 @@ Session::Session() {
 }
 
 Session::~Session() {
-	this->onClose();
+
 }
 
 bool Session::onAccept(SOCKET socket, SOCKADDR_IN addrInfo) {
@@ -16,7 +16,7 @@ bool Session::onAccept(SOCKET socket, SOCKADDR_IN addrInfo) {
 }
 
 void Session::onClose() {
-	SessionManager::Instance().closeSession(this);
+
 }
 
 std::string Session::getClientAddress() {

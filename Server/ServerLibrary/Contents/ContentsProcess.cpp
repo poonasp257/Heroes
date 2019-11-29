@@ -29,7 +29,10 @@ void ContentsProcess::initialize(Json::Document& document) {
 }
 
 void ContentsProcess::process() {
-	while (true) this->execute();
+	while (true) {
+		this->execute();
+		Sleep(1);
+	}
 }
 
 void ContentsProcess::run(Package *package) {
@@ -49,8 +52,6 @@ void ContentsProcess::run(Package *package) {
 }
 
 void ContentsProcess::execute() {
-	if (packageQueue->empty()) return;
-
 	Package *package = nullptr;
 	packageQueue->pop(package);
 	if(!package) return;

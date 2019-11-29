@@ -73,7 +73,8 @@ WSABUF IOBuffer::getWsaBuf() {
 IOCPSession::IOCPSession() : Session(), ioBuffer({ 
 	{ IOType::Read, IOBuffer(IOType::Read) },
 	{ IOType::Write, IOBuffer(IOType::Write) } }) {
-
+	int opt = 1;
+	setsockopt(sessionInfo.socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, sizeof(int));
 }
 
 IOCPSession::~IOCPSession() {
@@ -163,7 +164,6 @@ Package* IOCPSession::onRecv(size_t transferSize) {
 		this->onClose();
 		return nullptr;
 	}
-
 
 	this->recvStandBy();
 

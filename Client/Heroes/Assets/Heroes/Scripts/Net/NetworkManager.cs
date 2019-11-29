@@ -67,7 +67,10 @@ namespace Heroes {
 			lock(lockObject) {
 				packet = packetQueue.Dequeue();
 			}
-			notifierMap[packet.type()](packet.type(), packet);
+
+			if (notifierMap.ContainsKey(packet.type())) {
+				notifierMap[packet.type()](packet.type(), packet);
+			}
 		}
 
 		private void close() {
@@ -164,9 +167,9 @@ namespace Heroes {
 				}
 
 				Int32 packetLen = PacketUtil.GetHeader(buffer, ref offset); 				
-				while (readLen < packetLen) {
-					readLen += stream.Read(buffer, offset, buffer.Length - readLen);
-				}
+				//while (readLen < packetLen) {
+				//	readLen += stream.Read(buffer, offset, buffer.Length - readLen);
+				//}
 
 				Byte[] packetData = new Byte[packetLen];
 				Buffer.BlockCopy(buffer, offset, packetData, 0, packetLen);

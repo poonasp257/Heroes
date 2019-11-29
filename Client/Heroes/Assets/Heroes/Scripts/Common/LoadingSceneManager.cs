@@ -4,31 +4,27 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Heroes {
-	public class SceneLoadManager : MonoBehaviour {
+	public class LoadingSceneManager : MonoBehaviour {
 		private static string nextScene;
 
+		private PlayerManager playerManager;
+	
 		private GameObject objects;
 
 		private void Start() {
+			playerManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+
 			objects = GameObject.Find("Objects");
 
-			StartCoroutine(AsyncLoading());
+			StartCoroutine(Loading());
 		}
-		//public IEnumerator LoadScene(string sceneName) {
-		//	nextScene = sceneName;
-		//	//yield return StartCoroutine(Loading());
-		//}
 
-		public static void AsyncLoadScene(string sceneName) {
+		public static void LoadScene(string sceneName) {
 			nextScene = sceneName;
 			SceneManager.LoadScene("Loading");
 		}
 
-		//public IEnumerator Loading() {
-			
-		//}
-
-		public IEnumerator AsyncLoading() {
+		public IEnumerator Loading() {
 			AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
 			op.allowSceneActivation = false;
 
@@ -45,6 +41,7 @@ namespace Heroes {
 				if (op.progress >= 0.9f) {
 					if (targetPos.x < screenPos.x + 300.0f) {
 						op.allowSceneActivation = true;
+						playerManager.ActiveAllPlayer();
 						yield break;
 					}
 				}

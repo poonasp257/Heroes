@@ -35,7 +35,7 @@ bool IOCPServer::initialize(Json::Document& document) {
 
 bool IOCPServer::createListenSocket() {
 	listenSocket = WSASocket(PF_INET, SOCK_STREAM, IPPROTO_TCP,
-		NULL, NULL, WSA_FLAG_OVERLAPPED);
+		NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (listenSocket == INVALID_SOCKET) {
 		SystemLogger::Log(Logger::Error, "WSASocekt() error!!");
 		return false;
@@ -111,7 +111,6 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 
 		SessionManager& sessionManager = SessionManager::Instance();
 		if (transferSize == 0) {
-			SystemLogger::Log(Logger::Info, "disconnected client...");
 			sessionManager.closeSession(session);
 			continue;
 		}
@@ -188,6 +187,7 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
 	HANDLE handle = CreateIoCompletionPort((HANDLE)accepter, this->getIOCP(),
 		(ULONG_PTR)session, NULL);
 	if(!handle) {
+		sessionManager.closeSession(session);
 		if (session) delete session;
 		return;
 	}

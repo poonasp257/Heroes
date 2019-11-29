@@ -23,8 +23,13 @@ using UInt64 = uint64_t;
 using Float = float;
 
 using threadId = std::thread::id;
+using oid_t = uint64_t;
 
 // enum type
+enum class ActionType : UInt16 {
+	WeakAttack, SmashAttack, Roll
+};
+
 enum class CharacterClass : UInt16 {
 	Warrior, 
 	Archer, 
@@ -41,22 +46,27 @@ struct Vector3 {
 };
 
 struct ChanelInfo {
-	Int32 traffic;
-	std::wstring id; // wstring
+	UInt16		 id;
+	Int32		 traffic;
+	std::wstring name; // wstring
 };
 
 struct CharacterInfo {
-	UINT64 characterId;
-	UInt16 characterClass;
+	UInt64 characterId;
 	UInt32 level;
-	std::wstring characterName; // wstring
-	std::wstring location; // zone name
-};
-
-struct CharacterStatus {
 	Int64 hp;
 	Int64 mp;
 	Int64 exp;
+	Vector3 position;
+	Vector3 rotation;
+	CharacterClass characterClass;
+	std::wstring familyName;
+	std::wstring characterName;
+	std::wstring location;
+};
+
+struct CharacterMovement {
+	float moveAmount;
 	Vector3 position;
 	Vector3 rotation;
 };

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Heroes {
-	public class PlayerStateManager : MonoBehaviour {
+	public class PlayerController : MonoBehaviour {
 		private Animator animator;
 		private CharacterController controller;
+		private PlayerManager playerManager;
 
 		private bool isAttacking;
 		private bool isRolling;
@@ -22,7 +23,6 @@ namespace Heroes {
 
 		[Header("Movement")]
 		[SerializeField] private float rotationSpeed = 0.5f;
-		[SerializeField] private float allowPlayerRotation = 0.0f;
 		[SerializeField] private float moveSpeed = 1.0f;
 
 		[Header("Attack")]
@@ -48,6 +48,8 @@ namespace Heroes {
 		}
 
 		private void Initialize() {
+			playerManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+
 			animator = GetComponent<Animator>();
 			controller = GetComponent<CharacterController>();
 
@@ -106,8 +108,13 @@ namespace Heroes {
 				return;
 			}
 
+			if (moveAmount == 0.0f || isAttacking) return;
+
 			LookMoveDirection();
 			Move();
+
+			playerManager.inputMovement(new CharacterMovement(
+				moveAmount, transform.position, transform.eulerAngles));
 		}
 
 		private void Gravity() {
@@ -118,13 +125,9 @@ namespace Heroes {
 		}
 
 		private void LookMoveDirection() {
-			if (moveAmount < allowPlayerRotation
-				|| isAttacking) return;
-
 			desiredMoveDirection = moveDirection;
 			desiredMoveDirection.y = 0.0f;
-			if (desiredMoveDirection == Vector3.zero)
-			{
+			if (desiredMoveDirection == Vector3.zero) {
 				desiredMoveDirection = transform.forward;
 			}
 
@@ -134,8 +137,6 @@ namespace Heroes {
 		}
 
 		private void Move() {
-			if (isAttacking) return;
-
 			Vector3 motion = moveDirection * moveAmount * moveSpeed;
 			controller.Move(motion * Time.deltaTime);
 		}

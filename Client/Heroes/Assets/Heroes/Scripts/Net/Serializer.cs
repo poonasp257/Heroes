@@ -5,9 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Heroes {
-	public static class Serializer {		
+	public static class Serializer {
 		public static void serialize(MemoryStream stream, PacketType type) {
 			serialize(stream, (UInt32)type);
+		}
+
+		public static void serialize(MemoryStream stream, CharacterClass type) {
+			serialize(stream, (UInt16)type);
+		}
+
+		public static void serialize(MemoryStream stream, ActionType type) {
+			serialize(stream, (UInt16)type);
 		}
 
 		public static void serialize(MemoryStream stream, bool value) {
@@ -17,7 +25,7 @@ namespace Heroes {
 		public static void serialize(MemoryStream stream, Byte value) {
 			stream.Write(BitConverter.GetBytes(value), 0, sizeof(Byte));
 		}
-				
+
 		public static void serialize(MemoryStream stream, Char value) {
 			stream.Write(BitConverter.GetBytes(value), 0, sizeof(Char));
 		}
@@ -37,7 +45,7 @@ namespace Heroes {
 		public static void serialize(MemoryStream stream, Int32 value) {
 			stream.Write(BitConverter.GetBytes(value), 0, sizeof(Int32));
 		}
-				
+
 		public static void serialize(MemoryStream stream, UInt32 value) {
 			stream.Write(BitConverter.GetBytes(value), 0, sizeof(UInt32));
 		}
@@ -52,7 +60,7 @@ namespace Heroes {
 
 		public static void serialize(MemoryStream stream, string str) {
 			byte[] bytes = Encoding.Unicode.GetBytes(str);
-			
+
 			serialize(stream, str.Length);
 			stream.Write(bytes, 0, bytes.Length);
 		}
@@ -64,8 +72,29 @@ namespace Heroes {
 		}
 
 		public static void serialize(MemoryStream stream, ChanelInfo value) {
-			serialize(stream, value.traffic);
 			serialize(stream, value.id);
+			serialize(stream, value.traffic);
+			serialize(stream, value.name);
+		}
+
+		public static void serialize(MemoryStream stream, CharacterInfo value) {
+			serialize(stream, value.characterId);
+			serialize(stream, value.level);
+			serialize(stream, value.hp);
+			serialize(stream, value.mp);
+			serialize(stream, value.exp);
+			serialize(stream, value.position);
+			serialize(stream, value.rotation);
+			serialize(stream, value.characterClass);
+			serialize(stream, value.familyName);
+			serialize(stream, value.characterName);
+			serialize(stream, value.location);
+		}
+
+		public static void serialize(MemoryStream stream, CharacterMovement value) {
+			serialize(stream, value.moveAmount);
+			serialize(stream, value.position);
+			serialize(stream, value.rotation);
 		}
 
 		public static void serialize(MemoryStream stream, List<ChanelInfo> list) {
@@ -75,27 +104,24 @@ namespace Heroes {
 			}
 		}
 
-		public static void serialize(MemoryStream stream, CharacterInfo value) {
-			serialize(stream, value.characterId);
-			serialize(stream, value.characterClass);
-			serialize(stream, value.level);
-			serialize(stream, value.characterName);
-			serialize(stream, value.location);
-		}
-
-		public static void serialize(MemoryStream stream, List<CharacterInfo> list) {
-			serialize(stream, list.Count);
-			foreach(CharacterInfo value in list) {
-				serialize(stream, value);
+		public static void serialize(MemoryStream stream, Dictionary<UInt64, CharacterInfo> table) {
+			serialize(stream, table.Count);
+			foreach(var pair in table) {
+				serialize(stream, pair.Key);
+				serialize(stream, pair.Value);
 			}
 		}
 
-		public static void serialize(MemoryStream stream, CharacterStatus value) {
-			serialize(stream, value.hp);
-			serialize(stream, value.mp);
-			serialize(stream, value.exp);
-			serialize(stream, value.position);
-			serialize(stream, value.rotation);
+		public static void deserialize(byte[] data, ref Int32 offset, out CharacterClass type) {
+			UInt16 value = BitConverter.ToUInt16(data, offset);
+			type = (CharacterClass)value;
+			offset += sizeof(UInt16);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out ActionType type) {
+			UInt16 value = BitConverter.ToUInt16(data, offset);
+			type = (ActionType)value;
+			offset += sizeof(UInt16);
 		}
 		
 		public static void deserialize(byte[] data, ref Int32 offset, out bool value) {
@@ -164,8 +190,29 @@ namespace Heroes {
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out ChanelInfo value) {
-			deserialize(data, ref offset, out value.traffic);
 			deserialize(data, ref offset, out value.id);
+			deserialize(data, ref offset, out value.traffic);
+			deserialize(data, ref offset, out value.name);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {
+			deserialize(data, ref offset, out value.characterId);
+			deserialize(data, ref offset, out value.level);
+			deserialize(data, ref offset, out value.hp);
+			deserialize(data, ref offset, out value.mp);
+			deserialize(data, ref offset, out value.exp);
+			deserialize(data, ref offset, out value.position);
+			deserialize(data, ref offset, out value.rotation);
+			deserialize(data, ref offset, out value.characterClass);
+			deserialize(data, ref offset, out value.familyName);
+			deserialize(data, ref offset, out value.characterName);
+			deserialize(data, ref offset, out value.location);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out CharacterMovement value) {
+			deserialize(data, ref offset, out value.moveAmount);
+			deserialize(data, ref offset, out value.position);
+			deserialize(data, ref offset, out value.rotation);
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChanelInfo> list) {
@@ -179,31 +226,17 @@ namespace Heroes {
 			}
 		} 
 
-		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {
-			deserialize(data, ref offset, out value.characterId);
-			deserialize(data, ref offset, out value.characterClass);
-			deserialize(data, ref offset, out value.level);
-			deserialize(data, ref offset, out value.characterName);
-			deserialize(data, ref offset, out value.location);
-		}
-
-		public static void deserialize(byte[] data, ref Int32 offset, ref List<CharacterInfo> list) {
+		public static void deserialize(byte[] data, ref Int32 offset, ref Dictionary<UInt64, CharacterInfo> table) {
 			Int32 size;
 			deserialize(data, ref offset, out size);
-
+			
+			UInt64 key;
 			CharacterInfo value;
 			for(int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out key);
 				deserialize(data, ref offset, out value);
-				list.Add(value);
+				table.Add(key, value);
 			}
 		} 
-
-		public static void deserialize(byte[] data, ref Int32 offset, out CharacterStatus value) {
-			deserialize(data, ref offset, out value.hp);
-			deserialize(data, ref offset, out value.mp);
-			deserialize(data, ref offset, out value.exp);
-			deserialize(data, ref offset, out value.position);
-			deserialize(data, ref offset, out value.rotation);
-		}
 	}
 }
