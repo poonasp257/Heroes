@@ -41,7 +41,7 @@ namespace Heroes {
 				if (op.progress >= 0.9f) {
 					if (targetPos.x < screenPos.x + 300.0f) {
 						op.allowSceneActivation = true;
-						playerManager.ActiveAllPlayer();
+						playerManager.activeAllPlayer();
 						yield break;
 					}
 				}

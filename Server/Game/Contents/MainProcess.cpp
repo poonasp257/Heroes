@@ -126,16 +126,18 @@ void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
 	
 	CharacterInfo characterInfo;
 	characterInfo.characterId = 0;
-	characterInfo.level = 1;
-	characterInfo.hp = 100;
-	characterInfo.mp = 100;
-	characterInfo.exp = 0;
+	characterInfo.level = 60;
+	characterInfo.currentHp = 60;
+	characterInfo.currentMp = 60;
+	characterInfo.maxHp = 100;
+	characterInfo.maxMp = 100;
+	characterInfo.exp = 5.157f;
 	characterInfo.position = { 130.0f, 21.75f, 30.0f };
 	characterInfo.rotation = { 0, 0, 0 };
 	characterInfo.characterClass = CharacterClass::Warrior;
-	characterInfo.familyName = L"±è¾¾";
-	characterInfo.characterName = L"Kim";
-	characterInfo.location = L"¹ë¸®¾Æ";
+	characterInfo.familyName = L"Æ¼²ø¸ð¾Æ¸ÕÁö";
+	characterInfo.characterName = L"´Ï»ý°¢º¸´Ü";
+	characterInfo.location = L"º§¸®¾Æ ¸¶À»";
 
 	auto foundPlayer = playerTable.find(packet->accountId);
 	if (foundPlayer == playerTable.end()) {

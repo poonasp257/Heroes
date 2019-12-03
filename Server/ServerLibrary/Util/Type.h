@@ -54,9 +54,11 @@ struct ChanelInfo {
 struct CharacterInfo {
 	UInt64 characterId;
 	UInt32 level;
-	Int64 hp;
-	Int64 mp;
-	Int64 exp;
+	float exp;
+	Int64 currentHp;
+	Int64 currentMp;
+	Int64 maxHp;
+	Int64 maxMp;
 	Vector3 position;
 	Vector3 rotation;
 	CharacterClass characterClass;

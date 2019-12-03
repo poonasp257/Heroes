@@ -8,11 +8,9 @@ namespace Heroes {
 		[SerializeField] private float hp = 100;
 
 		private Animator animator;
-		private EnemyTarget enemyTarget;
 
 		private void Start() {
 			animator = GetComponent<Animator>();
-			enemyTarget = GetComponent<EnemyTarget>();
 		}
 
 		private void Update() {

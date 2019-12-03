@@ -32,11 +32,11 @@ namespace Heroes {
 		}
 
 		private void Update() {
-			ProcessCharacterMovement();
-			ProcessActionMovement();
+			processCharacterMovement();
+			processActionMovement();
 		}
 
-		private void ProcessCharacterMovement() {
+		private void processCharacterMovement() {
 			if (movementQueue.Count == 0) return;
 			
 			var movement = movementQueue.Dequeue();
@@ -47,7 +47,7 @@ namespace Heroes {
 			networkManager.send(packet);
 		}
 
-		private void ProcessActionMovement() {
+		private void processActionMovement() {
 			if (actionQueue.Count == 0) return;
 			
 			var action = actionQueue.Dequeue();
@@ -58,7 +58,7 @@ namespace Heroes {
 			networkManager.send(packet);
 		}
 
-		private GameObject CreateCharacter(UInt64 accountId, CharacterInfo info) {
+		private GameObject createCharacter(UInt64 accountId, CharacterInfo info) {
 			GameObject newCharacter = Instantiate<GameObject>(characterPrefab);
 			newCharacter.transform.position = info.position;
 			newCharacter.transform.rotation = Quaternion.Euler(info.rotation);
@@ -72,7 +72,13 @@ namespace Heroes {
 			return newCharacter;
 		}
 
-		public void ActiveAllPlayer() {
+		public CharacterStateManager getCharacterState(UInt64 accountId) {
+			if (!playerTable.ContainsKey(accountId)) return null;
+
+			return playerTable[accountId];
+		}
+		
+		public void activeAllPlayer() {
 			foreach(var player in playerTable) {
 				player.Value.gameObject.SetActive(true);
 			}
@@ -101,7 +107,7 @@ namespace Heroes {
 			foreach(var info in packet.playerTable) {
 				var playerInfo = info.Value;
 
-				GameObject player = CreateCharacter(info.Key, playerInfo);
+				GameObject player = createCharacter(info.Key, playerInfo);
 				player.SetActive(false);
 
 				if (info.Key == PlayerData.Instance.AccountId) { 
@@ -116,7 +122,7 @@ namespace Heroes {
 
 			if (playerTable.ContainsKey(packet.accountId)) return;
 
-			CreateCharacter(packet.accountId, packet.characterInfo);
+			createCharacter(packet.accountId, packet.characterInfo);
 		}
 
 		public void notifyCharacterMovement(PacketType type, Packet rowPacket) {

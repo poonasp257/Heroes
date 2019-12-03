@@ -28,9 +28,11 @@ namespace Heroes {
 	public struct CharacterInfo {
 		public UInt64 characterId;
 		public UInt32 level;
-		public Int64 hp;
-		public Int64 mp;
-		public Int64 exp;
+		public float exp;
+		public Int64 currentHp;
+		public Int64 currentMp;
+		public Int64 maxHp;
+		public Int64 maxMp;
 		public Vector3 position;
 		public Vector3 rotation;
 		public CharacterClass characterClass;

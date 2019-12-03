@@ -45,21 +45,11 @@ namespace Heroes {
 				characterId = value;
 			}
 		}
-		
-		public CharacterInfo CharacterInfomation {
-			get {
-				return characterInfo;
-			}
-			set {
-				characterInfo = value;
-			}
-		}
 
 		public PlayerData() {
 			accountId = 0;
 			chanelId = 0;
 			characterId = 0;
-			characterInfo = new CharacterInfo();
 		}
 	}
 }

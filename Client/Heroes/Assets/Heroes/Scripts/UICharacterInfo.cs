@@ -46,7 +46,6 @@ namespace Heroes {
 				
 		public void OnConnectButtonClick() {
 			PlayerData.Instance.CharacterId = CharacterID;
-			PlayerData.Instance.CharacterInfomation = Info;
 			LoadingSceneManager.LoadScene("Town");
 		}
 
