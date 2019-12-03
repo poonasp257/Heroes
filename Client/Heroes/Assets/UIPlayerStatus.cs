@@ -47,7 +47,7 @@ namespace Heroes {
 
 			updateHPUI();
 			updateMPUI();
-	    }
+		}
 
 		private void updateHPUI() {
 			CharacterInfo playerInfo = characterState.Info;

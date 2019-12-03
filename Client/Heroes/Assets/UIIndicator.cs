@@ -7,7 +7,8 @@ namespace Heroes {
 
 		private Text figure;
 
-		private Vector3 originPosition;
+		private RectTransform rectTransform;
+		private Vector2 originPosition;
 
 		private float barWidth;
 		private Image barImage;
@@ -19,14 +20,14 @@ namespace Heroes {
 
 		private void Start() {
 			figure = GetComponentInChildren<Text>();
-
-			originPosition = this.transform.position;
-
+			
 			barImage = bar.GetComponent<Image>();
 			RectTransform barTransform = bar.GetComponent<RectTransform>();
 
-			float adjust = Screen.width / Screen.currentResolution.width;
-			barWidth = (barTransform.rect.width * adjust) - borderWidth * 2;
+			rectTransform = this.GetComponent<RectTransform>();
+			originPosition = rectTransform.anchoredPosition;
+
+			barWidth = barTransform.rect.width - borderWidth * 2;
 		}
 
 		private void Update() {
@@ -35,10 +36,10 @@ namespace Heroes {
 		}
 
 		private void updateIndicator() {
-			Vector3 currentPosition = originPosition;
+			Vector2 currentPosition = originPosition;
 			currentPosition.x += barWidth * barImage.fillAmount;
 
-			this.transform.position = currentPosition;
+			rectTransform.anchoredPosition = currentPosition;
 		}
 
 		private void updateFigure() {

@@ -135,8 +135,8 @@ void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
 	characterInfo.position = { 130.0f, 21.75f, 30.0f };
 	characterInfo.rotation = { 0, 0, 0 };
 	characterInfo.characterClass = CharacterClass::Warrior;
-	characterInfo.familyName = L"티끌모아먼지";
-	characterInfo.characterName = L"니생각보단";
+	characterInfo.familyName = L"펄어비스";
+	characterInfo.characterName = L"캐릭터" + std::to_wstring(playerTable.size() + 1);
 	characterInfo.location = L"벨리아 마을";
 
 	auto foundPlayer = playerTable.find(packet->accountId);
