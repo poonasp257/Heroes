@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace Heroes {
@@ -11,12 +10,14 @@ namespace Heroes {
 		private NetworkManager	networkManager;
 		private InputField		userIdField;
 		private InputField		passwordField;
-		private Button			loginButton;
-		private Button			registerButton;
 
 		private string userId;
 		private string password;
 
+		private List<Button> buttonList;
+		[SerializeField] private GameObject	loginPage;
+		[SerializeField] private GameObject	registerPage;
+		
 		private void Start() {
 			initialize();
 
@@ -38,16 +39,31 @@ namespace Heroes {
 
 			userIdField = GameObject.Find("UserIdField").GetComponent<InputField>();
 			passwordField = GameObject.Find("PasswordField").GetComponent<InputField>();
-			loginButton = GameObject.Find("Login").GetComponent<Button>();
-			registerButton = GameObject.Find("Register").GetComponent<Button>();
+
+			if (loginPage == null || registerPage == null) {
+				Debug.Log("login or register object isn't assgined.");
+				return;
+			}
+
+			buttonList = new List<Button>();
+
+			Button[] buttons = loginPage.GetComponentsInChildren<Button>();
+			foreach(var button in buttons) {
+				buttonList.Add(button);
+			}
+
+			buttons = registerPage.GetComponentsInChildren<Button>();
+			foreach(var button in buttons) {
+				buttonList.Add(button);
+			}
 			
 			userIdField.Select();
 		}
 		
 		private void processInput() {			
-			if (Input.GetKeyDown(KeyCode.Return)
-				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
-				authLoginRequest();
+			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+				if (loginPage.activeSelf) authLoginRequest();
+				else authRegisterRequest();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Tab)) { 
@@ -58,28 +74,25 @@ namespace Heroes {
 		private void deactivateInteractableUI() {
 			userIdField.interactable = false;
 			passwordField.interactable = false;
-			loginButton.interactable = false;
-			registerButton.interactable = false;
+
+			foreach(var button in buttonList) {
+				button.interactable = false;
+			}
 		}
 
 		private void activateInteractableUI() {
 			userIdField.interactable = true;
 			passwordField.interactable = true;
-			loginButton.interactable = true;
-			registerButton.interactable = true;
+
+			foreach(var button in buttonList) {
+				button.interactable = true;
+			}
 		}
 
 		private void updateInputField() {
 			userId = userIdField.text;
 			password = passwordField.text;
 		}	
-
-		private void clearInputField() {
-			userId = "";
-			userIdField.text = "";
-			password = "";
-			passwordField.text = "";
-		}
 
 		private void changeFocus() {
 			if(userIdField.isFocused) passwordField.Select();
@@ -94,6 +107,13 @@ namespace Heroes {
 
 			return true;
 		} 
+
+		public void clearInputField() {
+			userId = "";
+			userIdField.text = "";
+			password = "";
+			passwordField.text = "";
+		}
 
 		public void authLoginRequest() {
 			if (!checkInputField()) {
@@ -136,7 +156,7 @@ namespace Heroes {
 				return;
 			}
 
-			if(packet.errorCode < 0) {
+			if(packet.errorCode >= 0) {
 				msgBox.alert("로그인 정보가 일치하지 않습니다.");
 				return;
 			}
@@ -152,13 +172,15 @@ namespace Heroes {
 				return;
 			}
 
-			if(packet.errorCode < 0) {
+			if(packet.errorCode >= 0) {
 				msgBox.alert("잘못된 입력 정보입니다.");
 				return;
 			}
 
-			PlayerData.Instance.AccountId = packet.accountId;
-			StartCoroutine(LoadChanelScene());
+			loginPage.SetActive(true);
+			registerPage.SetActive(false);
+
+			msgBox.alert("회원가입 성공!");
 		}
 
 		public IEnumerator LoadChanelScene() {

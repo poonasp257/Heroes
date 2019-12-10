@@ -7,22 +7,27 @@ class Packet;
 
 class MainProcess : public ContentsProcess {
 private:
-	static std::unordered_map<oid_t, CharacterInfo> playerTable;
-	
+	static std::unordered_map<UInt64, CharacterInfo> playerTable;
+
 public:
 	MainProcess();
-    ~MainProcess();
+    virtual ~MainProcess();
 
 	static void AuthLoginRequest(Session *session, Packet *rowPacket);
+	static void DBAuthLoginResponse(Session *session, Packet *rowPacket);
 	static void AuthRegisterRequest(Session *session, Packet *rowPacket);
+	static void DBAuthRegisterResponse(Session *session, Packet *rowPacket);
 	static void ChanelStatusRequest(Session *session, Packet *rowPacket);
 	static void AccountInfoRequest(Session *session, Packet *rowPacket);
-	static void ConnectChanelRequest(Session *session, Packet *rowPacket);
-	static void DisconnectChanelRequest(Session *session, Packet *rowPacket); 
+	static void DBAccountInfoResponse(Session *session, Packet *rowPacket);
 	static void CreateCharacterRequest(Session *session, Packet *rowPacket);
+	static void DBCreateCharacterResponse(Session *session, Packet *rowPacket);
 	static void DeleteCharacterRequest(Session *session, Packet *rowPacket);
+	static void DBDeleteCharacterResponse(Session *session, Packet *rowPacket);
+	static void ConnectChanelRequest(Session *session, Packet *rowPacket);
+	static void DBConnectChanelResponse(Session *session, Packet *rowPacket);
+	static void DisconnectChanelRequest(Session *session, Packet *rowPacket); 
 	static void NotifyCharacterMovement(Session *session, Packet *rowPacket);
 	static void NotifyCharacterAction(Session *session, Packet *rowPacket);
 };
-
 #endif

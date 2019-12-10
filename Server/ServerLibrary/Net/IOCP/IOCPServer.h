@@ -1,7 +1,7 @@
 #ifndef IOCPSERVER_H
 #define IOCPSERVER_H
 
-class IOCPServer : public Server, public Singleton<IOCPServer> {
+class IOCPServer : public Server {
 private:
 	SOCKET listenSocket;
 	HANDLE iocp;
@@ -11,8 +11,6 @@ private:
 private:
 	bool createListenSocket();
 
-	virtual bool initialize(Json::Document& document);
-	
 	static unsigned int WINAPI AcceptThread(LPVOID lpParam);
 	static unsigned int WINAPI WorkerThread(LPVOID lpParam);
 

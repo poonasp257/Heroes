@@ -62,6 +62,14 @@ using namespace std::experimental;
 #include "Net/IOCP/IOCPSession.h"
 #include "Net/IOCP/IOCPServer.h"
 
+#include "Net/Terminal/TerminalSession.h"
+#include "Net/Terminal/Terminal.h"
+#include "Net/Terminal/TerminalManager.h"
+
 #include "Contents/ContentsProcess.h"
+
+#include "Database/ODBCDatabase.h"
+#include "Database/Query.h"
+#include "Database/DBManager.h"
 
 #endif

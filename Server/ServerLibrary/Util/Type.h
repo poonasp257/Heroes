@@ -23,7 +23,6 @@ using UInt64 = uint64_t;
 using Float = float;
 
 using threadId = std::thread::id;
-using oid_t = uint64_t;
 
 // enum type
 enum class ActionType : UInt16 {

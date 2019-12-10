@@ -42,6 +42,8 @@ namespace Heroes {
 		}
 
 		private void Update() {
+			if (characterState == null) return;
+
 			level.text = characterState.Info.level.ToString();
 			exp.text = characterState.Info.exp.ToString("F3") + "%";
 

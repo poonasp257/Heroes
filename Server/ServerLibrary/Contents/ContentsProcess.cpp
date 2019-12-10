@@ -9,6 +9,8 @@ ContentsProcess::ContentsProcess() : packageQueue(new ThreadJobQueue<Package*>()
 	}
 
 	this->initialize(json.getDocument());
+	
+	this->registerPacketProcess(PacketType::NotifyTerminal, &ContentsProcess::NotifyTerminal);
 }
 
 ContentsProcess::~ContentsProcess() {
@@ -67,3 +69,7 @@ void ContentsProcess::registerPacketProcess(PacketType type, PacketProcess proce
 void ContentsProcess::putPackage(Package *package) {
     packageQueue->push(package);		
 }    
+
+void ContentsProcess::NotifyTerminal(Session *session, Packet *rowPacket) {
+	session->setType(SessionType::Terminal);
+}

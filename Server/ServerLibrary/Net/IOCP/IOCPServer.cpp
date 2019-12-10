@@ -2,35 +2,12 @@
 
 IOCPServer::IOCPServer(ContentsProcess *process) : Server("IOCPServer", process),
 	listenSocket(INVALID_SOCKET), iocp(nullptr), acceptThread(nullptr) {
-	bool result = this->initialize(json.getDocument());
-	if(!result) {
-		SystemLogger::Log(Logger::Error, "IOCP Server couldn't be started");
-		// assert
-	}
-
-	SystemLogger::Log(Logger::Info, "IOCP Server start on port %d", port);
+	status = ServerStatus::Initialize;
 }
 
 IOCPServer::~IOCPServer() {
 	closesocket(listenSocket);
 	CloseHandle(iocp);
-}
-
-bool IOCPServer::initialize(Json::Document& document) {
-	Json::Value& app = document["App"];
-	if (app.Empty()) {
-		SystemLogger::Log(Logger::Error, "\'App\' document is not exist");
-		// assert
-		return false;
-	}
-
-	strcpy_s(ip.data(), ip.size(), app["Server"]["IP"].GetString());
-	port = app["Server"]["Port"].GetInt();
-	workerThreadCount = app["Server"]["ThreadCount"].GetInt();
-
-	status = ServerStatus::Initialize;
-	
-	return true;
 }
 
 bool IOCPServer::createListenSocket() {

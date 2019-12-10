@@ -14,12 +14,13 @@ namespace Heroes {
 		private Text level;
 		private Text characterName;
 		private Text location;
-
-		public UInt64 CharacterID { get; set; }
+		
+		[SerializeField] private Sprite[] classIcons;
 
 		public CharacterInfo Info {
 			get { return characterInfo; }
 			set {
+				classIcon.sprite = classIcons[(int)value.characterClass];
 				level.text = value.level.ToString();
 				characterName.text = value.characterName;
 				location.text = value.location;
@@ -40,12 +41,11 @@ namespace Heroes {
 		}
 
 		public void OnClick() {
-			selectedCharacterUI.FamilyName = Info.familyName.ToString();
-			selectedCharacterUI.CharacterName = characterName.text;
+			selectedCharacterUI.SelectCharacter(this);
 		}		
 				
 		public void OnConnectButtonClick() {
-			PlayerData.Instance.CharacterId = CharacterID;
+			PlayerData.Instance.CharacterId = Info.characterId;
 			LoadingSceneManager.LoadScene("Town");
 		}
 

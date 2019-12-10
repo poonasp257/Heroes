@@ -1,6 +1,11 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+enum class SessionType {
+	Client,
+	Terminal
+};
+
 class Session {
 protected:
 	struct SessionInfo {
@@ -9,8 +14,9 @@ protected:
 	};
 
 protected:
+	SessionType type;
 	SessionInfo sessionInfo;
-	oid_t	id;
+	UInt64	id;
 
 public:
 	Session();
@@ -23,13 +29,15 @@ public:
 	virtual void recvStandBy() = 0;
 
 	virtual bool onAccept(SOCKET socket, SOCKADDR_IN addrInfo);
-	virtual void onClose();
+	virtual void onClose(bool isForced = false);
 
 	SOCKET& getSocket() { return sessionInfo.socket; }
 	std::string getClientAddress();
 
-	oid_t getId() const { return id; }
-	void	 setId(oid_t id) { this->id = id; }
-};
+	UInt64 getId() const { return id; }
+	void setId(UInt64 id) { this->id = id; }
 
+	SessionType getType() const { return type; }
+	void setType(SessionType type) { this->type = type; }
+};
 #endif

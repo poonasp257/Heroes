@@ -104,7 +104,6 @@ GameObject:
   - component: {fileID: 2026203583392592422}
   - component: {fileID: 6814722349244093333}
   - component: {fileID: 2660157298282766169}
-  - component: {fileID: 5440313861727761304}
   m_Layer: 0
   m_Name: Metalon Red
   m_TagString: Untagged
@@ -207,18 +206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isInvicible: 0
   hp: 100
---- !u!114 &5440313861727761304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1128758269040250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18fc569bccb0b7a40987a463ef0d54b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1130806907750044
 GameObject:
   m_ObjectHideFlags: 0

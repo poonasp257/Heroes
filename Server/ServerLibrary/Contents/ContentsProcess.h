@@ -23,5 +23,7 @@ public:
     ~ContentsProcess();
     
     void putPackage(Package *package);
+
+	static void NotifyTerminal(Session *session, Packet *rowPacket);
 };
 #endif

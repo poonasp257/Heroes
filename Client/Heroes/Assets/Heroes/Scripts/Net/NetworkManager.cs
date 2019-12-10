@@ -17,7 +17,7 @@ namespace Heroes {
 		private readonly object lockObject = new object();
 
 		private readonly string IP = "127.0.0.1";
-		private readonly UInt16 Port = 9000;
+		private readonly UInt16 Port = 9200;
 
 		public delegate void Notifier(PacketType type, Packet rowPacket);
 		private Dictionary<PacketType, Notifier> notifierMap;
@@ -189,6 +189,8 @@ namespace Heroes {
 		}
 
 		public void RegisterNotification(PacketType type, Notifier notifier) {
+			if (notifierMap.ContainsKey(type)) return;
+
 			this.notifierMap.Add(type, notifier);
 		}
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+	#include "stdafx.h"
 
 IOBuffer::IOBuffer() : ioType(IOType::Error) {
 	ZeroMemory(&overlapped, sizeof(overlapped));
@@ -46,7 +46,6 @@ void IOBuffer::setBuffer(Stream& stream) {
 
 	int32_t offset = 0;
 	int32_t packetHeaderSize = sizeof(int32_t);
-
 	int32_t packetLen = packetHeaderSize + (int32_t)stream.getSize();
 
 	char *data = buffer.data();
@@ -161,7 +160,7 @@ Package* IOCPSession::onRecv(size_t transferSize) {
 	Packet *packet = PacketAnalyzer::Analyzer((const char*)packetData, packetDataSize);
 	if(!packet) {
 		SystemLogger::Log(Logger::Warning, "invalid packet");
-		this->onClose();
+		this->onClose(true);
 		return nullptr;
 	}
 

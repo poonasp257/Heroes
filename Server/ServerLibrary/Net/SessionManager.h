@@ -4,6 +4,7 @@
 class SessionManager : public Singleton<SessionManager> {
 private:
 	const size_t 		MaxConnection;
+	UInt64				sessionIdSeed;
 	std::list<Session*> sessionList;
 	std::mutex			lock;
 
@@ -15,9 +16,11 @@ public:
 	bool closeSession(Session *session);
 	void forceCloseSession(Session *session);
 
-	void BroadcastPacket(Packet *packet);
+	void BroadcastPacket(Packet *packet, SessionType sessionType = SessionType::Client);
 
-	Session* getSession(oid_t sessionId);
+	Session* getSession(UInt64 sessionId);
 	size_t getConnectionCount() const { return sessionList.size(); }
+
+	UInt64 createSessionId() { return ++sessionIdSeed; }
 };
 #endif

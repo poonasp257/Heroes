@@ -106,6 +106,13 @@ namespace Heroes {
 			}
 		}
 
+		public static void serialize(MemoryStream stream, List<CharacterInfo> list) {
+			serialize(stream, list.Count);
+			foreach(CharacterInfo value in list) {
+				serialize(stream, value);
+			}
+		}
+
 		public static void serialize(MemoryStream stream, Dictionary<UInt64, CharacterInfo> table) {
 			serialize(stream, table.Count);
 			foreach(var pair in table) {
@@ -224,6 +231,17 @@ namespace Heroes {
 			deserialize(data, ref offset, out size);
 
 			ChanelInfo value;
+			for(int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out value);
+				list.Add(value);
+			}
+		} 
+
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<CharacterInfo> list) {
+			Int32 size;
+			deserialize(data, ref offset, out size);
+
+			CharacterInfo value;
 			for(int i = 0; i < size; ++i) {
 				deserialize(data, ref offset, out value);
 				list.Add(value);

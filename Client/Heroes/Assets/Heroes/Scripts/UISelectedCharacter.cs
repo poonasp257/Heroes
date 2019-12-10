@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Heroes {
@@ -6,30 +7,26 @@ namespace Heroes {
 		private Text familyName;
 		private Text characterName;
 
-		public string FamilyName {
-			get {
-				return familyName.text;
-			}
-			set {
-				familyName.text = value;
-			}
-		}
-
-		public string CharacterName {
-			get {
-				return characterName.text;
-			}
-			set {
-				characterName.text = value;
-			}
-		}
+		public CharacterInfo Info { get; set; }
 
 		private void Awake() {
 			familyName = transform.Find("Family Name").GetComponent<Text>();
 			characterName = transform.Find("Character Name").GetComponent<Text>();
 
-			FamilyName = "";
-			CharacterName = "";
+			familyName.text = "";
+			characterName.text = "";
+		}
+
+		public void SelectCharacter(UICharacterInfo character) {
+			UICharacterInfo selectedCharacter = character.GetComponent<UICharacterInfo>();
+			Info = selectedCharacter.Info;
+
+			familyName.text = Info.familyName;
+			characterName.text = Info.characterName;
+		}
+
+		public bool isSelected() {
+			return string.IsNullOrEmpty(Info.characterName) == false;
 		}
 	}
 }

@@ -1,16 +1,22 @@
 #include "stdafx.h"
 #include "MainProcess.h"
 
-std::unordered_map<oid_t, CharacterInfo> MainProcess::playerTable;
+std::unordered_map<UInt64, CharacterInfo> MainProcess::playerTable;
 
 MainProcess::MainProcess() {
 	registerPacketProcess(PacketType::AuthLoginRequest, &MainProcess::AuthLoginRequest);
+	registerPacketProcess(PacketType::DBAuthLoginResponse, &MainProcess::DBAuthLoginResponse);
 	registerPacketProcess(PacketType::AuthRegisterRequest, &MainProcess::AuthRegisterRequest);
+	registerPacketProcess(PacketType::DBAuthRegisterResponse, &MainProcess::DBAuthRegisterResponse);
 	registerPacketProcess(PacketType::ChanelStatusRequest, &MainProcess::ChanelStatusRequest);
 	registerPacketProcess(PacketType::AccountInfoRequest, &MainProcess::AccountInfoRequest);
+	registerPacketProcess(PacketType::DBAccountInfoResponse, &MainProcess::DBAccountInfoResponse);
 	registerPacketProcess(PacketType::CreateCharacterRequest, &MainProcess::CreateCharacterRequest);
+	registerPacketProcess(PacketType::DBCreateCharacterResponse, &MainProcess::DBCreateCharacterResponse);
 	registerPacketProcess(PacketType::DeleteCharacterRequest, &MainProcess::DeleteCharacterRequest);
+	registerPacketProcess(PacketType::DBDeleteCharacterResponse, &MainProcess::DBDeleteCharacterResponse);
 	registerPacketProcess(PacketType::ConnectChanelRequest, &MainProcess::ConnectChanelRequest);
+	registerPacketProcess(PacketType::DBConnectChanelResponse, &MainProcess::DBConnectChanelResponse);
 	registerPacketProcess(PacketType::DisconnectChanelRequest, &MainProcess::DisconnectChanelRequest);
 	registerPacketProcess(PacketType::NotifyCharacterMovement, &MainProcess::NotifyCharacterMovement);
 	registerPacketProcess(PacketType::NotifyCharacterAction, &MainProcess::NotifyCharacterAction);
@@ -23,40 +29,50 @@ MainProcess::~MainProcess() {
 void MainProcess::AuthLoginRequest(Session *session, Packet *rowPacket) {
 	AuthLoginRequestPacket *packet = dynamic_cast<AuthLoginRequestPacket*>(rowPacket);
 
-	// DB
-	// Magic code...
-	std::wstring id[2] = { L"poona", L"test" };
-	std::wstring password[2] = { L"1234", L"1234" };
-	Int64 accountId[2] = { 1, 2 };
-	//////////////////////////////
+	DBAuthLoginRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.id = packet->id;
+	dbPacket.password = packet->password;
+
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBAuthLoginResponse(Session *session, Packet *rowPacket) {
+	DBAuthLoginResponsePacket *packet = dynamic_cast<DBAuthLoginResponsePacket*>(rowPacket);
+
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
 
 	AuthLoginResponsePacket responsePacket;
-	for (int i = 0; i < 2; ++i) {
-		if (id[i].compare(packet->id) == 0
-			&& password[i].compare(packet->password) == 0) {
-			responsePacket.accountId = accountId[i]; // DB account object id
-			responsePacket.errorCode = 0;
-			break;
-		}
-		else {
-			responsePacket.errorCode = -1;
-		}
-	}
+	responsePacket.accountId = packet->accountId;
+	responsePacket.errorCode = packet->errorCode;
 
-	//if (playerTable.find(accountId) != playerTable.end()) {
-	//	disconnect...
-	//	erase player in playerTable
-	//}
-	
-    session->sendPacket(&responsePacket);
+	clientSession->sendPacket(&responsePacket);
 }
 
 void MainProcess::AuthRegisterRequest(Session *session, Packet *rowPacket) {
-	/*	Error code
-		#1 id is aleady exist...
-		#2 id must be contains characters...
-		#3 password is too short...
-	*/
+	AuthRegisterRequestPacket *packet = dynamic_cast<AuthRegisterRequestPacket*>(rowPacket);
+
+	DBAuthRegisterRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.id = packet->id;
+	dbPacket.password = packet->password;
+
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBAuthRegisterResponse(Session *session, Packet *rowPacket) {
+	DBAuthRegisterResponsePacket *packet = dynamic_cast<DBAuthRegisterResponsePacket*>(rowPacket);
+
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
+
+	AuthRegisterResponsePacket responsePacket;
+	responsePacket.errorCode = packet->errorCode;
+
+	clientSession->sendPacket(&responsePacket);
 }
 
 void MainProcess::ChanelStatusRequest(Session *session, Packet *rowPacket) {
@@ -79,78 +95,107 @@ void MainProcess::ChanelStatusRequest(Session *session, Packet *rowPacket) {
 void MainProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 	AccountInfoRequestPacket *packet = dynamic_cast<AccountInfoRequestPacket*>(rowPacket);
 
-	//searching packet->accountId in db...
-	//Get characters information 
-	/*
-		1. 계정 정보
-		가문명 총 캐릭터 수
-		
-		2.캐릭터 정보
-		이름 레벨 직업 위치
-		+ 장착 중인 외형, 장비
-	*/
+	DBAccountInfoRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
+
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBAccountInfoResponse(Session *session, Packet *rowPacket) {
+	DBAccountInfoResponsePacket *packet = dynamic_cast<DBAccountInfoResponsePacket*>(rowPacket);
 	
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
 
 	AccountInfoResponsePacket responsePacket;
-	responsePacket.creatableCharacters = 10;
-	CharacterInfo characterInfo;
-	for (int i = 0; i < 4; ++i) {
-		characterInfo.characterClass = (CharacterClass)(rand() % 4);
-		characterInfo.level = rand() % 60;
-		characterInfo.familyName = L"펄어비스";
-		characterInfo.characterName = L"캐릭터" + std::to_wstring(i + 1);
-		characterInfo.location = L"벨리아 마을";
+	responsePacket.maxCreatableCharacters = packet->maxCreatableCharacters;
+	responsePacket.characterList = std::move(packet->characterList);
 
-		responsePacket.characterTable.insert(std::make_pair(i, characterInfo));
-	}
-
-	session->sendPacket(&responsePacket);
+	clientSession->sendPacket(&responsePacket);
 }
 
 void MainProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
+	CreateCharacterRequestPacket *packet = dynamic_cast<CreateCharacterRequestPacket*>(rowPacket);
+	
+	DBCreateCharacterRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
+	dbPacket.characterClass = packet->characterClass;
+	dbPacket.characterName = packet->characterName;
 
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBCreateCharacterResponse(Session *session, Packet *rowPacket) {
+	DBCreateCharacterResponsePacket *packet = dynamic_cast<DBCreateCharacterResponsePacket*>(rowPacket);
+
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
+
+	CreateCharacterResponsePacket responsePacket;
+	responsePacket.errorCode = packet->errorCode;
+
+	clientSession->sendPacket(&responsePacket);
 }
 
 void MainProcess::DeleteCharacterRequest(Session *session, Packet *rowPacket) {
-	
+	DeleteCharacterRequestPacket *packet = dynamic_cast<DeleteCharacterRequestPacket*>(rowPacket);
+
+	DBDeleteCharacterRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.characterId = packet->characterId;
+	   
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBDeleteCharacterResponse(Session *session, Packet *rowPacket) {
+	DBDeleteCharacterResponsePacket *packet = dynamic_cast<DBDeleteCharacterResponsePacket*>(rowPacket);
+
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
+
+	DeleteCharacterResponsePacket responsePacket;
+	clientSession->sendPacket(&responsePacket);
 }
 
 void MainProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
 	ConnectChanelRequestPacket *packet = dynamic_cast<ConnectChanelRequestPacket*>(rowPacket);
 	//packet->chanelId;
-	//packet->characterId;
 
-	//1.DB Query packet->characterId....
-	//2.session를 제외한 세션들에게 접속한 캐릭 정보 브로드 캐스팅
-	//3.session에게 map 정보 보내기
-	
-	CharacterInfo characterInfo;
-	characterInfo.characterId = 0;
-	characterInfo.level = 60;
-	characterInfo.currentHp = 60;
-	characterInfo.currentMp = 60;
-	characterInfo.maxHp = 100;
-	characterInfo.maxMp = 100;
-	characterInfo.exp = 5.157f;
-	characterInfo.position = { 130.0f, 21.75f, 30.0f };
-	characterInfo.rotation = { 0, 0, 0 };
-	characterInfo.characterClass = CharacterClass::Warrior;
-	characterInfo.familyName = L"펄어비스";
-	characterInfo.characterName = L"캐릭터" + std::to_wstring(playerTable.size() + 1);
-	characterInfo.location = L"벨리아 마을";
+	DBConnectChanelRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.characterId = packet->characterId;
+	dbPacket.accountId = packet->accountId;
+
+	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	terminal->sendPacket(&dbPacket);
+}
+
+void MainProcess::DBConnectChanelResponse(Session *session, Packet *rowPacket) {
+	DBConnectChanelResponsePacket *packet = dynamic_cast<DBConnectChanelResponsePacket*>(rowPacket);
+
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) return;
 
 	auto foundPlayer = playerTable.find(packet->accountId);
-	if (foundPlayer == playerTable.end()) {
-		playerTable.insert(std::make_pair(packet->accountId, characterInfo));
+	if (foundPlayer != playerTable.end()) {
+		//Session 끊고, 데이터 저장
+		playerTable.erase(foundPlayer);
 	}
 
+	playerTable.insert(std::make_pair(packet->accountId, packet->characterInfo));
+	
 	ConnectChanelResponsePacket responsePacket;
 	responsePacket.playerTable = playerTable;
-	session->sendPacket(&responsePacket);
+	clientSession->sendPacket(&responsePacket);
 
 	NotifyNewConnectPacket notifyPacket;
 	notifyPacket.accountId = packet->accountId;
-	notifyPacket.characterInfo = characterInfo;
+	notifyPacket.characterInfo = packet->characterInfo;
 
 	SessionManager::Instance().BroadcastPacket(&notifyPacket);
 }

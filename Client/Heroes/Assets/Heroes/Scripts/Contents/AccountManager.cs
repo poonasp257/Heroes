@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class AccountManager : MonoBehaviour {
@@ -15,6 +15,7 @@ namespace Heroes {
 			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
 
 			networkManager.RegisterNotification(PacketType.AccountInfoResponse, accountInfoResponse);
+			networkManager.RegisterNotification(PacketType.DeleteCharacterResponse, deleteCharacterResponse);
 		}
 
 		private void Start() {
@@ -24,7 +25,7 @@ namespace Heroes {
 		public void accountInfoRequest() {
 			AccountInfoRequestPacket packet = new AccountInfoRequestPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-					   
+
 			networkManager.send(packet);
 			msgBox.notice("캐릭터 정보를 불러오고 있습니다.");
 		}
@@ -33,35 +34,50 @@ namespace Heroes {
 			msgBox.close();
 
 			AccountInfoResponsePacket packet = rowPacket as AccountInfoResponsePacket;
-			if(packet == null) {
+			if (packet == null) {
 				Debug.Log("invalid packet");
 				return;
 			}
 
 			UICharacterCounter characterCounterUI = GameObject.Find("Character Counter").GetComponent<UICharacterCounter>();
-			characterCounterUI.CreatedCount = packet.characterTable.Count;
-			characterCounterUI.CreatableCount = packet.creatableCharacters;
+			characterCounterUI.CreatedCount = packet.characterList.Count;
+			characterCounterUI.CreatableCount = packet.maxCreatableCharacters;
 
 			GameObject characterListContainer = GameObject.Find("List");
-			if (packet.characterTable.Count != 0) {
-				foreach (var characterInfo in packet.characterTable) {
-					GameObject character = Instantiate(characterInfoItem, characterListContainer.transform);
-					UICharacterInfo characterInfoUI = character.GetComponent<UICharacterInfo>();
+			foreach (var characterInfo in packet.characterList) {
+				GameObject character = Instantiate(characterInfoItem, characterListContainer.transform);
+				UICharacterInfo characterInfoUI = character.GetComponent<UICharacterInfo>();
 
-					characterInfoUI.CharacterID = characterInfo.Key;
-					characterInfoUI.Info = characterInfo.Value;
-				}
+				characterInfoUI.Info = characterInfo;
 			}
 
-			if (packet.creatableCharacters == packet.characterTable.Count) return;
+			if (packet.maxCreatableCharacters == packet.characterList.Count) return;
 
 			Instantiate(creatableItem, characterListContainer.transform);
-			--packet.creatableCharacters;
+			--packet.maxCreatableCharacters;
 
-			int lockedItemCount = packet.creatableCharacters - packet.characterTable.Count;
+			int lockedItemCount = packet.maxCreatableCharacters - packet.characterList.Count;
 			for (int i = 0; i < lockedItemCount; ++i) {
 				Instantiate(lockedItem, characterListContainer.transform);
 			}
+		}
+
+		public void deleteCharacterRequest() {
+			UISelectedCharacter selectedCharacterUI = GameObject.Find("Selected Character").GetComponent<UISelectedCharacter>();
+			if (!selectedCharacterUI.isSelected()) return;
+
+			DeleteCharacterRequestPacket packet = new DeleteCharacterRequestPacket();
+			packet.characterId = selectedCharacterUI.Info.characterId;
+
+			msgBox.confirm("삭제 하시겠습니까?", () => {
+					networkManager.send(packet);
+					msgBox.notice("삭제 요청 중 입니다.");
+			});
+		}
+
+		public void deleteCharacterResponse(PacketType type, Packet rowPacket) {
+			msgBox.close();			
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 	}
 }

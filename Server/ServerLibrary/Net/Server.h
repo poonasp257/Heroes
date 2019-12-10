@@ -15,14 +15,10 @@ protected:
 	int							port;
 	int							workerThreadCount;
 
-	Json						json;
 	FileLogger					logger;
 	ServerStatus				status;
 	ContentsProcess 			*process;
-
-protected:	
-	virtual bool initialize(Json::Document& document) = 0;
-
+	
 public:
 	Server(const char *logFileName, ContentsProcess *process);
 	virtual ~Server();
@@ -33,5 +29,4 @@ public:
 
 	void putPackage(Package *package);
 };
-
 #endif

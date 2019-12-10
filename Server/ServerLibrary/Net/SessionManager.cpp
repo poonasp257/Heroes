@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 SessionManager::SessionManager() 
-    : MaxConnection(1000) {
+    : MaxConnection(1000), sessionIdSeed(0) {
 
 }
 
@@ -20,7 +20,7 @@ bool SessionManager::addSession(Session *session) {
         return false;
     }
 
-	session->setId(sessionList.size());
+	session->setId(sessionIdSeed);
     
     sessionList.push_back(session);
 	return true;
@@ -33,7 +33,7 @@ bool SessionManager::closeSession(Session *session) {
 
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found == sessionList.end()) return false;
-
+	 
     Session *delSession = *found;
     closesocket(delSession->getSocket());
     sessionList.remove(delSession);
@@ -60,13 +60,15 @@ void SessionManager::forceCloseSession(Session *session) {
 	this->closeSession(session);
 }
 
-void SessionManager::BroadcastPacket(Packet *packet) {
+void SessionManager::BroadcastPacket(Packet *packet, SessionType sessionType) {
 	for (auto session : sessionList) {
+		if (sessionType != session->getType()) continue;
+
 		session->sendPacket(packet);
 	}
 }
 
-Session* SessionManager::getSession(oid_t sessionId) {
+Session* SessionManager::getSession(UInt64 sessionId) {
 	std::lock_guard<std::mutex> guard(lock);
 	Session *findSession = nullptr;
 

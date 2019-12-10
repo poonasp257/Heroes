@@ -2,7 +2,20 @@
 #define PACKET_TYPE_H
 
 enum class PacketType : UInt32 {
-	ExitRequest,
+	NotifyTerminal,
+	DBAuthLoginRequest,
+	DBAuthLoginResponse,
+	DBAuthRegisterRequest,
+	DBAuthRegisterResponse,
+	DBAccountInfoRequest,
+	DBAccountInfoResponse,
+	DBCreateCharacterRequest,
+	DBCreateCharacterResponse,
+	DBDeleteCharacterRequest,
+	DBDeleteCharacterResponse,
+	DBConnectChanelRequest,
+	DBConnectChanelResponse,
+	ExitRequest = 100,
 	ExitResponse,
 	AuthLoginRequest,
 	AuthLoginResponse,

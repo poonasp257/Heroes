@@ -56,22 +56,20 @@ namespace Heroes {
 			okButton.onClick.AddListener(okEvent);
 		}
 
-		public bool confirm(string msg, UnityAction yesEvent, UnityAction noEvent) {
+		public void confirm(string msg, UnityAction yesEvent, UnityAction noEvent = null) {
 			if (msgBox) this.close();
 
 			setupMsgBox(confirmMsgBox, msg);
 			
 			GameObject button = msgBox.transform.Find("Content/Buttons/Yes").gameObject;
 			Button yesButton = button.GetComponent<Button>();
-			yesButton.onClick.AddListener(yesEvent);
+			if(yesEvent != null) yesButton.onClick.AddListener(yesEvent);
 			yesButton.onClick.AddListener(destroyMsgBox);
 
 			button = msgBox.transform.Find("Content/Buttons/No").gameObject;
 			Button noButton = button.GetComponent<Button>();
-			noButton.onClick.AddListener(noEvent);
+			if(noEvent != null) noButton.onClick.AddListener(noEvent);
 			noButton.onClick.AddListener(destroyMsgBox);
-
-			return true;
 		}
 
 		public void notice(string msg) {

@@ -1,6 +1,6 @@
 ﻿#ifndef STDAFX_H
 #define STDAFX_H
 
-#include "../ServerLibrary/ServerLibraryh.h"
+#include "ServerLibrary.h"
 
 #endif

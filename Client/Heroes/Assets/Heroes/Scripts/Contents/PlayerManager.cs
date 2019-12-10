@@ -103,10 +103,10 @@ namespace Heroes {
 
 		public void connectChanelResponse(PacketType type, Packet rowPacket) {
 			ConnectChanelResponsePacket packet = rowPacket as ConnectChanelResponsePacket;
-
+			
 			foreach(var info in packet.playerTable) {
 				var playerInfo = info.Value;
-
+				
 				GameObject player = createCharacter(info.Key, playerInfo);
 				player.SetActive(false);
 

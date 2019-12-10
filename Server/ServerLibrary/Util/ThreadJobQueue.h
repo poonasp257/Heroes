@@ -13,7 +13,6 @@ private:
 	std::queue<T> queue[2];	
 	std::queue<T> *readQueue;
 	std::queue<T> *writeQueue;
-
 	std::mutex lock;
 
 private:
@@ -43,12 +42,12 @@ public:
 	}
 
 	void push(const T& value) {
-		std::lock_guard<std::mutex> guard(lock);
+		const std::lock_guard<std::mutex> guard(lock);
 		writeQueue->push(value);
 	}
 
 	void pop(T& t) {
-		std::lock_guard<std::mutex> guard(lock);
+		const std::lock_guard<std::mutex> guard(lock);
 		if (this->size() == 0) {
 			return;
 		}
@@ -61,7 +60,7 @@ public:
 		readQueue->pop();
 	}
 	 
-	bool isEmpty() const { 
+	bool isEmpty() {
 		const std::lock_guard<std::mutex> guard(lock);
 		return size() == 0;
 	}

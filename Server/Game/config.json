@@ -3,8 +3,14 @@
     "Name": "Game",
     "Server": {
       "IP": "127.0.0.1",
-      "Port": 9000,
-      "ThreadCount": 6
+      "Port": 9200,
+      "ThreadCount": 3
+    },
+    "Terminal": {
+      "DBAgent": {
+        "IP": "127.0.0.1",
+        "Port": 9000
+      }
     },
     "Contents": {
       "ThreadCount": 3

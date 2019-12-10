@@ -2,7 +2,7 @@
 
 namespace Heroes {
 	public enum PacketType : UInt32 {
-		ExitRequest,
+		ExitRequest = 100,
 		ExitResponse,
 		AuthLoginRequest,
 		AuthLoginResponse,

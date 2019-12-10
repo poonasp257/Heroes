@@ -79,17 +79,14 @@ namespace Heroes {
 
 	public class AuthRegisterResponsePacket : Packet {
 		public Int16 errorCode;
-		public UInt64 accountId;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
 			Serializer.serialize(stream, errorCode);
-			Serializer.serialize(stream, accountId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
 			Serializer.deserialize(data, ref offset, out errorCode);
-			Serializer.deserialize(data, ref offset, out accountId);
 		}
 
 		public override PacketType type() { return PacketType.AuthRegisterResponse; }
@@ -130,32 +127,71 @@ namespace Heroes {
 	}
 
 	public class AccountInfoResponsePacket : Packet {
-		public UInt16 creatableCharacters;
-		public Dictionary<UInt64, CharacterInfo> characterTable = new Dictionary<UInt64, CharacterInfo>();
+		public UInt16 maxCreatableCharacters;
+		public List<CharacterInfo> characterList = new List<CharacterInfo>();
 		
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, creatableCharacters);
-			Serializer.serialize(stream, characterTable);
+			Serializer.serialize(stream, maxCreatableCharacters);
+			Serializer.serialize(stream, characterList);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) { 
-			Serializer.deserialize(data, ref offset, out creatableCharacters);
-			Serializer.deserialize(data, ref offset, ref characterTable);
+			Serializer.deserialize(data, ref offset, out maxCreatableCharacters);
+			Serializer.deserialize(data, ref offset, ref characterList);
 		}
 
 		public override PacketType type() { return PacketType.AccountInfoResponse; }
 	}
 
 	public class CreateCharacterRequestPacket : Packet {
+		public UInt64 accountId;
+		public CharacterClass characterClass;
+		public string characterName;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+			Serializer.serialize(stream, characterClass);
+			Serializer.serialize(stream, characterName);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) { 
+			Serializer.deserialize(data, ref offset, out accountId);
+			Serializer.deserialize(data, ref offset, out characterClass);
+			Serializer.deserialize(data, ref offset, out characterName);
+		}
+
 		public override PacketType type() { return PacketType.CreateCharacterRequest; }
 	}
 	
 	public class CreateCharacterResponsePacket : Packet {
+		public Int16 errorCode;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, errorCode);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out errorCode);
+		}
+
 		public override PacketType type() { return PacketType.CreateCharacterResponse; }
 	}
 
 	public class DeleteCharacterRequestPacket : Packet {
+		public UInt64 characterId;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, characterId);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out characterId);
+		}
+
 		public override PacketType type() { return PacketType.DeleteCharacterRequest; }
 	};
 

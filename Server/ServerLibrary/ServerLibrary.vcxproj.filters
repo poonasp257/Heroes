@@ -21,6 +21,12 @@
     <Filter Include="Util">
       <UniqueIdentifier>{5e411153-da5c-48f9-8b2e-b3f26a1611cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Net\Terminal">
+      <UniqueIdentifier>{cd2f831a-3d95-413c-9942-f5635ff8483e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{c6a0c096-ca5d-4d8e-82a8-ed3f911bc30a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -77,13 +83,43 @@
     <ClInclude Include="Util\Type.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="ServerLibraryh.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Thread.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\ThreadJobQueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\Terminal.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalManager.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalSession.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\DBManager.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Query.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\QueryStatement.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\ODBCDatabase.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Database.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerLibrary.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Lock.h">
       <Filter>Util</Filter>
     </ClInclude>
   </ItemGroup>
@@ -131,6 +167,30 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="Util\Thread.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\Terminal.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalManager.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalSession.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\DBManager.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\Query.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\QueryStatement.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\ODBCDatabase.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Lock.cpp">
       <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>

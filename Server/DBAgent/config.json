@@ -1,0 +1,27 @@
+{
+  "App": {
+    "Name": "DBAgent",
+    "Server": {
+      "IP": "127.0.0.1",
+      "Port": 9000,
+      "ThreadCount": 3
+    },
+    "Terminal": {
+      "Game": {
+        "IP": "127.0.0.1",
+        "Port": 9200
+      }
+    },
+    "Database": {
+      "Ip": "127.0.0.1",
+      "Port":  1433,
+      "DBName": "GameDB",
+      "Id": "poona",
+      "Password": "rpdlatjqj",
+      "ThreadCount": 2
+    },
+    "Contents": {
+      "ThreadCount": 3
+    }
+  }
+}

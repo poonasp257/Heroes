@@ -9,6 +9,11 @@ public:
 	virtual void deSerialize(Stream& stream) { }
 };
 
+class NotifyTerminalPacket : public Packet {
+public:
+	PacketType type() const { return PacketType::NotifyTerminal; }
+};
+
 class ExitRequestPacket : public Packet {
 public:
 	PacketType type() const { return PacketType::ExitRequest; }
@@ -59,6 +64,52 @@ public:
 	}
 };
 
+class DBAuthLoginRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	std::wstring id;
+	std::wstring password;
+
+public:
+	PacketType type() const { return PacketType::DBAuthLoginRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << id;
+		stream << password;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &id;
+		stream >> &password;
+	}
+};
+
+class DBAuthLoginResponsePacket : public Packet {
+public:
+	Int16 errorCode;
+	UInt64 clientId;
+	UInt64 accountId;
+
+public:
+	PacketType type() const { return PacketType::DBAuthLoginResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << errorCode;
+		stream << clientId;
+		stream << accountId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &errorCode;
+		stream >> &clientId;
+		stream >> &accountId;
+	}
+};
+
 class AuthRegisterRequestPacket : public Packet {
 public:
 	std::wstring id;
@@ -82,7 +133,6 @@ public:
 class AuthRegisterResponsePacket : public Packet {
 public:
 	Int16  errorCode;
-	UInt64 accountId;
 
 public:
 	PacketType type() const { return PacketType::AuthRegisterResponse; }
@@ -90,12 +140,53 @@ public:
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
 		stream << errorCode;
-		stream << accountId;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &errorCode;
-		stream >> &accountId;
+	}
+};
+
+class DBAuthRegisterRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	std::wstring id;
+	std::wstring password;
+
+public:
+	PacketType type() const { return PacketType::DBAuthRegisterRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << id;
+		stream << password;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &id;
+		stream >> &password;
+	}
+};
+
+class DBAuthRegisterResponsePacket : public Packet {
+public:
+	Int16  errorCode;
+	UInt64 clientId;
+
+public:
+	PacketType type() const { return PacketType::DBAuthRegisterResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << errorCode;
+		stream << clientId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &errorCode;
+		stream >> &clientId;
 	}
 };
 
@@ -140,42 +231,210 @@ public:
 
 class AccountInfoResponsePacket : public Packet {
 public:
-	UInt16 creatableCharacters;
-	std::unordered_map<UInt64, CharacterInfo> characterTable;
+	UInt16 maxCreatableCharacters;
+	std::vector<CharacterInfo> characterList;
 
 public:
 	PacketType type() const { return PacketType::AccountInfoResponse; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << creatableCharacters;
-		stream << characterTable;
+		stream << maxCreatableCharacters;
+		stream << characterList;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &creatableCharacters;
-		stream >> &characterTable;
+		stream >> &maxCreatableCharacters;
+		stream >> &characterList;
+	}
+};
+
+class DBAccountInfoRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt64 accountId;
+
+public:
+	PacketType type() const { return PacketType::DBAccountInfoRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << accountId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &accountId;
+	}
+};
+
+class DBAccountInfoResponsePacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt16 maxCreatableCharacters;
+	std::vector<CharacterInfo> characterList;
+
+public:
+	PacketType type() const { return PacketType::DBAccountInfoResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << maxCreatableCharacters;
+		stream << characterList;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &maxCreatableCharacters;
+		stream >> &characterList;
 	}
 };
 
 class CreateCharacterRequestPacket : public Packet {
 public:
+	UInt64 accountId;
+	CharacterClass characterClass;
+	std::wstring characterName;
+
+public:
 	PacketType type() const { return PacketType::CreateCharacterRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << accountId;
+		stream << characterClass;
+		stream << characterName;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+		stream >> &characterClass;
+		stream >> &characterName;
+	}
 };
 
 class CreateCharacterResponsePacket : public Packet {
 public:
+	Int16 errorCode;
+
+public:
 	PacketType type() const { return PacketType::CreateCharacterResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << errorCode;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &errorCode;
+	}
+};
+
+class DBCreateCharacterRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt64 accountId;
+	CharacterClass characterClass;
+	std::wstring characterName;
+
+public:
+	PacketType type() const { return PacketType::DBCreateCharacterRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << accountId;
+		stream << characterClass;
+		stream << characterName;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &accountId;
+		stream >> &characterClass;
+		stream >> &characterName;
+	}
+};
+
+class DBCreateCharacterResponsePacket : public Packet {
+public:
+	Int16 errorCode;
+	UInt64 clientId;
+
+public:
+	PacketType type() const { return PacketType::DBCreateCharacterResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << errorCode;
+		stream << clientId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &errorCode;
+		stream >> &clientId;
+	}
 };
 
 class DeleteCharacterRequestPacket : public Packet {
 public:
+	UInt64 characterId;
+
+public:
 	PacketType type() const { return PacketType::DeleteCharacterRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << characterId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &characterId;
+	}
 };
 
 class DeleteCharacterResponsePacket : public Packet {
 public:
 	PacketType type() const { return PacketType::DeleteCharacterResponse; }
+};
+
+class DBDeleteCharacterRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt64 characterId;
+
+public:
+	PacketType type() const { return PacketType::DBDeleteCharacterRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << characterId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &characterId;
+	}
+};
+
+class DBDeleteCharacterResponsePacket : public Packet {
+public:
+	UInt64 clientId;
+
+public:
+	PacketType type() const { return PacketType::DBDeleteCharacterResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+	}
 };
 
 class ConnectChanelRequestPacket : public Packet {
@@ -215,6 +474,52 @@ public:
 
 	void deSerialize(Stream& stream) {
 		stream >> &playerTable;
+	}
+};
+
+class DBConnectChanelRequestPacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt64 accountId;
+	UInt64 characterId;
+
+public:
+	PacketType type() const { return PacketType::DBConnectChanelRequest; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << accountId;
+		stream << characterId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &accountId;
+		stream >> &characterId;
+	}
+};
+
+class DBConnectChanelResponsePacket : public Packet {
+public:
+	UInt64 clientId;
+	UInt64 accountId;
+	CharacterInfo characterInfo;
+
+public:
+	PacketType type() const { return PacketType::DBConnectChanelResponse; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << clientId;
+		stream << accountId;
+		stream << characterInfo;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &clientId;
+		stream >> &accountId;
+		stream >> &characterInfo;
 	}
 };
 

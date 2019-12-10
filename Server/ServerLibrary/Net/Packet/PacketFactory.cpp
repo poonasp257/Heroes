@@ -1,9 +1,22 @@
 #include "stdafx.h"
 
 Packet* PacketFactory::CreatePacket(PacketType type) {
-    switch(type) {
-        case PacketType::ExitRequest: return new ExitRequestPacket;
-        case PacketType::ExitResponse: return new ExitResponsePacket;
+    switch(type) {		
+		case PacketType::NotifyTerminal: return new NotifyTerminalPacket();
+		case PacketType::DBAuthLoginRequest: return new DBAuthLoginRequestPacket();
+		case PacketType::DBAuthLoginResponse: return new DBAuthLoginResponsePacket();
+		case PacketType::DBAuthRegisterRequest: return new DBAuthRegisterRequestPacket();
+		case PacketType::DBAuthRegisterResponse: return new DBAuthRegisterResponsePacket();
+		case PacketType::DBAccountInfoRequest: return new DBAccountInfoRequestPacket();
+		case PacketType::DBAccountInfoResponse: return new DBAccountInfoResponsePacket();
+		case PacketType::DBCreateCharacterRequest: return new DBCreateCharacterRequestPacket();
+		case PacketType::DBCreateCharacterResponse: return new DBCreateCharacterResponsePacket();
+		case PacketType::DBDeleteCharacterRequest: return new DBDeleteCharacterRequestPacket();
+		case PacketType::DBDeleteCharacterResponse: return new DBDeleteCharacterResponsePacket();
+		case PacketType::DBConnectChanelRequest: return new DBConnectChanelRequestPacket();
+		case PacketType::DBConnectChanelResponse: return new DBConnectChanelResponsePacket();
+        case PacketType::ExitRequest: return new ExitRequestPacket();
+        case PacketType::ExitResponse: return new ExitResponsePacket();
 		case PacketType::AuthLoginRequest: return new AuthLoginRequestPacket();
 		case PacketType::AuthLoginResponse: return new AuthLoginResponsePacket();
 		case PacketType::AuthRegisterRequest: return new AuthRegisterRequestPacket();

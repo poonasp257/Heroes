@@ -1,0 +1,400 @@
+fileFormatVersion: 2
+guid: 718324efc99c3c149bc58a8b77e68fdd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5530697624180704725
+    second: classes1_0
+  - first:
+      213: -2903137333223950810
+    second: classes1_1
+  - first:
+      213: -8880680835520284555
+    second: classes1_2
+  - first:
+      213: 3150545242447892475
+    second: classes1_3
+  - first:
+      213: 7012763449751124322
+    second: classes1_4
+  - first:
+      213: -1506911097036107163
+    second: classes1_5
+  - first:
+      213: 3182353348632210373
+    second: classes1_6
+  - first:
+      213: 6793055809150417044
+    second: classes1_7
+  - first:
+      213: -7022725579915591923
+    second: classes1_8
+  - first:
+      213: 2371994784212071319
+    second: classes1_9
+  - first:
+      213: -2989232720226483047
+    second: classes1_10
+  - first:
+      213: -3876994750902808375
+    second: classes1_11
+  - first:
+      213: -9151760502840233538
+    second: classes1_12
+  - first:
+      213: 4518569151719382263
+    second: classes1_13
+  - first:
+      213: 1117594734583085870
+    second: classes1_14
+  - first:
+      213: -6255185710930247357
+    second: classes1_15
+  - first:
+      213: 8218232155110462093
+    second: classes1_16
+  - first:
+      213: -7421960160625553046
+    second: classes1_17
+  - first:
+      213: 265047267691456226
+    second: classes1_18
+  - first:
+      213: -1938789558525375664
+    second: classes1_19
+  - first:
+      213: -2264417680764957510
+    second: classes1_20
+  - first:
+      213: 1812692718381066440
+    second: classes1_21
+  - first:
+      213: -7202504338278780845
+    second: classes1_22
+  - first:
+      213: 5741686768919890462
+    second: classes1_23
+  - first:
+      213: -1012903600571018594
+    second: classes1_24
+  - first:
+      213: 194738488404808754
+    second: classes1_25
+  - first:
+      213: -967407263819135032
+    second: classes1_26
+  - first:
+      213: 4920686948063902492
+    second: classes1_27
+  - first:
+      213: 5532403604135569453
+    second: classes1_28
+  - first:
+      213: -4778837658456020156
+    second: classes1_29
+  - first:
+      213: -7486352328249384948
+    second: classes1_30
+  - first:
+      213: -1437558398647007913
+    second: classes1_31
+  - first:
+      213: -8302528203705547558
+    second: classes1_32
+  - first:
+      213: 697180462970497881
+    second: classes1_33
+  - first:
+      213: -689633546921573940
+    second: classes1_34
+  - first:
+      213: 5075646380092236812
+    second: classes1_35
+  - first:
+      213: -3090750883549974619
+    second: classes1_36
+  - first:
+      213: -5436735732321248355
+    second: classes1_37
+  - first:
+      213: 8393271578526626653
+    second: classes1_38
+  - first:
+      213: 6638207331911197934
+    second: classes1_39
+  - first:
+      213: 891110749421507614
+    second: classes1_40
+  - first:
+      213: -1021349232285280022
+    second: classes1_41
+  - first:
+      213: -2318941294041657779
+    second: classes1_42
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: classes1_1
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 211
+        width: 140
+        height: 145
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3b36757370dd5641be8180885961053
+      internalID: -2903137333223950810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_2
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 212
+        width: 142
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09b3c0486fa91a541a6d7631083bf8ea
+      internalID: -8880680835520284555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_4
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 211
+        width: 139
+        height: 143
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df4d9bfc578136741aa697ff80791128
+      internalID: 7012763449751124322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_5
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 210
+        width: 138
+        height: 140
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68f026cd5e25bfe41b10a59dde2f767f
+      internalID: -1506911097036107163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_25
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 41
+        width: 140
+        height: 142
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7fc8bd50f6a848a49ba855d2c6463656
+      internalID: 194738488404808754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_26
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 40
+        width: 145
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52813296208deba40b31b98ff462ff0b
+      internalID: -967407263819135032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_27
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 41
+        width: 140
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58bf5db8c9a967b49aaadfae72efa660
+      internalID: 4920686948063902492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: classes1_29
+      rect:
+        serializedVersion: 2
+        x: 459
+        y: 41
+        width: 141
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c41eeff3a4b5a94a8ca5b4b8ba7f727
+      internalID: -4778837658456020156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 8e2347470c3740f42bdb49a770fc84ea
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
