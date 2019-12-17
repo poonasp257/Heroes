@@ -29,8 +29,6 @@ namespace Heroes {
 		private TcpClient client;
 		private NetState state;
 
-		private MessageBox msgBox;
-
 		private void Awake() {
 			notifierMap = new Dictionary<PacketType, Notifier>();
 			packetQueue = new Queue<Packet>();
@@ -45,7 +43,7 @@ namespace Heroes {
 		}
 
 		private void Start() {
-			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
+
 		}
 
 		private void Update() {
@@ -86,8 +84,6 @@ namespace Heroes {
 			stream = null;
 			receiveWorker = null;
 
-			notifierMap = null;
-
 			state = NetState.Stopped;
 		}
 
@@ -106,11 +102,9 @@ namespace Heroes {
 			try { 
 				client = new TcpClient();
 				client.Connect(ip, Convert.ToInt32(port));
-				if (msgBox.IsExist) msgBox.close();
 			}
 			catch (Exception err) {
 				Debug.Log(err);
-				msgBox.notice("서버 상태가 원활하지 않습니다.");
 				return;
 			}
 

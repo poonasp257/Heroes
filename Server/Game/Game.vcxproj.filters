@@ -18,12 +18,18 @@
     <ClCompile Include="Contents\MainProcess.cpp">
       <Filter>Contents</Filter>
     </ClCompile>
+    <ClCompile Include="Contents\PlayerManager.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Contents\MainProcess.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\PlayerManager.h">
       <Filter>Contents</Filter>
     </ClInclude>
   </ItemGroup>

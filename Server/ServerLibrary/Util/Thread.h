@@ -4,7 +4,7 @@
 class Thread {
 private:
 	threadId						id;
-	std::unique_ptr<std::thread>		thread;
+	std::unique_ptr<std::thread>	thread;
 
 public:
 	Thread(std::thread *thread);

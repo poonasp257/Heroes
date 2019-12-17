@@ -8,6 +8,9 @@ namespace Heroes {
 		private CharacterController controller;
 		private PlayerManager playerManager;
 
+		private WorldMapController worldMap;
+		private Coroutine moveCoroutine = null;
+
 		private bool isAttacking;
 		private bool isRolling;
 
@@ -34,6 +37,10 @@ namespace Heroes {
 		}
 
 		private void Update() {
+			if(worldMap == null) {
+				worldMap = GameObject.Find("Camera Base/World Map Camera").GetComponent<WorldMapController>();
+			}
+
 			InputAction();
 			DetectAction();
 		}
@@ -48,7 +55,7 @@ namespace Heroes {
 		}
 
 		private void Initialize() {
-			playerManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+			//playerManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
 
 			animator = GetComponent<Animator>();
 			controller = GetComponent<CharacterController>();
@@ -61,6 +68,13 @@ namespace Heroes {
 			if (Input.GetButtonDown("Roll")) Roll();
 			else if (Input.GetButtonDown("Weak Attack")) WeakAttack();
 			else if (Input.GetButtonDown("Smash Attack")) SmashAttack();
+
+			if (Input.GetKeyDown(KeyCode.T)) {
+				FollowThePath();
+			}
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				Application.Quit();
+			}
 		}
 
 		private void DetectAction() {
@@ -84,6 +98,8 @@ namespace Heroes {
 		private void InputMovement() {
 			horizon = Input.GetAxis("Horizontal");
 			vertical = Input.GetAxis("Vertical");
+
+			if (horizon == 0f && vertical == 0f) return;
 
 			Camera camera = Camera.main;
 			Vector3 h = horizon * camera.transform.right;
@@ -113,8 +129,7 @@ namespace Heroes {
 			LookMoveDirection();
 			Move();
 
-			playerManager.inputMovement(new CharacterMovement(
-				moveAmount, transform.position, transform.eulerAngles));
+			//playerManager.inputMovement(new CharacterMovement(moveAmount, transform.position, transform.eulerAngles));
 		}
 
 		private void Gravity() {
@@ -140,11 +155,12 @@ namespace Heroes {
 			Vector3 motion = moveDirection * moveAmount * moveSpeed;
 			controller.Move(motion * Time.deltaTime);
 		}
-
+		
 		private void Roll() {
 			if (isRolling) return;
 
 			animator.SetTrigger("Roll");
+			playerManager.inputAction(ActionType.Roll);
 		}
 
 		private void WeakAttack() {
@@ -154,6 +170,7 @@ namespace Heroes {
 			animator.SetTrigger("Combat");
 			lastAttackTime = Time.time;
 			++attackStep;
+			playerManager.inputAction(ActionType.WeakAttack);
 		}
 
 		private void SmashAttack() {
@@ -161,6 +178,26 @@ namespace Heroes {
 
 			animator.SetBool("RButton", true);
 			attackStep = 0;
+			playerManager.inputAction(ActionType.SmashAttack);
+		}
+
+		private void FollowThePath() {
+			if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+			StartCoroutine(worldMap.MoveOneWayPath());
+		}
+		
+		public void MoveTo(Vector3 to) {			
+			if(moveAmount <= 1.0f) moveAmount += Time.deltaTime;
+
+			Gravity();
+
+			moveDirection = (to - this.transform.position).normalized;
+			transform.position += moveDirection * moveSpeed * Time.deltaTime;
+		}
+
+		public void StopMovement() {
+			moveAmount = 0f;
+			moveDirection = Vector3.zero;
 		}
 	}
 }

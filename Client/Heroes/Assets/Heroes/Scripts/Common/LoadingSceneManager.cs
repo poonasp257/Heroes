@@ -8,11 +8,13 @@ namespace Heroes {
 		private static string nextScene;
 
 		private PlayerManager playerManager;
+		private SoundManager soundManager;
 	
 		private GameObject objects;
 
 		private void Start() {
 			playerManager = GameObject.Find("Player Manager").GetComponent<PlayerManager>();
+			soundManager = GameObject.Find("Sound Manager").GetComponent<SoundManager>();
 
 			objects = GameObject.Find("Objects");
 
@@ -42,6 +44,7 @@ namespace Heroes {
 					if (targetPos.x < screenPos.x + 300.0f) {
 						op.allowSceneActivation = true;
 						playerManager.activeAllPlayer();
+						soundManager.PlayBGM(BGMState.Main);
 						yield break;
 					}
 				}

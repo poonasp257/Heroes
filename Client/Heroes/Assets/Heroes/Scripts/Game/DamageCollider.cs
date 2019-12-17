@@ -6,17 +6,11 @@ namespace Heroes {
 	public class DamageCollider : MonoBehaviour {
 		private BoxCollider collider;
 
+		public int Damage { get { return 10; } }
+
 		private void Start() {
 			collider = GetComponent<BoxCollider>();
 			if (collider) collider.enabled = false;
-		}
-
-		private void OnTriggerEnter(Collider other) {
-			EnemyStateManager enemyState = other.GetComponent<EnemyStateManager>();
-
-			if (enemyState == null) return;
-
-			enemyState.TakeDamage(25);
 		}
 
 		public void Enable() {

@@ -13,6 +13,7 @@ public:
 	virtual ~SessionManager();
 
 	bool addSession(Session *session);
+	bool closeSession(UInt64 sessionId);
 	bool closeSession(Session *session);
 	void forceCloseSession(Session *session);
 

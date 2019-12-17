@@ -22,7 +22,10 @@ namespace Heroes {
 				case PacketType.ConnectChanelResponse: return new ConnectChanelResponsePacket();
 				case PacketType.DisconnectChanelRequest: return new DisconnectChanelRequestPacket();
 				case PacketType.DisconnectChanelResponse: return new DisconnectChanelResponsePacket();
-				case PacketType.NotifyNewConnect: return new NotifyNewConnectPacket();
+				case PacketType.NotifyConnectPlayer: return new NotifyConnectPlayerPacket();
+				case PacketType.NotifyDisconnectPlayer: return new NotifyDisconnectPlayerPacket();
+
+
 				case PacketType.NotifyCharacterMovement: return new NotifyCharacterMovementPacket();
 				case PacketType.NotifyCharacterAction: return new NotifyCharacterActionPacket();
 			}

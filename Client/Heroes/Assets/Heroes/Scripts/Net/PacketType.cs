@@ -20,7 +20,8 @@ namespace Heroes {
 		ConnectChanelResponse,
 		DisconnectChanelRequest,
 		DisconnectChanelResponse,
-		NotifyNewConnect,
+		NotifyConnectPlayer,
+		NotifyDisconnectPlayer,
 		ChattingRequest,
 		ChattingResponse,
 		CharacterInfoRequest,
@@ -48,8 +49,6 @@ namespace Heroes {
 		BuyItemAtMarketRequest,
 		BuyItemAtMarketResponse,
 		SellItemAtMarketRequest,
-		SellItemAtMarketResponse,
-		LogoutRequest,
-		LogoutResponse
+		SellItemAtMarketResponse
 	}
 }

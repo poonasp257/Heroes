@@ -1,4 +1,6 @@
 #include "stdafx.h"
+using namespace std;
+using namespace filesystem;
 
 Logger::Logger() : logTypes({
 		{ Unknown, "UNKNOWN" }, { Info, "INFO" },
@@ -39,9 +41,11 @@ void ConsoleLogger::Log(Level level, const char* message, va_list args) {
 
 FileLogger::FileLogger(const std::string& fileName)
 	: Logger(), path("Log\\") {
-	if (!filesystem::exists(path)) {
+
+	if (!exists(path)) {
 		filesystem::create_directory(path);
 	}
+
 
 	std::string rename = fileName;
 	size_t found = rename.find(".log");

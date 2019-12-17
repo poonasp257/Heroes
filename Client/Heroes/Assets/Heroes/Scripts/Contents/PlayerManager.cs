@@ -8,7 +8,7 @@ namespace Heroes {
 
 		private Dictionary<UInt64, CharacterStateManager> playerTable;
 		private Queue<CharacterMovement> movementQueue;
-		private Queue<CharacterAction> actionQueue;
+		private Queue<ActionType> actionQueue;
 
 		[SerializeField] private GameObject characterPrefab;
 
@@ -17,10 +17,11 @@ namespace Heroes {
 
 			playerTable = new Dictionary<ulong, CharacterStateManager>();
 			movementQueue = new Queue<CharacterMovement>();
-			actionQueue = new Queue<CharacterAction>();
+			actionQueue = new Queue<ActionType>();
 
 			networkManager.RegisterNotification(PacketType.ConnectChanelResponse, connectChanelResponse);
-			networkManager.RegisterNotification(PacketType.NotifyNewConnect, notifyNewConnect);
+			networkManager.RegisterNotification(PacketType.NotifyConnectPlayer, notifyConnectPlayer);
+			networkManager.RegisterNotification(PacketType.NotifyDisconnectPlayer, notifyDisconnectPlayer);
 			networkManager.RegisterNotification(PacketType.NotifyCharacterMovement, notifyCharacterMovement);
 			networkManager.RegisterNotification(PacketType.NotifyCharacterAction, notifyCharacterAction);
 		}
@@ -53,7 +54,7 @@ namespace Heroes {
 			var action = actionQueue.Dequeue();
 			NotifyCharacterActionPacket packet = new NotifyCharacterActionPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-			packet.actionType = action.type;
+			packet.actionType = action;
 
 			networkManager.send(packet);
 		}
@@ -88,7 +89,7 @@ namespace Heroes {
 			movementQueue.Enqueue(movement);
 		}
 
-		public void inputAction(CharacterAction action) {
+		public void inputAction(ActionType action) {
 			actionQueue.Enqueue(action);
 		}
 				
@@ -117,14 +118,23 @@ namespace Heroes {
 			}
 		}
 
-		public void notifyNewConnect(PacketType type, Packet rowPacket) {
-			NotifyNewConnectPacket packet = rowPacket as NotifyNewConnectPacket;
+		public void notifyConnectPlayer(PacketType type, Packet rowPacket) {
+			NotifyConnectPlayerPacket packet = rowPacket as NotifyConnectPlayerPacket;
 
 			if (playerTable.ContainsKey(packet.accountId)) return;
 
 			createCharacter(packet.accountId, packet.characterInfo);
 		}
 
+		public void notifyDisconnectPlayer(PacketType type, Packet rowPacket) {
+			NotifyDisconnectPlayerPacket packet = rowPacket as NotifyDisconnectPlayerPacket;
+
+			var character = playerTable[packet.accountId];
+			Destroy(character.gameObject);
+
+			playerTable.Remove(packet.accountId);
+		}
+		
 		public void notifyCharacterMovement(PacketType type, Packet rowPacket) {
 			NotifyCharacterMovementPacket packet = rowPacket as NotifyCharacterMovementPacket;
 

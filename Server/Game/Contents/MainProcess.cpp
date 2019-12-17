@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MainProcess.h"
-
-std::unordered_map<UInt64, CharacterInfo> MainProcess::playerTable;
+#include "PlayerManager.h"
 
 MainProcess::MainProcess() {
 	registerPacketProcess(PacketType::AuthLoginRequest, &MainProcess::AuthLoginRequest);
@@ -181,19 +180,17 @@ void MainProcess::DBConnectChanelResponse(Session *session, Packet *rowPacket) {
 	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
 	if (!clientSession) return;
 
-	auto foundPlayer = playerTable.find(packet->accountId);
-	if (foundPlayer != playerTable.end()) {
-		//Session 끊고, 데이터 저장
-		playerTable.erase(foundPlayer);
-	}
+	PlayerInfo playerInfo;
+	playerInfo.accountId = packet->accountId;
+	playerInfo.characterInfo = packet->characterInfo;
 
-	playerTable.insert(std::make_pair(packet->accountId, packet->characterInfo));
-	
+	PlayerManager::Instance().registerPlayer(clientSession->getId(), playerInfo);
+
 	ConnectChanelResponsePacket responsePacket;
-	responsePacket.playerTable = playerTable;
+	responsePacket.playerTable = std::move(PlayerManager::Instance().getPlayerTable());
 	clientSession->sendPacket(&responsePacket);
 
-	NotifyNewConnectPacket notifyPacket;
+	NotifyConnectPlayerPacket notifyPacket;
 	notifyPacket.accountId = packet->accountId;
 	notifyPacket.characterInfo = packet->characterInfo;
 
@@ -207,8 +204,11 @@ void MainProcess::DisconnectChanelRequest(Session *session, Packet *rowPacket) {
 void MainProcess::NotifyCharacterMovement(Session *session, Packet *rowPacket) {
 	NotifyCharacterMovementPacket *packet = dynamic_cast<NotifyCharacterMovementPacket*>(rowPacket);
 	
-	playerTable[packet->accountId].position = packet->movement.position;
-	playerTable[packet->accountId].rotation = packet->movement.rotation;
+	CharacterInfo *playerInfo = PlayerManager::Instance().getCharacterInfo(session->getId());
+	if (!playerInfo) return;
+
+	playerInfo->position = packet->movement.position;
+	playerInfo->rotation = packet->movement.rotation;
 
 	SessionManager::Instance().BroadcastPacket(packet);
 }

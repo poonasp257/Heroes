@@ -33,7 +33,8 @@ enum class PacketType : UInt32 {
 	ConnectChanelResponse,
 	DisconnectChanelRequest,
 	DisconnectChanelResponse,
-	NotifyNewConnect,
+	NotifyConnectPlayer,
+	NotifyDisconnectPlayer,
 	ChattingRequest,
 	ChattingResponse,
 	CharacterInfoRequest,
@@ -61,9 +62,7 @@ enum class PacketType : UInt32 {
 	BuyItemAtMarketRequest,
 	BuyItemAtMarketResponse,
 	SellItemAtMarketRequest,
-	SellItemAtMarketResponse,
-	LogoutRequest,
-	LogoutResponse
+	SellItemAtMarketResponse
 };
 
 #endif

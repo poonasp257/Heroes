@@ -53,8 +53,4 @@ namespace Heroes {
 			this.rotation = rotation;
 		}
 	}
-
-	public struct CharacterAction {
-		public ActionType type;
-	}
 }

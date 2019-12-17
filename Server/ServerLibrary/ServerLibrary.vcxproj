@@ -23,32 +23,32 @@
     <ProjectGuid>{CE2C1F7A-7995-4888-9256-414037E16F76}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ServerLibrary</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -130,6 +130,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,7 +163,6 @@
     <ClInclude Include="Database\DBManager.h" />
     <ClInclude Include="Database\Query.h" />
     <ClInclude Include="Database\QueryStatement.h" />
-    <ClInclude Include="Lock.h" />
     <ClInclude Include="Net\IOCP\IOCPServer.h" />
     <ClInclude Include="Net\IOCP\IOCPSession.h" />
     <ClInclude Include="Net\Packet\Package.h" />
@@ -181,7 +181,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\Clock.h" />
     <ClInclude Include="Util\Json.h" />
-    <ClInclude Include="Util\Lock.h" />
     <ClInclude Include="Util\Logger.h" />
     <ClInclude Include="Util\Singleton.h" />
     <ClInclude Include="Util\Thread.h" />
@@ -214,7 +213,6 @@
     </ClCompile>
     <ClCompile Include="Util\Clock.cpp" />
     <ClCompile Include="Util\Json.cpp" />
-    <ClCompile Include="Util\Lock.cpp" />
     <ClCompile Include="Util\Logger.cpp" />
     <ClCompile Include="Util\Thread.cpp" />
   </ItemGroup>

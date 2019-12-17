@@ -234,8 +234,16 @@ namespace Heroes {
 
 		public override PacketType type() { return PacketType.ConnectChanelResponse; }
 	}
+	
+	public class DisconnectChanelRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChanelRequest; }
+	}
 
-	public class NotifyNewConnectPacket : Packet {
+	public class DisconnectChanelResponsePacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+	}
+
+	public class NotifyConnectPlayerPacket : Packet {
 		public UInt64 accountId;
 		public CharacterInfo characterInfo;
 
@@ -250,15 +258,22 @@ namespace Heroes {
 			Serializer.deserialize(data, ref offset, out characterInfo);
 		}
 
-		public override PacketType type() { return PacketType.NotifyNewConnect; }
+		public override PacketType type() { return PacketType.NotifyConnectPlayer; }
 	}
 
-	public class DisconnectChanelRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelRequest; }
-	}
+	public class NotifyDisconnectPlayerPacket : Packet  {
+		public UInt64 accountId;
 
-	public class DisconnectChanelResponsePacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, accountId);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out accountId);
+		}
+
+		public override PacketType type() { return PacketType.NotifyDisconnectPlayer; }
 	}
 	
 	public class NotifyCharacterMovementPacket : Packet {

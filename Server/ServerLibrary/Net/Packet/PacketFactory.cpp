@@ -33,7 +33,8 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::ConnectChanelResponse: return new ConnectChanelResponsePacket();
 		case PacketType::DisconnectChanelRequest: return new DisconnectChanelRequestPacket();
 		case PacketType::DisconnectChanelResponse: return new DisconnectChanelResponsePacket();
-		case PacketType::NotifyNewConnect: return new NotifyNewConnectPacket();
+		case PacketType::NotifyConnectPlayer: return new NotifyConnectPlayerPacket();
+		case PacketType::NotifyDisconnectPlayer: return new NotifyDisconnectPlayerPacket();
 		case PacketType::NotifyCharacterMovement: return new NotifyCharacterMovementPacket();
 		case PacketType::NotifyCharacterAction: return new NotifyCharacterActionPacket();
         // case PacketType::CharacterMoveRequest: return new CharacterMoveRequest;
@@ -64,8 +65,6 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
         // case PacketType::BuyItemAtMarketResponse: return new BuyItemAtMarketResponse;
         // case PacketType::SellItemAtMarketRequest: return new SellItemAtMarketRequest;
         // case PacketType::SellItemAtMarketResponse: return new SellItemAtMarketResponse;
-        // case PacketType::LogoutRequest: return new LogoutRequest;
-        // case PacketType::LogoutResponse: return new LogoutResponse;
     }
 
     return nullptr;

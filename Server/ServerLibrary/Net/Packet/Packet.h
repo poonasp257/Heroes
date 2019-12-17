@@ -523,13 +523,23 @@ public:
 	}
 };
 
-class NotifyNewConnectPacket : public Packet {
+class DisconnectChanelRequestPacket : public Packet {
+public:
+	PacketType type() const { return PacketType::DisconnectChanelRequest; }
+};
+
+class DisconnectChanelResponsePacket : public Packet {
+public:
+	PacketType type() const { return PacketType::DisconnectChanelResponse; }
+};
+
+class NotifyConnectPlayerPacket : public Packet {
 public:
 	UInt64 accountId;
 	CharacterInfo characterInfo;
 
 public:
-	PacketType type() const { return PacketType::NotifyNewConnect; }
+	PacketType type() const { return PacketType::NotifyConnectPlayer; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
@@ -543,14 +553,21 @@ public:
 	}
 };
 
-class DisconnectChanelRequestPacket : public Packet {
+class NotifyDisconnectPlayerPacket : public Packet {
 public:
-	PacketType type() const { return PacketType::DisconnectChanelRequest; }
-};
+	UInt64 accountId;
 
-class DisconnectChanelResponsePacket : public Packet {
 public:
-	PacketType type() const { return PacketType::DisconnectChanelResponse; }
+	PacketType type() const { return PacketType::NotifyDisconnectPlayer; }
+
+	void serialize(Stream& stream) {
+		stream << (UInt32)this->type();
+		stream << accountId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+	}
 };
 
 class NotifyCharacterMovementPacket : public Packet {

@@ -6,9 +6,6 @@ class Session;
 class Packet;
 
 class MainProcess : public ContentsProcess {
-private:
-	static std::unordered_map<UInt64, CharacterInfo> playerTable;
-
 public:
 	MainProcess();
     virtual ~MainProcess();

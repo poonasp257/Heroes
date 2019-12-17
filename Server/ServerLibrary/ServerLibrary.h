@@ -33,8 +33,6 @@
 #include <ctime>
 #include <chrono>
 
-using namespace std::experimental;
-
 #include "Include/rapidjson/document.h"
 #include "Include/rapidjson/filereadstream.h"
 #include "Include/rapidjson/filewritestream.h"

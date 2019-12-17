@@ -18,6 +18,8 @@ public class UIDisplayName : MonoBehaviour {
 	}
 
 	private void  Update() {
+		if (Camera.main == null) return;
+
 		float dist = Vector3.Distance(Camera.main.transform.position, transform.position);
 		if (!isFadeIn && dist < MaxDistance) StartCoroutine("FadeIn");
 		else if(isFadeIn && MaxDistance <= dist ) StartCoroutine("FadeOut");

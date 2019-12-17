@@ -116,12 +116,6 @@
     <ClInclude Include="ServerLibrary.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Lock.h">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Lock.h">
-      <Filter>Util</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -189,9 +183,6 @@
     </ClCompile>
     <ClCompile Include="Database\ODBCDatabase.cpp">
       <Filter>Database</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Lock.cpp">
-      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

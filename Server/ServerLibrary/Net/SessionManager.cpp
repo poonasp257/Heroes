@@ -20,10 +20,15 @@ bool SessionManager::addSession(Session *session) {
         return false;
     }
 
-	session->setId(sessionIdSeed);
+	session->setId(this->createSessionId());
     
     sessionList.push_back(session);
 	return true;
+}
+
+bool SessionManager::closeSession(UInt64 sessionId) {
+	Session *session = this->getSession(sessionId);
+	return this->closeSession(session);
 }
 
 bool SessionManager::closeSession(Session *session) {
@@ -33,14 +38,14 @@ bool SessionManager::closeSession(Session *session) {
 
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found == sessionList.end()) return false;
-	 
+	
+	SystemLogger::Log(Logger::Info, "disconnected client...[%s]",
+		session->getClientAddress().c_str());
+
     Session *delSession = *found;
     closesocket(delSession->getSocket());
     sessionList.remove(delSession);
 	if (delSession) delete delSession;
-
-	SystemLogger::Log(Logger::Info, "disconnected client...[%s]",
-		session->getClientAddress().c_str());
 
     return true;
 }
