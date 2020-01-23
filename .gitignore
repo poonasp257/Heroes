@@ -129,3 +129,6 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# private
+.env

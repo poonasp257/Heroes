@@ -1,69 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using Newtonsoft.Json.Linq;
 
 namespace Heroes {
 	public class AuthenticationManager : MonoBehaviour {
-		private MessageBox		msgBox;
-		private NetworkManager	networkManager;
-		private InputField		userIdField;
-		private InputField		passwordField;
+		private MessageBox msgBox;
 
-		private string userId;
-		private string password;
+		private InputField userIdField;
+		private InputField passwordField;
 
-		private List<Button> buttonList;
-		[SerializeField] private GameObject	loginPage;
-		[SerializeField] private GameObject	registerPage;
-		
+		[SerializeField] private Button loginButton;
+		[SerializeField] private Button registerButton;
+
+		private const string authenticationServerUrl = "http://localhost:3000";
+
 		private void Start() {
-			initialize();
-
-			networkManager.RegisterNotification(PacketType.AuthLoginResponse, authLoginResponse);
-			networkManager.RegisterNotification(PacketType.AuthRegisterResponse, authRegisterResponse);
+			findGameObjects();
+			userIdField.ActivateInputField();
 		}
 		
 		private void Update() {
-			if (msgBox.IsExist) return;
-
-			activateInteractableUI();
-			updateInputField();
 			processInput();
  		}
 
-		private void initialize() {
+		private void findGameObjects() {
 			msgBox = GameObject.Find("Message Handler").GetComponent<MessageBox>();
-			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
-
-			userIdField = GameObject.Find("UserIdField").GetComponent<InputField>();
-			passwordField = GameObject.Find("PasswordField").GetComponent<InputField>();
-
-			if (loginPage == null || registerPage == null) {
-				Debug.Log("login or register object isn't assgined.");
-				return;
-			}
-
-			buttonList = new List<Button>();
-
-			Button[] buttons = loginPage.GetComponentsInChildren<Button>();
-			foreach(var button in buttons) {
-				buttonList.Add(button);
-			}
-
-			buttons = registerPage.GetComponentsInChildren<Button>();
-			foreach(var button in buttons) {
-				buttonList.Add(button);
-			}
-			
-			userIdField.Select();
+			userIdField = GameObject.Find("UserId Field").GetComponent<InputField>();
+			passwordField = GameObject.Find("Password Field").GetComponent<InputField>();
 		}
-		
+				
 		private void processInput() {			
-			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
-				if (loginPage.activeSelf) authLoginRequest();
-				else authRegisterRequest();
+			if (Input.GetKeyDown(KeyCode.Return) 
+				|| Input.GetKeyDown(KeyCode.KeypadEnter)) {
+				requestLogin();
 			}
 
 			if (Input.GetKeyDown(KeyCode.Tab)) { 
@@ -71,37 +44,30 @@ namespace Heroes {
 			}
 		}
 
-		private void deactivateInteractableUI() {
-			userIdField.interactable = false;
-			passwordField.interactable = false;
-
-			foreach(var button in buttonList) {
-				button.interactable = false;
-			}
-		}
-
 		private void activateInteractableUI() {
 			userIdField.interactable = true;
 			passwordField.interactable = true;
 
-			foreach(var button in buttonList) {
-				button.interactable = true;
-			}
+			loginButton.interactable = true;
+			registerButton.interactable = true;
 		}
 
-		private void updateInputField() {
-			userId = userIdField.text;
-			password = passwordField.text;
-		}	
+		private void deactivateInteractableUI() {
+			userIdField.interactable = false;
+			passwordField.interactable = false;
+
+			loginButton.interactable = false;
+			registerButton.interactable = false;
+		}
 
 		private void changeFocus() {
 			if(userIdField.isFocused) passwordField.Select();
 			else userIdField.Select();
 		}
 
-		private bool checkInputField() {
-			if(string.IsNullOrEmpty(userId) 
-				|| string.IsNullOrEmpty(password)) {
+		private bool isFilledAllInputFields() {
+			if(string.IsNullOrEmpty(userIdField.text) 
+				|| string.IsNullOrEmpty(passwordField.text)) {
 				return false;
 			}
 
@@ -109,82 +75,71 @@ namespace Heroes {
 		} 
 
 		public void clearInputField() {
-			userId = "";
 			userIdField.text = "";
-			password = "";
 			passwordField.text = "";
 		}
 
-		public void authLoginRequest() {
-			if (!checkInputField()) {
-				msgBox.alert("잘못된 입력입니다.");
+		public void openHelpPage() {
+			Application.OpenURL(authenticationServerUrl + "/help");
+		}
+
+		public void openRegisterPage() {
+			Application.OpenURL(authenticationServerUrl + "/signup");
+		}
+
+		public void requestLogin() {
+			if(string.IsNullOrWhiteSpace(userIdField.text)) {
+				msgBox.alert("아이디를 입력해주세요.");
+				return;
+			}
+			if(string.IsNullOrWhiteSpace(passwordField.text)) {
+				msgBox.alert("비밀번호를 입력해주세요.");
 				return;
 			}
 
-			AuthLoginRequestPacket packet = new AuthLoginRequestPacket();
-			packet.id = userId;
-			packet.password = password;
+			StartCoroutine("RequestLogin");
+		}
 
-			networkManager.send(packet);
+		private IEnumerator RequestLogin() {
+			if (!isFilledAllInputFields()) yield break;
+
+			msgBox.notice("서버의 응답을 기다리고 있습니다.");
+
+			WWWForm form = new WWWForm();
+			form.AddField("username", userIdField.text);
+			form.AddField("password", passwordField.text);
+
 			clearInputField();
 			deactivateInteractableUI();
 
-			msgBox.notice("서버 요청을 기다리고 있습니다.");
+			UnityWebRequest webRequest = UnityWebRequest.Post(
+				authenticationServerUrl + "/account/signin", form);
+			yield return webRequest.SendWebRequest();
+
+			msgBox.close();
+			activateInteractableUI();
+
+			if (webRequest.isNetworkError) {
+				msgBox.alert("네트워크 상태가 원활하지 않습니다.");
+				yield break;
+			}
+
+			string response = webRequest.downloadHandler.text;
+			JObject responseData = JObject.Parse(response);
+
+			if (webRequest.isHttpError) {
+				msgBox.alert(responseData["message"].ToString());
+				yield break;
+			}
+
+			UInt64 accountId = (UInt64)responseData["accountId"];
+			PlayerData.Instance.AccountId = accountId;
+			
+			StartCoroutine("LoadChannelScene");
 		}
 
-		public void authRegisterRequest() {		
-			if (!checkInputField()) {
-				msgBox.alert("잘못된 입력입니다.");
-				return;
-			}
-				
-			AuthRegisterRequestPacket packet = new AuthRegisterRequestPacket();
-			packet.id = userId;
-			packet.password = password;
-
-			networkManager.send(packet);
-			clearInputField();
-			deactivateInteractableUI();
-
-			msgBox.notice("서버 요청을 기다리고 있습니다.");
-		}
-
-		public void authLoginResponse(PacketType type, Packet rowPacket) {
-			AuthLoginResponsePacket packet = rowPacket as AuthLoginResponsePacket;
-			if(packet == null) {
-				Debug.Log("invalid packet");
-				return;
-			}
-
-			if(packet.errorCode >= 0) {
-				msgBox.alert("로그인 정보가 일치하지 않습니다.");
-				return;
-			}
-
-			PlayerData.Instance.AccountId = packet.accountId;
-			StartCoroutine(LoadChanelScene());
-		}
-
-		public void authRegisterResponse(PacketType type, Packet rowPacket) {
-			AuthRegisterResponsePacket packet = rowPacket as AuthRegisterResponsePacket;
-			if(packet == null) {
-				Debug.Log("invalid packet");
-				return;
-			}
-
-			if(packet.errorCode >= 0) {
-				msgBox.alert("잘못된 입력 정보입니다.");
-				return;
-			}
-
-			loginPage.SetActive(true);
-			registerPage.SetActive(false);
-
-			msgBox.alert("회원가입 성공!");
-		}
-
-		public IEnumerator LoadChanelScene() {
-			AsyncOperation op = SceneManager.LoadSceneAsync("Chanel");
+		private IEnumerator LoadChannelScene() {
+			AsyncOperation op = SceneManager.LoadSceneAsync("Channel");
 			op.allowSceneActivation = false;
 
 			while (!op.isDone){

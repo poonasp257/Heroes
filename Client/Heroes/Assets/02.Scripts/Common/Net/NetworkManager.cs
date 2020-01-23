@@ -43,14 +43,10 @@ namespace Heroes {
 		}
 
 		private void Start() {
-
+			this.connect(IP, Port);
 		}
 
-		private void Update() {
-			if (!isConnected()) {
-				this.connect(IP, Port);
-			}
-			
+		private void Update() {			
 			PacketProcess();
 		}
 
@@ -90,7 +86,7 @@ namespace Heroes {
 		private bool isConnected() {
 			return state == NetState.Connected;
 		}
-
+		
 		public void connect(string ip, UInt16 port) {
 			if (string.IsNullOrWhiteSpace(ip)) {
 				Debug.Log("IP address is null or empty");

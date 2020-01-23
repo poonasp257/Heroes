@@ -71,7 +71,7 @@ namespace Heroes {
 			serialize(stream, value.z);
 		}
 
-		public static void serialize(MemoryStream stream, ChanelInfo value) {
+		public static void serialize(MemoryStream stream, ChannelInfo value) {
 			serialize(stream, value.id);
 			serialize(stream, value.traffic);
 			serialize(stream, value.name);
@@ -99,9 +99,9 @@ namespace Heroes {
 			serialize(stream, value.rotation);
 		}
 
-		public static void serialize(MemoryStream stream, List<ChanelInfo> list) {
+		public static void serialize(MemoryStream stream, List<ChannelInfo> list) {
 			serialize(stream, list.Count);
-			foreach(ChanelInfo value in list) {
+			foreach(ChannelInfo value in list) {
 				serialize(stream, value);
 			}
 		}
@@ -198,7 +198,7 @@ namespace Heroes {
 			deserialize(data, ref offset, out value.z);
 		}
 
-		public static void deserialize(byte[] data, ref Int32 offset, out ChanelInfo value) {
+		public static void deserialize(byte[] data, ref Int32 offset, out ChannelInfo value) {
 			deserialize(data, ref offset, out value.id);
 			deserialize(data, ref offset, out value.traffic);
 			deserialize(data, ref offset, out value.name);
@@ -226,11 +226,11 @@ namespace Heroes {
 			deserialize(data, ref offset, out value.rotation);
 		}
 
-		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChanelInfo> list) {
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChannelInfo> list) {
 			Int32 size;
 			deserialize(data, ref offset, out size);
 
-			ChanelInfo value;
+			ChannelInfo value;
 			for(int i = 0; i < size; ++i) {
 				deserialize(data, ref offset, out value);
 				list.Add(value);

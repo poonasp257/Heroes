@@ -2,6 +2,13 @@
 using UnityEngine;
 
 namespace Heroes {
+	public enum AuthErrorCode : Int32 {
+		Success = -1,
+		IncorrectID = 1,
+		IncorrectPassword,
+		Unknown
+	}
+
 	public enum CharacterClass : UInt16 {
 		Warrior,
 		Archer,
@@ -19,7 +26,7 @@ namespace Heroes {
 		Notice
 	}
 
-	public struct ChanelInfo {
+	public struct ChannelInfo {
 		public UInt16 id;
 		public Int32 traffic;
 		public string name;

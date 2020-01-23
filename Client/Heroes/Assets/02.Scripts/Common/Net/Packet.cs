@@ -92,23 +92,23 @@ namespace Heroes {
 		public override PacketType type() { return PacketType.AuthRegisterResponse; }
 	}
 
-	public class ChanelStatusRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ChanelStatusRequest; }
+	public class ChannelStatusRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ChannelStatusRequest; }
 	}
 
-	public class ChanelStatusResponsePacket : Packet {
-		public List<ChanelInfo> chanelList = new List<ChanelInfo>();
+	public class ChannelStatusResponsePacket : Packet {
+		public List<ChannelInfo> ChannelList = new List<ChannelInfo>();
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, chanelList);
+			Serializer.serialize(stream, ChannelList);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, ref chanelList);
+			Serializer.deserialize(data, ref offset, ref ChannelList);
 		}
 		
-		public override PacketType type() { return PacketType.ChanelStatusResponse; }
+		public override PacketType type() { return PacketType.ChannelStatusResponse; }
 	}
 
 	public class AccountInfoRequestPacket : Packet {
@@ -199,28 +199,28 @@ namespace Heroes {
 		public override PacketType type() { return PacketType.DeleteCharacterResponse; }
 	};
 
-	public class ConnectChanelRequestPacket : Packet {
-		public UInt16 chanelId; 
+	public class ConnectChannelRequestPacket : Packet {
+		public UInt16 channelId; 
 		public UInt64 accountId;
 		public UInt64 characterId;
 				
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, chanelId);
+			Serializer.serialize(stream, channelId);
 			Serializer.serialize(stream, accountId);
 			Serializer.serialize(stream, characterId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out chanelId);
+			Serializer.deserialize(data, ref offset, out channelId);
 			Serializer.deserialize(data, ref offset, out accountId);
 			Serializer.deserialize(data, ref offset, out characterId);
 		}
 
-		public override PacketType type() { return PacketType.ConnectChanelRequest; }
+		public override PacketType type() { return PacketType.ConnectChannelRequest; }
 	}
 
-	public class ConnectChanelResponsePacket : Packet {
+	public class ConnectChannelResponsePacket : Packet {
 		public Dictionary<UInt64, CharacterInfo> playerTable = new Dictionary<UInt64, CharacterInfo>();
 
 		public override void serialize() {
@@ -232,15 +232,15 @@ namespace Heroes {
 			Serializer.deserialize(data, ref offset, ref playerTable);
 		}
 
-		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+		public override PacketType type() { return PacketType.ConnectChannelResponse; }
 	}
 	
-	public class DisconnectChanelRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelRequest; }
+	public class DisconnectChannelRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChannelRequest; }
 	}
 
-	public class DisconnectChanelResponsePacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChanelResponse; }
+	public class DisconnectChannelResponsePacket : Packet {
+		public override PacketType type() { return PacketType.ConnectChannelResponse; }
 	}
 
 	public class NotifyConnectPlayerPacket : Packet {

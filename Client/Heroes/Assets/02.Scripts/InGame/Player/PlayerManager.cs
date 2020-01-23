@@ -19,7 +19,7 @@ namespace Heroes {
 			movementQueue = new Queue<CharacterMovement>();
 			actionQueue = new Queue<ActionType>();
 
-			networkManager.RegisterNotification(PacketType.ConnectChanelResponse, connectChanelResponse);
+			networkManager.RegisterNotification(PacketType.ConnectChannelResponse, connectChannelResponse);
 			networkManager.RegisterNotification(PacketType.NotifyConnectPlayer, notifyConnectPlayer);
 			networkManager.RegisterNotification(PacketType.NotifyDisconnectPlayer, notifyDisconnectPlayer);
 			networkManager.RegisterNotification(PacketType.NotifyCharacterMovement, notifyCharacterMovement);
@@ -29,7 +29,7 @@ namespace Heroes {
 		private void Start() {
 			DontDestroyOnLoad(this.gameObject);	
 
-			this.connectChanelRequest();
+			this.connectChannelRequest();
 		}
 
 		private void Update() {
@@ -93,17 +93,17 @@ namespace Heroes {
 			actionQueue.Enqueue(action);
 		}
 				
-		public void connectChanelRequest() {
-			ConnectChanelRequestPacket packet = new ConnectChanelRequestPacket();
-			packet.chanelId = PlayerData.Instance.ChanelId;
+		public void connectChannelRequest() {
+			ConnectChannelRequestPacket packet = new ConnectChannelRequestPacket();
+			packet.channelId = PlayerData.Instance.ChannelId;
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.characterId = PlayerData.Instance.CharacterId;
 
 			networkManager.send(packet);
 		}
 
-		public void connectChanelResponse(PacketType type, Packet rowPacket) {
-			ConnectChanelResponsePacket packet = rowPacket as ConnectChanelResponsePacket;
+		public void connectChannelResponse(PacketType type, Packet rowPacket) {
+			ConnectChannelResponsePacket packet = rowPacket as ConnectChannelResponsePacket;
 			
 			foreach(var info in packet.playerTable) {
 				var playerInfo = info.Value;

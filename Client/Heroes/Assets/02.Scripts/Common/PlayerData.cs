@@ -4,7 +4,7 @@ namespace Heroes {
 	public class PlayerData {
 		private static PlayerData instance = null;
 
-		private UInt16 chanelId;
+		private UInt16 channelId;
 		private UInt64 accountId;
 		private UInt64 characterId;
 		private CharacterInfo characterInfo;
@@ -19,12 +19,12 @@ namespace Heroes {
 			}
 		}
 
-		public UInt16 ChanelId {
+		public UInt16 ChannelId {
 			get {
-				return chanelId;
+				return channelId;
 			}
 			set {
-				chanelId = value;
+				channelId = value;
 			}
 		}
 
@@ -48,7 +48,7 @@ namespace Heroes {
 
 		public PlayerData() {
 			accountId = 0;
-			chanelId = 0;
+			channelId = 0;
 			characterId = 0;
 		}
 	}
