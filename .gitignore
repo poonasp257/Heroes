@@ -1,6 +1,8 @@
 # Production
 build
 Debug
+Release
+LIBRARY
 
 # Dependency directories
 node_modules

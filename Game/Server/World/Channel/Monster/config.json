@@ -1,0 +1,23 @@
+{
+  "App": {
+    "Name": "Monster",
+    "Server": {
+      "IP": "127.0.0.1",
+      "Port": 10200,
+      "ThreadCount": 1
+    },
+    "Terminal": {
+      "DBAgent": {
+        "IP": "127.0.0.1",
+        "Port": 10100
+      },
+      "Game": {
+        "IP": "127.0.0.1",
+        "Port":  10000
+      }
+    },
+    "Contents": {
+      "ThreadCount": 1
+    }
+  }
+}

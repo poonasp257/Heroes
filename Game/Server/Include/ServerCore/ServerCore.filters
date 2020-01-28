@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{383d3085-b46f-4dff-bf3d-b8e3fa355a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Net\Packet">
+      <UniqueIdentifier>{7fe9508d-9637-499c-84d4-93c1bd26e04c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\IOCP">
+      <UniqueIdentifier>{b21743e3-b041-45a3-a96d-18cefb2bf6b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{5e411153-da5c-48f9-8b2e-b3f26a1611cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\Terminal">
+      <UniqueIdentifier>{cd2f831a-3d95-413c-9942-f5635ff8483e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{c6a0c096-ca5d-4d8e-82a8-ed3f911bc30a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Server.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Session.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\SessionManager.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\IOCP\IOCPServer.h">
+      <Filter>Net\IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\IOCP\IOCPSession.h">
+      <Filter>Net\IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Package.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Packet.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketAnalyzer.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketFactory.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketType.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Stream.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\ContentsProcess.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Clock.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Json.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Singleton.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Type.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Thread.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ThreadJobQueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\Terminal.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalManager.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalSession.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\DBManager.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Query.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\QueryStatement.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\ODBCDatabase.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Database.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerCore.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Server.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Session.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\SessionManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\IOCP\IOCPServer.cpp">
+      <Filter>Net\IOCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\IOCP\IOCPSession.cpp">
+      <Filter>Net\IOCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Package.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\PacketAnalyzer.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\PacketFactory.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Stream.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ContentsProcess.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Clock.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Json.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\Terminal.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalManager.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalSession.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\DBManager.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\Query.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\QueryStatement.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\ODBCDatabase.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

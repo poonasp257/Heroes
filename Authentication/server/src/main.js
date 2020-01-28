@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import account from './routes/account';
 
 const app = express();
-const port = 9100;
+const port = 9000;
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
@@ -27,4 +27,4 @@ app.use(session({
 
 app.use('/account', account);
 
-app.listen(port, () => console.log("Login Server listening on port 9100"));    
+app.listen(port, () => console.log("Login Server listening on port " + port));    

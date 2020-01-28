@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Database\DBManager.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\ContentsProcess.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Json.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Clock.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\ODBCDatabase.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Server.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\Query.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\QueryStatement.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\SessionManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Session.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\IOCP\IOCPServer.cpp">
+      <Filter>Net\IOCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\IOCP\IOCPSession.cpp">
+      <Filter>Net\IOCP</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\Terminal.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalManager.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Terminal\TerminalSession.cpp">
+      <Filter>Net\Terminal</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Package.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\PacketAnalyzer.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\PacketFactory.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packet\Stream.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Database\DBManager.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\ContentsProcess.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Json.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Clock.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\ODBCDatabase.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerCore.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Server.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Type.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Thread.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ThreadJobQueue.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Database.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\QueryStatement.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\Query.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\SessionManager.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Session.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Singleton.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\IOCP\IOCPServer.h">
+      <Filter>Net\IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\IOCP\IOCPSession.h">
+      <Filter>Net\IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalSession.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\Terminal.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Terminal\TerminalManager.h">
+      <Filter>Net\Terminal</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketType.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Package.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Packet.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketAnalyzer.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketFactory.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Stream.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{1192b035-3354-42e0-8572-1dd380e9203e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{ef518030-5148-4fd1-92c5-6ed29b06c0ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\IOCP">
+      <UniqueIdentifier>{53d200f9-c4b2-4601-972c-ca22a0c7bc25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\Packet">
+      <UniqueIdentifier>{ca8b575e-c7fe-4404-a6c3-111ffccd611d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{c9cc9c89-62af-4750-887b-0c003ae80bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{3f15315e-3ea8-476e-8c87-d4a57dff5660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{5a997ff3-585e-4178-8c34-087e4c68cfc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\Terminal">
+      <UniqueIdentifier>{51006b95-71c5-4d47-90d7-1d4ed32dcb8a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
