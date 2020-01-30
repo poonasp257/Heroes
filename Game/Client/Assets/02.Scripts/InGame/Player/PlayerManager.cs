@@ -45,7 +45,7 @@ namespace Heroes {
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.movement = movement;
 
-			networkManager.send(packet);
+			networkManager.sendPacket(packet);
 		}
 
 		private void processActionMovement() {
@@ -56,7 +56,7 @@ namespace Heroes {
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.actionType = action;
 
-			networkManager.send(packet);
+			networkManager.sendPacket(packet);
 		}
 
 		private GameObject createCharacter(UInt64 accountId, CharacterInfo info) {
@@ -99,7 +99,7 @@ namespace Heroes {
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.characterId = PlayerData.Instance.CharacterId;
 
-			networkManager.send(packet);
+			networkManager.sendPacket(packet);
 		}
 
 		public void connectChannelResponse(PacketType type, Packet rowPacket) {

@@ -85,28 +85,14 @@ namespace Heroes {
 				yield break;
 			}
 
+			messageBoxHandler.close();
+
 			UInt64 accountId = (UInt64)responseData["accountId"];
 			PlayerData.Instance.AccountId = accountId;
-			
-			StartCoroutine("LoadChannelScene");
+
+			SceneManager.LoadScene("Channel");
 		}
 
-		private IEnumerator LoadChannelScene() {
-			AsyncOperation op = SceneManager.LoadSceneAsync("Channel");
-			op.allowSceneActivation = false;
-
-			messageBoxHandler.notice("서버 목록을 불러오고 있습니다.");
-			while (!op.isDone) {
-				yield return null;
-
-				if (op.progress >= 0.9f) {
-					op.allowSceneActivation = true;
-					messageBoxHandler.close();
-					yield break;
-				}
-			}						
-		}
-				
 		public void openHelpPage() {
 			Application.OpenURL(homepageIP + "/help");
 		}

@@ -39,6 +39,7 @@
 #include "Include/rapidjson/prettywriter.h"
 
 #include "Util/Type.h"
+#include "Util/Util.h"
 #include "Util/Json.h"
 #include "Util/Singleton.h"
 #include "Util/Clock.h"

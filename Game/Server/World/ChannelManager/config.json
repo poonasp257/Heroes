@@ -7,18 +7,7 @@
       "ThreadCount": 1
     },
     "Terminal": {
-      "Channel": [
-        {
-          "Name": "벨리아-1",
-          "IP": "127.0.0.1",
-          "Port": "10000"
-        },
-        {
-          "Name": "벨리아-2",
-          "IP": "127.0.0.1",
-          "Port": "11000"
-        }
-      ]
+      
     },
     "Contents": {
       "ThreadCount": 1

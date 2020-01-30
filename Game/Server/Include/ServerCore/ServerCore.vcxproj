@@ -189,6 +189,7 @@
     <ClInclude Include="Util\Thread.h" />
     <ClInclude Include="Util\ThreadJobQueue.h" />
     <ClInclude Include="Util\Type.h" />
+    <ClInclude Include="Util\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Contents\ContentsProcess.cpp" />

@@ -6,6 +6,6 @@ public:
 	MarketplaceProcess();
 	virtual ~MarketplaceProcess();
 
-	//static void ChanelStatusRequest(Session* session, Packet* rowPacket);
+	//static void ChannelStatusRequest(Session* session, Packet* rowPacket);
 };
 #endif

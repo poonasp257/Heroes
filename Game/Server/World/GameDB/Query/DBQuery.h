@@ -1,8 +1,11 @@
 #ifndef GAMEDB_QUERY_H
 #define GAMEDB_QUERY_H
 
+class Session;
+
 class DBAccountInfoQuery : public Query {
 public:
+	Session *session;
 	UInt64 clientId;
 
 	DBAccountInfoQuery() {
@@ -55,13 +58,13 @@ public:
 		SQLFreeStmt(statement, SQL_UNBIND);
 		SQLFreeStmt(statement, SQL_RESET_PARAMS);
 
-		Terminal *terminal = TerminalManager::Instance().getTerminal("Game");
-		terminal->sendPacket(&packet);
+		session->sendPacket(&packet);
 	}
 };
 
 class DBCreateCharacterQuery : public Query {
 public:
+	Session *session;
 	UInt64 clientId;
 
 	DBCreateCharacterQuery() {
@@ -87,13 +90,13 @@ public:
 		SQLFreeStmt(statement, SQL_UNBIND);
 		SQLFreeStmt(statement, SQL_RESET_PARAMS);
 
-		Terminal *terminal = TerminalManager::Instance().getTerminal("Game");
-		terminal->sendPacket(&packet);
+		session->sendPacket(&packet);
 	}
 };
 
 class DBDeleteCharacterQuery : public Query {
 public:
+	Session* session;
 	UInt64 clientId;
 
 	DBDeleteCharacterQuery() {
@@ -119,13 +122,13 @@ public:
 		SQLFreeStmt(statement, SQL_UNBIND);
 		SQLFreeStmt(statement, SQL_RESET_PARAMS);
 
-		Terminal *terminal = TerminalManager::Instance().getTerminal("Game");
-		terminal->sendPacket(&packet);
+		session->sendPacket(&packet);
 	}
 };
 
 class DBCharacterInfoQuery : public Query {
 public:
+	Session* session;
 	UInt64 clientId;
 	UInt64 accountId;
 
@@ -135,7 +138,7 @@ public:
 	virtual ~DBCharacterInfoQuery() {}
 
 	void doResponse(SQLHSTMT statement) {
-		DBConnectChanelResponsePacket packet;
+		DBConnectChannelResponsePacket packet;
 		packet.clientId = clientId;
 		packet.accountId = accountId;
 
@@ -177,8 +180,7 @@ public:
 		SQLFreeStmt(statement, SQL_UNBIND);
 		SQLFreeStmt(statement, SQL_RESET_PARAMS);
 
-		Terminal *terminal = TerminalManager::Instance().getTerminal("Game");
-		terminal->sendPacket(&packet);
+		session->sendPacket(&packet);
 	}
 };
 #endif

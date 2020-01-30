@@ -23,23 +23,23 @@ namespace Heroes {
 		public override PacketType type() { return PacketType.ExitResponse; }
 	}
 
-	public class ChannelStatusRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ChannelStatusRequest; }
+	public class ChannelListRequestPacket : Packet {
+		public override PacketType type() { return PacketType.ChannelListRequest; }
 	}
 
-	public class ChannelStatusResponsePacket : Packet {
-		public List<ChannelInfo> ChannelList = new List<ChannelInfo>();
+	public class ChannelListResponsePacket : Packet {
+		public List<ChannelInfo> channelList = new List<ChannelInfo>();
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, ChannelList);
+			Serializer.serialize(stream, channelList);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, ref ChannelList);
+			Serializer.deserialize(data, ref offset, ref channelList);
 		}
 		
-		public override PacketType type() { return PacketType.ChannelStatusResponse; }
+		public override PacketType type() { return PacketType.ChannelListResponse; }
 	}
 
 	public class AccountInfoRequestPacket : Packet {

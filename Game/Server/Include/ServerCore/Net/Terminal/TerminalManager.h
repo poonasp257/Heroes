@@ -4,7 +4,7 @@
 class TerminalManager : public Singleton<TerminalManager> {
 private:
 	Server *server;
-	std::unordered_map<std::string, Terminal*> terminalPool;
+	std::vector<std::pair<std::wstring, Terminal*>> terminalPool;
 
 public:
 	TerminalManager();
@@ -13,6 +13,9 @@ public:
 	void initialize();
 	void run(Server *server);
 
-	Terminal* getTerminal(const std::string& name);
+	Terminal* getTerminal(const std::wstring& name);
+	Terminal* getTerminal(int index);
+
+	size_t getTerminalCount() const { return terminalPool.size(); }
 };
 #endif

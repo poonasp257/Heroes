@@ -11,8 +11,6 @@ namespace Heroes {
 
 		private ScrollRect scrollRect;
 
-		public UInt16 ID { get; set; }
-
 		public string Name {
 			get {
 				return ChannelName.text;
@@ -22,15 +20,17 @@ namespace Heroes {
 			}
 		}
 
-		public Int32 Traffic {
+		public string IP {
 			get {
-				return Int32.Parse(traffic.text);
+				return ChannelName.text;
 			}
 			set {
-				traffic.text = value.ToString();
+				ChannelName.text = value;
 			}
 		}
 
+		public UInt16 Port { get; set; }
+		
 		private void Awake() {
 			ChannelName = transform.Find("Channel Name").GetComponent<Text>();
 			traffic = transform.Find("Traffic").GetComponent<Text>();

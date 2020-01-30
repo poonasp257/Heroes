@@ -29,22 +29,27 @@ void TerminalManager::initialize() {
 	}
 
 	for (auto itr = config.MemberBegin(); itr != config.MemberEnd(); ++itr) {
-		std::string terminalName = itr->name.GetString();
+		std::wstring terminalName = convertToWString(itr->name.GetString());
 
 		Terminal *terminal = new Terminal(server, terminalName);
 		std::string ip = itr->value["IP"].GetString();
 		int port = itr->value["Port"].GetInt();
 
 		terminal->initialize(ip, port);
-		terminalPool.insert(std::make_pair(terminalName, terminal));
+		terminalPool.push_back(std::make_pair(terminalName, terminal));
 	}
 }
 
-Terminal* TerminalManager::getTerminal(const std::string& name) {
-	auto itr = terminalPool.find(name);
-	if (itr == terminalPool.end()) return nullptr;
+Terminal* TerminalManager::getTerminal(const std::wstring& name) {
+	for (auto& itr : terminalPool) {
+		if (itr.first == name) return itr.second;
+	}
 
-	return terminalPool[name];
+	return nullptr;
+}
+
+Terminal* TerminalManager::getTerminal(int index) {
+	return terminalPool[index].second;
 }
 
 void TerminalManager::run(Server *server) {

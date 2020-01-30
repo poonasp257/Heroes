@@ -20,9 +20,9 @@ namespace Heroes {
 	}
 
 	public struct ChannelInfo {
-		public UInt16 id;
-		public Int32 traffic;
 		public string name;
+		public string ip;
+		public UInt16 port;
 	}
 
 	public struct CharacterInfo {

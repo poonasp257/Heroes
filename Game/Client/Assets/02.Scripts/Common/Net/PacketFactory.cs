@@ -6,8 +6,8 @@ namespace Heroes {
 			switch((PacketType)type) {
 				case PacketType.ExitRequest: return new ExitRequestPacket();
 				case PacketType.ExitResponse: return new ExitResponsePacket();
-				case PacketType.ChannelStatusRequest: return new ChannelStatusRequestPacket();
-				case PacketType.ChannelStatusResponse: return new ChannelStatusResponsePacket();
+				case PacketType.ChannelListRequest: return new ChannelListRequestPacket();
+				case PacketType.ChannelListResponse: return new ChannelListResponsePacket();
 				case PacketType.AccountInfoRequest: return new AccountInfoRequestPacket();
 				case PacketType.AccountInfoResponse: return new AccountInfoResponsePacket();
 				case PacketType.CreateCharacterRequest: return new CreateCharacterRequestPacket();

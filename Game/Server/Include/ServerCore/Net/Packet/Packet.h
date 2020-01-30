@@ -24,25 +24,25 @@ public:
 	PacketType type() const { return PacketType::ExitResponse; }
 };
 
-class ChanelStatusRequestPacket : public Packet {
+class ChannelListRequestPacket : public Packet {
 public:
-	PacketType type() const { return PacketType::ChanelStatusRequest; }
+	PacketType type() const { return PacketType::ChannelListRequest; }
 };
 
-class ChanelStatusResponsePacket : public Packet {
+class ChannelListResponsePacket : public Packet {
 public:
-	std::vector<ChanelInfo> chanelList;
+	std::vector<ChannelInfo> channelList;
 
 public:
-	PacketType type() const { return PacketType::ChanelStatusResponse; }
+	PacketType type() const { return PacketType::ChannelListResponse; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << chanelList;
+		stream << channelList;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &chanelList;
+		stream >> &channelList;
 	}
 };
 
@@ -271,35 +271,35 @@ public:
 	}
 };
 
-class ConnectChanelRequestPacket : public Packet {
+class ConnectChannelRequestPacket : public Packet {
 public:
-	UInt16 chanelId;
+	UInt16 channelId;
 	UInt64 accountId;
 	UInt64 characterId;
 
 public:
-	PacketType type() const { return PacketType::ConnectChanelRequest; }
+	PacketType type() const { return PacketType::ConnectChannelRequest; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << chanelId;
+		stream << channelId;
 		stream << accountId;
 		stream << characterId;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &chanelId;
+		stream >> &channelId;
 		stream >> &accountId;
 		stream >> &characterId;
 	}
 };
 
-class ConnectChanelResponsePacket : public Packet {
+class ConnectChannelResponsePacket : public Packet {
 public:
 	std::unordered_map<UInt64, CharacterInfo> playerTable;
 
 public:
-	PacketType type() const { return PacketType::ConnectChanelResponse; }
+	PacketType type() const { return PacketType::ConnectChannelResponse; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
@@ -311,14 +311,14 @@ public:
 	}
 };
 
-class DBConnectChanelRequestPacket : public Packet {
+class DBConnectChannelRequestPacket : public Packet {
 public:
 	UInt64 clientId;
 	UInt64 accountId;
 	UInt64 characterId;
 
 public:
-	PacketType type() const { return PacketType::DBConnectChanelRequest; }
+	PacketType type() const { return PacketType::DBConnectChannelRequest; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
@@ -334,14 +334,14 @@ public:
 	}
 };
 
-class DBConnectChanelResponsePacket : public Packet {
+class DBConnectChannelResponsePacket : public Packet {
 public:
 	UInt64 clientId;
 	UInt64 accountId;
 	CharacterInfo characterInfo;
 
 public:
-	PacketType type() const { return PacketType::DBConnectChanelResponse; }
+	PacketType type() const { return PacketType::DBConnectChannelResponse; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
@@ -357,14 +357,14 @@ public:
 	}
 };
 
-class DisconnectChanelRequestPacket : public Packet {
+class DisconnectChannelRequestPacket : public Packet {
 public:
-	PacketType type() const { return PacketType::DisconnectChanelRequest; }
+	PacketType type() const { return PacketType::DisconnectChannelRequest; }
 };
 
-class DisconnectChanelResponsePacket : public Packet {
+class DisconnectChannelResponsePacket : public Packet {
 public:
-	PacketType type() const { return PacketType::DisconnectChanelResponse; }
+	PacketType type() const { return PacketType::DisconnectChannelResponse; }
 };
 
 class NotifyConnectPlayerPacket : public Packet {

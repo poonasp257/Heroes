@@ -30,7 +30,7 @@ bool TerminalSession::connectTo(const char *ip, int port) {
 }
 
 void TerminalSession::onSend(size_t transferSize) {
-	//Noting
+	//Nothing
 }
 
 void TerminalSession::sendPacket(Packet *packet) {

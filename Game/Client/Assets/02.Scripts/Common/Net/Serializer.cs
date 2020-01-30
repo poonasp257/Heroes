@@ -72,9 +72,9 @@ namespace Heroes {
 		}
 
 		public static void serialize(MemoryStream stream, ChannelInfo value) {
-			serialize(stream, value.id);
-			serialize(stream, value.traffic);
 			serialize(stream, value.name);
+			serialize(stream, value.ip);
+			serialize(stream, value.port);
 		}
 
 		public static void serialize(MemoryStream stream, CharacterInfo value) {
@@ -199,9 +199,9 @@ namespace Heroes {
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out ChannelInfo value) {
-			deserialize(data, ref offset, out value.id);
-			deserialize(data, ref offset, out value.traffic);
 			deserialize(data, ref offset, out value.name);
+			deserialize(data, ref offset, out value.ip);
+			deserialize(data, ref offset, out value.port);
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {

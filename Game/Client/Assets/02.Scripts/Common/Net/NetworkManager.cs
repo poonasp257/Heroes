@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
@@ -8,121 +9,132 @@ using UnityEngine;
 namespace Heroes {
 	public class NetworkManager : MonoBehaviour {
 		private enum NetState {
-			Started,
+			Stopped,
 			Connected,
-			Disconnected,
-			Stopped
+			Disconnected
 		}
 
 		private readonly object lockObject = new object();
 
-		private readonly string IP = "127.0.0.1";
-		private readonly UInt16 Port = 9200;
-
 		public delegate void Notifier(PacketType type, Packet rowPacket);
 		private Dictionary<PacketType, Notifier> notifierMap;
 
-		private Queue<Packet> packetQueue;
+		private Queue<Packet> receviePacketQueue;
+
+		private Coroutine retryConnectCoroutine;
+		private const float retryInterval = 5.0f;
 
 		private Thread receiveWorker;
 		private NetworkStream stream;
 		private TcpClient client;
 		private NetState state;
 
+		private MessageBoxHandler messageBoxHandler;
+
+		[SerializeField] private string ip = "127.0.0.1";
+		[SerializeField] private int port = 0;
+
+		private bool IsConnected { get { return state == NetState.Connected; } }
+
 		private void Awake() {
 			notifierMap = new Dictionary<PacketType, Notifier>();
-			packetQueue = new Queue<Packet>();
+			receviePacketQueue = new Queue<Packet>();
+
+			retryConnectCoroutine = null;
 
 			receiveWorker = null;
 			stream = null;
 			client = null;
+			state = NetState.Stopped;
+		}
 
-			state = NetState.Started;
+		private void Start() {
+			this.connect(ip, port);
+
+			var handlerObject = GameObject.Find("MessageBox Handler");
+			if (handlerObject) messageBoxHandler = handlerObject.GetComponent<MessageBoxHandler>();
 
 			DontDestroyOnLoad(this.gameObject);
 		}
 
-		private void Start() {
-			this.connect(IP, Port);
-		}
-
-		private void Update() {			
-			PacketProcess();
-		}
-
 		private void OnDestroy() {
-			this.disConnect();
+			if(IsConnected) this.disconnect();
+
+			receiveWorker.Join();
 		}
 
-		private void PacketProcess() {
-			if (packetQueue.Count == 0) return;
-
-			Packet packet = null;
-			lock(lockObject) {
-				packet = packetQueue.Dequeue();
+		private void Update() {
+			if(!IsConnected && retryConnectCoroutine == null) {
+				retryConnectCoroutine = StartCoroutine(RetryConnect());
 			}
 
-			if (notifierMap.ContainsKey(packet.type())) {
-				notifierMap[packet.type()](packet.type(), packet);
+			if(receviePacketQueue.Count != 0) {
+				ProcessPacket();
 			}
-		}
-
-		private void close() {
-			notifierMap.Clear();
-			packetQueue.Clear();
-
-			client.Close();
-			stream.Close();
-			stream.Flush();
-			receiveWorker.Abort();
-
-			client = null;
-			stream = null;
-			receiveWorker = null;
-
-			state = NetState.Stopped;
-		}
-
-		private bool isConnected() {
-			return state == NetState.Connected;
 		}
 		
-		public void connect(string ip, UInt16 port) {
+		private void connect(string ip, int port) {
 			if (string.IsNullOrWhiteSpace(ip)) {
-				Debug.Log("IP address is null or empty");
-				return;
+				throw new Exception("IP address is null or empty");
 			}
 
-			if (isConnected()) this.close();
-
-			try { 
+			try {
 				client = new TcpClient();
-				client.Connect(ip, Convert.ToInt32(port));
+				client.Connect(ip, port);
 			}
 			catch (Exception err) {
 				Debug.Log(err);
 				return;
 			}
 
-			receiveWorker = new Thread(new ThreadStart(recieve));
+			receiveWorker = new Thread(new ThreadStart(this.receivePacket));
 			receiveWorker.Start();
-
 			stream = client.GetStream();
 
 			state = NetState.Connected;
 		}
 
-		public void disConnect() {
-			if (!isConnected()) return;
-
-			state = NetState.Disconnected;
+		private void disconnect() {
+			this.close();
 
 			ExitRequestPacket packet = new ExitRequestPacket();
-			this.send(packet);
+			this.sendPacket(packet);
 		}
 
-		public void send(Packet packet) {
-			if (!isConnected()) return;
+		private void close() {
+			client.Close();
+			stream.Close();
+			stream.Flush();
+
+			state = NetState.Stopped;
+		}
+
+		private void ProcessPacket() {
+			Packet packet = null;
+			lock(lockObject) {
+				packet = receviePacketQueue.Dequeue();
+			}
+
+			if (notifierMap.ContainsKey(packet.type())) {
+				notifierMap[packet.type()](packet.type(), packet);
+			}
+		}
+	
+		private IEnumerator RetryConnect() {
+			messageBoxHandler.notice("재접속 시도중입니다.");
+
+			while (!IsConnected) {
+				this.connect(ip, port);
+
+				yield return new WaitForSeconds(retryInterval);
+			}
+
+			messageBoxHandler.close();
+			retryConnectCoroutine = null;
+		}
+
+		public void sendPacket(Packet packet) {
+			if (!IsConnected) return;
 
 			packet.serialize();
 
@@ -141,10 +153,10 @@ namespace Heroes {
 		}
 
 		// receive thread
-		public void recieve() {
+		public void receivePacket() {
 			Byte[] buffer = new Byte[client.ReceiveBufferSize];
 
-			while (isConnected()) {
+			while (IsConnected) {
 				int offset = 0;
 				int readLen = 0;
 
@@ -156,22 +168,18 @@ namespace Heroes {
 					break;
 				}
 
-				Int32 packetLen = PacketUtil.GetHeader(buffer, ref offset); 				
-				//while (readLen < packetLen) {
-				//	readLen += stream.Read(buffer, offset, buffer.Length - readLen);
-				//}
-
+				Int32 packetLen = PacketUtil.GetHeader(buffer, ref offset); 	
 				Byte[] packetData = new Byte[packetLen];
 				Buffer.BlockCopy(buffer, offset, packetData, 0, packetLen);
 
 				Packet packet = PacketUtil.AnalyzerPacket(packetData);
-				if (packet == null && isConnected()) {
+				if (packet == null) {
 					Debug.Log("unidentified packet received...");
 					continue;
 				}
 
 				lock (lockObject) {
-					packetQueue.Enqueue(packet);
+					receviePacketQueue.Enqueue(packet);
 				}
 			}
 
@@ -188,10 +196,6 @@ namespace Heroes {
 			if(notifierMap.ContainsKey(type)) {
 				notifierMap.Remove(type);
 			}
-		}
-
-		public void ClearNotification() {
-			notifierMap.Clear();
 		}
 	}
 }

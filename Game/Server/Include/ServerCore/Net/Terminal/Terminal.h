@@ -9,10 +9,10 @@ enum class TerminalStatus {
 class Terminal {
 private:	
 	Server						*server;
-	std::string					name;
+	std::wstring				name;
 
-	std::array<char, SIZE_16> 	ip;
-	int							port;
+	std::array<char, SIZE_16>	ip;
+	UInt16						port;
 
 	TerminalSession				session;
 	TerminalStatus				status;
@@ -23,14 +23,15 @@ private:
 	void run();
 
 public:
-	Terminal(Server *server, const std::string& name);
+	Terminal(Server *server, const std::wstring& name);
 	~Terminal();
 	
 	void initialize(const std::string& ip, int port);
 	void sendPacket(Packet *packet);
 
+	const wchar_t* getName() const { return name.c_str(); }
 	const char* getIP() const { return ip.data(); }
-	int			getPort() const { return port; }
+	UInt16		 getPort() const { return port; }
 
 	TerminalStatus getStatus() const { return status; }
 };

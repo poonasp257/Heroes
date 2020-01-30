@@ -44,10 +44,10 @@ struct Vector3 {
 	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
-struct ChanelInfo {
-	UInt16		 id;
-	Int32		 traffic;
-	std::wstring name; // wstring
+struct ChannelInfo {
+	std::wstring name;
+	std::wstring ip;
+	UInt16		 port;
 };
 
 struct CharacterInfo {

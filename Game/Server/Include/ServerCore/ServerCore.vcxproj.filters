@@ -156,6 +156,9 @@
     <ClInclude Include="Net\Packet\Stream.h">
       <Filter>Net\Packet</Filter>
     </ClInclude>
+    <ClInclude Include="Util\Util.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">

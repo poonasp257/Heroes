@@ -26,7 +26,7 @@ namespace Heroes {
 			AccountInfoRequestPacket packet = new AccountInfoRequestPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
 
-			networkManager.send(packet);
+			networkManager.sendPacket(packet);
 			msgBox.notice("캐릭터 정보를 불러오고 있습니다.");
 		}
 
@@ -70,7 +70,7 @@ namespace Heroes {
 			packet.characterId = selectedCharacterUI.Info.characterId;
 
 			msgBox.confirm("삭제 하시겠습니까?", () => {
-					networkManager.send(packet);
+					networkManager.sendPacket(packet);
 					msgBox.notice("삭제 요청 중 입니다.");
 			});
 		}

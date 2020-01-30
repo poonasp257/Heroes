@@ -3,14 +3,10 @@
     "Name": "Monster",
     "Server": {
       "IP": "127.0.0.1",
-      "Port": 10200,
+      "Port": 10100,
       "ThreadCount": 1
     },
     "Terminal": {
-      "DBAgent": {
-        "IP": "127.0.0.1",
-        "Port": 10100
-      },
       "Game": {
         "IP": "127.0.0.1",
         "Port":  10000

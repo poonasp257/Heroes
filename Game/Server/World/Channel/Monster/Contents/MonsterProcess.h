@@ -10,6 +10,6 @@ public:
 	MonsterProcess();
 	virtual ~MonsterProcess();
 
-	//static void ChanelStatusRequest(Session* session, Packet* rowPacket);
+	//static void ChannelStatusRequest(Session* session, Packet* rowPacket);
 };
 #endif

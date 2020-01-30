@@ -7,44 +7,42 @@ using UnityEngine.SceneManagement;
 namespace Heroes {
 	public class ChannelManager : MonoBehaviour {
 		private NetworkManager networkManager;
-		private MessageBoxHandler msgBox;
+		private MessageBoxHandler messageBoxHandler;
 
 		[SerializeField] private GameObject ChannelInfoItem;
 		
-		private void Awake() {
-			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
-			msgBox = GameObject.Find("MessageBox Handler").GetComponent<MessageBoxHandler>();
-
-			networkManager.RegisterNotification(PacketType.ChannelStatusResponse, ChannelStatusResponse);
-		}
-
 		private void Start() {
-			this.ChannelStatusRequest();
+			networkManager = GetComponent<NetworkManager>();
+			messageBoxHandler = GameObject.Find("MessageBox Handler").GetComponent<MessageBoxHandler>();
+
+			networkManager.RegisterNotification(PacketType.ChannelListResponse, ChannelListResponse);
+
+			this.ChannelListRequest();
 		}
 
-		private void ChannelStatusRequest() {
-			ChannelStatusRequestPacket packet = new ChannelStatusRequestPacket();
-			networkManager.send(packet);
+		private void ChannelListRequest() {
+			ChannelListRequestPacket packet = new ChannelListRequestPacket();
+			networkManager.sendPacket(packet);
 
-			msgBox.notice("채널 정보를 불러오고 있습니다.");
+			messageBoxHandler.notice("채널 목록을 불러오고 있습니다.");
 		}
 
-		public void ChannelStatusResponse(PacketType type, Packet rowPacket) {
-			msgBox.close();
+		public void ChannelListResponse(PacketType type, Packet rowPacket) {
+			messageBoxHandler.close();
 
-			ChannelStatusResponsePacket packet = rowPacket as ChannelStatusResponsePacket;	
+			ChannelListResponsePacket packet = rowPacket as ChannelListResponsePacket;	
 			if(packet == null) {
 				Debug.Log("invalid packet");
 				return;
 			}
 			
 			GameObject list = GameObject.Find("List");			
-			foreach(ChannelInfo info in packet.ChannelList) {
+			foreach(ChannelInfo info in packet.channelList) {
 				GameObject Channel = Instantiate(ChannelInfoItem, list.transform);
 				UIChannelInfo ChannelInfo = Channel.GetComponent<UIChannelInfo>();
-				ChannelInfo.ID = info.id;
-				ChannelInfo.Traffic = info.traffic;
-				ChannelInfo.Name = info.name;
+				//ChannelInfo.ID = info.id;
+				//ChannelInfo.Traffic = info.traffic;
+				//ChannelInfo.Name = info.name;
 			}
 		}
 	}

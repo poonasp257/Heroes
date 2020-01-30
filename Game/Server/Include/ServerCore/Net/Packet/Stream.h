@@ -72,7 +72,7 @@ public:
     void operator<<(const std::string& value);
 	void operator<<(const std::wstring& value);
 	void operator<<(const Vector3& value);
-	void operator<<(const ChanelInfo& value);
+	void operator<<(const ChannelInfo& value);
 	void operator<<(const CharacterInfo& value);
 	void operator<<(const CharacterMovement& value);
 
@@ -110,7 +110,7 @@ public:
     void operator>>(std::string *retVal);
 	void operator>>(std::wstring *retVal);
 	void operator>>(Vector3 *retVal);
-	void operator>>(ChanelInfo *retVal); 
+	void operator>>(ChannelInfo *retVal); 
 	void operator>>(CharacterInfo *retVal);
 	void operator>>(CharacterMovement *retVal);
 };

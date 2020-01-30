@@ -35,7 +35,7 @@ namespace Heroes {
 			packet.characterClass = (CharacterClass)Enum.Parse(typeof(CharacterClass), selectedClass.text);
 			packet.characterName = characterName.text;
 			
-			networkManager.send(packet);
+			networkManager.sendPacket(packet);
 			msgBox.notice("캐릭터를 생성하고 있습니다.");
 		}
 

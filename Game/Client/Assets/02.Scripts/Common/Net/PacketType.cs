@@ -4,8 +4,8 @@ namespace Heroes {
 	public enum PacketType : UInt32 {
 		ExitRequest = 100,
 		ExitResponse,
-		ChannelStatusRequest,
-		ChannelStatusResponse,
+		ChannelListRequest,
+		ChannelListResponse,
 		AccountInfoRequest,
 		AccountInfoResponse,
 		CreateCharacterRequest,

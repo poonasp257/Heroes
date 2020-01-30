@@ -3,39 +3,21 @@
 #include "PlayerManager.h"
 
 GameProcess::GameProcess() {
-	registerPacketProcess(PacketType::ChanelStatusRequest, &GameProcess::ChanelStatusRequest);
 	registerPacketProcess(PacketType::AccountInfoRequest, &GameProcess::AccountInfoRequest);
 	registerPacketProcess(PacketType::DBAccountInfoResponse, &GameProcess::DBAccountInfoResponse);
 	registerPacketProcess(PacketType::CreateCharacterRequest, &GameProcess::CreateCharacterRequest);
 	registerPacketProcess(PacketType::DBCreateCharacterResponse, &GameProcess::DBCreateCharacterResponse);
 	registerPacketProcess(PacketType::DeleteCharacterRequest, &GameProcess::DeleteCharacterRequest);
 	registerPacketProcess(PacketType::DBDeleteCharacterResponse, &GameProcess::DBDeleteCharacterResponse);
-	registerPacketProcess(PacketType::ConnectChanelRequest, &GameProcess::ConnectChanelRequest);
-	registerPacketProcess(PacketType::DBConnectChanelResponse, &GameProcess::DBConnectChanelResponse);
-	registerPacketProcess(PacketType::DisconnectChanelRequest, &GameProcess::DisconnectChanelRequest);
+	registerPacketProcess(PacketType::ConnectChannelRequest, &GameProcess::ConnectChannelRequest);
+	registerPacketProcess(PacketType::DBConnectChannelResponse, &GameProcess::DBConnectChannelResponse);
+	registerPacketProcess(PacketType::DisconnectChannelRequest, &GameProcess::DisconnectChannelRequest);
 	registerPacketProcess(PacketType::NotifyCharacterMovement, &GameProcess::NotifyCharacterMovement);
 	registerPacketProcess(PacketType::NotifyCharacterAction, &GameProcess::NotifyCharacterAction);
 }
 
 GameProcess::~GameProcess() {
 
-}
-
-void GameProcess::ChanelStatusRequest(Session *session, Packet *rowPacket) {
-	ChanelStatusResponsePacket responsePacket;
-	
-	// temporary...
-	ChanelInfo info;
-	for (int i = 0; i < 10; ++i) {
-		info.id = i;
-		info.traffic = 0; // chanelserver->SessionManager::Instance::getSessionCount..
-		info.name = L"CH." + std::to_wstring(i + 1);
-		
-		responsePacket.chanelList.push_back(info);
-	}
-	//////////////////////////
-
-	session->sendPacket(&responsePacket);
 }
 
 void GameProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
@@ -45,7 +27,7 @@ void GameProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 	dbPacket.clientId = session->getId();
 	dbPacket.accountId = packet->accountId;
 
-	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
 	terminal->sendPacket(&dbPacket);
 }
 
@@ -71,7 +53,7 @@ void GameProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 	dbPacket.characterClass = packet->characterClass;
 	dbPacket.characterName = packet->characterName;
 
-	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
 	terminal->sendPacket(&dbPacket);
 }
 
@@ -94,7 +76,7 @@ void GameProcess::DeleteCharacterRequest(Session *session, Packet *rowPacket) {
 	dbPacket.clientId = session->getId();
 	dbPacket.characterId = packet->characterId;
 	   
-	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
 	terminal->sendPacket(&dbPacket);
 }
 
@@ -108,21 +90,21 @@ void GameProcess::DBDeleteCharacterResponse(Session *session, Packet *rowPacket)
 	clientSession->sendPacket(&responsePacket);
 }
 
-void GameProcess::ConnectChanelRequest(Session *session, Packet *rowPacket) {
-	ConnectChanelRequestPacket *packet = dynamic_cast<ConnectChanelRequestPacket*>(rowPacket);
-	//packet->chanelId;
+void GameProcess::ConnectChannelRequest(Session *session, Packet *rowPacket) {
+	ConnectChannelRequestPacket *packet = dynamic_cast<ConnectChannelRequestPacket*>(rowPacket);
+	//packet->ChannelId;
 
-	DBConnectChanelRequestPacket dbPacket;
+	DBConnectChannelRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();
 	dbPacket.characterId = packet->characterId;
 	dbPacket.accountId = packet->accountId;
 
-	Terminal *terminal = TerminalManager::Instance().getTerminal("DBAgent");
+	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
 	terminal->sendPacket(&dbPacket);
 }
 
-void GameProcess::DBConnectChanelResponse(Session *session, Packet *rowPacket) {
-	DBConnectChanelResponsePacket *packet = dynamic_cast<DBConnectChanelResponsePacket*>(rowPacket);
+void GameProcess::DBConnectChannelResponse(Session *session, Packet *rowPacket) {
+	DBConnectChannelResponsePacket *packet = dynamic_cast<DBConnectChannelResponsePacket*>(rowPacket);
 
 	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
 	if (!clientSession) return;
@@ -133,7 +115,7 @@ void GameProcess::DBConnectChanelResponse(Session *session, Packet *rowPacket) {
 
 	PlayerManager::Instance().registerPlayer(clientSession->getId(), playerInfo);
 
-	ConnectChanelResponsePacket responsePacket;
+	ConnectChannelResponsePacket responsePacket;
 	responsePacket.playerTable = std::move(PlayerManager::Instance().getPlayerTable());
 	clientSession->sendPacket(&responsePacket);
 
@@ -144,8 +126,8 @@ void GameProcess::DBConnectChanelResponse(Session *session, Packet *rowPacket) {
 	SessionManager::Instance().BroadcastPacket(&notifyPacket);
 }
 
-void GameProcess::DisconnectChanelRequest(Session *session, Packet *rowPacket) {
-	DisconnectChanelRequestPacket *packet = dynamic_cast<DisconnectChanelRequestPacket*>(rowPacket);
+void GameProcess::DisconnectChannelRequest(Session *session, Packet *rowPacket) {
+	DisconnectChannelRequestPacket *packet = dynamic_cast<DisconnectChannelRequestPacket*>(rowPacket);
 }
 
 void GameProcess::NotifyCharacterMovement(Session *session, Packet *rowPacket) {

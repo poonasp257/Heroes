@@ -3,15 +3,10 @@
     "Name": "GameDB",
     "Server": {
       "IP": "127.0.0.1",
-      "Port": 10100,
+      "Port": 9500,
       "ThreadCount": 1
     },
-    "Terminal": {
-      "Game": {
-        "IP": "127.0.0.1",
-        "Port": 10000
-      }
-    },                                 
+    "Terminal": { },                                 
     "Database": {
       "Ip": "127.0.0.1",
       "Port":  1433,

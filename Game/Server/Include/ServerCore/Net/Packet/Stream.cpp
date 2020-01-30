@@ -57,10 +57,10 @@ void Stream::operator<<(const Vector3& value) {
 	*this << value.z;
 }
 
-void Stream::operator<<(const ChanelInfo& value) {
-	*this << value.id;
-	*this << value.traffic;
+void Stream::operator<<(const ChannelInfo& value) {
 	*this << value.name;
+	*this << value.ip;
+	*this << value.port;
 }
 
 void Stream::operator<<(const CharacterInfo& value) {
@@ -131,10 +131,10 @@ void Stream::operator>>(Vector3 *retVal) {
 	*this >> &retVal->z;
 }
 
-void Stream::operator>>(ChanelInfo *retVal) {
-	*this >> &retVal->id;
-	*this >> &retVal->traffic;
+void Stream::operator>>(ChannelInfo *retVal) {
 	*this >> &retVal->name;
+	*this >> &retVal->ip;
+	*this >> &retVal->port;
 }
 
 void Stream::operator>>(CharacterInfo *retVal) {

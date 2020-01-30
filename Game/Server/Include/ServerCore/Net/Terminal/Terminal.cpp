@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-Terminal::Terminal(Server *server, const std::string& name) 
+Terminal::Terminal(Server *server, const std::wstring& name) 
 	: server(server), name(name), status(TerminalStatus::Stop) {
 
 }
