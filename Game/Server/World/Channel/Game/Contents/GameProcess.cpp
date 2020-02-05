@@ -92,7 +92,6 @@ void GameProcess::DBDeleteCharacterResponse(Session *session, Packet *rowPacket)
 
 void GameProcess::ConnectChannelRequest(Session *session, Packet *rowPacket) {
 	ConnectChannelRequestPacket *packet = dynamic_cast<ConnectChannelRequestPacket*>(rowPacket);
-	//packet->ChannelId;
 
 	DBConnectChannelRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();

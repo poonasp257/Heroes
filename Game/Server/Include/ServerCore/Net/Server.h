@@ -15,12 +15,11 @@ protected:
 	int							port;
 	int							workerThreadCount;
 
-	FileLogger					logger;
 	ServerStatus				status;
 	ContentsProcess 			*process;
 	
 public:
-	Server(const char *logFileName, ContentsProcess *process);
+	Server(ContentsProcess *process);
 	virtual ~Server();
 
 	virtual bool run() = 0;

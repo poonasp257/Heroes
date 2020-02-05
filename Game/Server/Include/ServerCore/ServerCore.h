@@ -43,7 +43,9 @@
 #include "Util/Json.h"
 #include "Util/Singleton.h"
 #include "Util/Clock.h"
-#include "Util/Logger.h"
+#include "Util/Logger/FileLogger.h"
+#include "Util/Logger/ConsoleLogger.h"
+#include "Util/Logger/SystemLogger.h"
 #include "Util/Thread.h"
 #include "Util/ThreadJobQueue.h"
 

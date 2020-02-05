@@ -19,7 +19,8 @@ private:
 	std::unique_ptr<Thread>		processThread;
 
 private:
-	void connectProcess();
+	void tryConnectProcess();
+	void receivePacketProcess();
 	void run();
 
 public:
@@ -29,9 +30,9 @@ public:
 	void initialize(const std::string& ip, int port);
 	void sendPacket(Packet *packet);
 
-	const wchar_t* getName() const { return name.c_str(); }
-	const char* getIP() const { return ip.data(); }
-	UInt16		 getPort() const { return port; }
+	std::wstring getName() const { return name.c_str(); }
+	std::wstring getIP() const { return session.getIP(); }
+	UInt16		 getPort() const { return session.getPort(); }
 
 	TerminalStatus getStatus() const { return status; }
 };

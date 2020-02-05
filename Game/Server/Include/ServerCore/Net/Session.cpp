@@ -20,9 +20,9 @@ void Session::onClose(bool isForced) {
 	else SessionManager::Instance().closeSession(this);
 }
 
-std::string Session::getClientAddress() {
+std::wstring Session::getIP() const {
 	std::array<char, SIZE_16> ip;
 	inet_ntop(AF_INET, &(sessionInfo.addrInfo.sin_addr), ip.data(), ip.size());
 
-	return ip.data();
+	return convertAnsiToUnicode(ip.data());
 }

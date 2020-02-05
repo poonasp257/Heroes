@@ -16,9 +16,6 @@
     <ClCompile Include="Database\ODBCDatabase.cpp">
       <Filter>Database</Filter>
     </ClCompile>
-    <ClCompile Include="Util\Logger.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -67,6 +64,18 @@
     <ClCompile Include="Net\Packet\Stream.cpp">
       <Filter>Net\Packet</Filter>
     </ClCompile>
+    <ClCompile Include="Util\Logger\ConsoleLogger.cpp">
+      <Filter>Util\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger\FileLogger.cpp">
+      <Filter>Util\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger\Logger.cpp">
+      <Filter>Util\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Logger\SystemLogger.cpp">
+      <Filter>Util\Logger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Database\DBManager.h">
@@ -83,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="Database\ODBCDatabase.h">
       <Filter>Database</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Logger.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Common</Filter>
@@ -159,6 +165,18 @@
     <ClInclude Include="Util\Util.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="Util\Logger\ConsoleLogger.h">
+      <Filter>Util\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger\FileLogger.h">
+      <Filter>Util\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger\Logger.h">
+      <Filter>Util\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Logger\SystemLogger.h">
+      <Filter>Util\Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">
@@ -184,6 +202,9 @@
     </Filter>
     <Filter Include="Net\Terminal">
       <UniqueIdentifier>{51006b95-71c5-4d47-90d7-1d4ed32dcb8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Logger">
+      <UniqueIdentifier>{0a99d0f6-e57b-439b-a44a-7c7f224974c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

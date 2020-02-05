@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-IOCPServer::IOCPServer(ContentsProcess *process) : Server("IOCPServer", process),
+IOCPServer::IOCPServer(ContentsProcess *process) : Server(process),
 	listenSocket(INVALID_SOCKET), iocp(nullptr), acceptThread(nullptr) {
 	status = ServerStatus::Initialize;
 }
@@ -14,7 +14,7 @@ bool IOCPServer::createListenSocket() {
 	listenSocket = WSASocket(PF_INET, SOCK_STREAM, IPPROTO_TCP,
 		NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (listenSocket == INVALID_SOCKET) {
-		SystemLogger::Log(Logger::Error, "WSASocekt() error!!");
+		SystemLogger::Log(Logger::Error, L"WSASocekt() error!!");
 		return false;
 	}
 
@@ -29,13 +29,13 @@ bool IOCPServer::createListenSocket() {
 
 	int socketError = bind(listenSocket, (SOCKADDR*)&servAddr, sizeof(servAddr));
 	if (socketError == SOCKET_ERROR) {
-		SystemLogger::Log(Logger::Error, "bind() error!!");
+		SystemLogger::Log(Logger::Error, L"bind() error!!");
 		return false;
 	}
 
 	socketError = listen(listenSocket, 5);
 	if (socketError == SOCKET_ERROR) {
-		SystemLogger::Log(Logger::Error, "listen() error!!");
+		SystemLogger::Log(Logger::Error, L"listen() error!!");
 		return false;
 	}
 
@@ -54,7 +54,7 @@ unsigned int WINAPI IOCPServer::AcceptThread(LPVOID serverPtr) {
 			&addrLen, NULL, 0);
 		if (acceptSocket == SOCKET_ERROR) {
 			if(server->getStatus() == ServerStatus::Stop) {
-				SystemLogger::Log(Logger::Error, "Accept failed");
+				SystemLogger::Log(Logger::Error, L"Accept failed");
 				break;
 			}
 		}
@@ -82,7 +82,7 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 		if (!result) continue;
 
 		if (!session) {
-			SystemLogger::Log(Logger::Error, "socket data broken");
+			SystemLogger::Log(Logger::Error, L"socket data broken");
 			return 0;
 		}
 
@@ -94,13 +94,13 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 
 		switch (ioBuffer->getType()) {
 		case IOType::Write:
-			SystemLogger::Log(Logger::Info, "*send %d bytes...", transferSize);
+			SystemLogger::Log(Logger::Info, L"*send %d bytes...", transferSize);
 			session->onSend((size_t)transferSize);
 			continue;
 
 		case IOType::Read: 
 			{
-				SystemLogger::Log(Logger::Info, "*receive %d bytes...", transferSize);
+				SystemLogger::Log(Logger::Info, L"*receive %d bytes...", transferSize);
 				Package *package = session->onRecv((size_t)transferSize);
 				if (package != nullptr)  server->putPackage(package);
 			}
@@ -118,12 +118,12 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 bool IOCPServer::run() {
 	iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, workerThreadCount);
 	if (!iocp) {
-		SystemLogger::Log(Logger::Error, "CreateIoCompletionPort() error!!");
+		SystemLogger::Log(Logger::Error, L"CreateIoCompletionPort() error!!");
 		return false;
 	}
 
 	if (!this->createListenSocket()) {
-		SystemLogger::Log(Logger::Error, "CreateListenSocket() error!!");
+		SystemLogger::Log(Logger::Error, L"CreateListenSocket() error!!");
 		return false;
 	}
 
@@ -146,7 +146,7 @@ bool IOCPServer::run() {
 void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
 	IOCPSession *session = new IOCPSession();
 	if(!session) {
-		SystemLogger::Log(Logger::Warning, "session creatation failed");
+		SystemLogger::Log(Logger::Warning, L"session creatation failed");
 		return;
 	}
 
@@ -169,7 +169,7 @@ void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
 		return;
 	}
 
-	SystemLogger::Log(Logger::Info, "new client connected...[%s]",
-		session->getClientAddress().c_str());
+	SystemLogger::Log(Logger::Info, L"new client connected...[%s]",
+		session->getIP().c_str());
 	session->recvStandBy();
 }

@@ -7,7 +7,10 @@
       "ThreadCount": 1
     },
     "Terminal": {
-      
+      "아르카스": {
+        "IP": "127.0.0.1",
+        "Port": 10000
+      }
     },
     "Contents": {
       "ThreadCount": 1

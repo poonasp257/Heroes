@@ -10,7 +10,7 @@ private:
 	SQLHDBC dbConnection;
 	SQLHSTMT dbStatement;
 
-	std::string			    name;
+	std::wstring			name;
 	std::unique_ptr<Thread> thread; 
 
 private:
@@ -25,7 +25,7 @@ public:
 	ODBCDatabase();
 	virtual ~ODBCDatabase();
 
-    bool connect(const char *ip, int port, const char *dbName, const char *id, const char *password);
+    bool connect(const wchar_t*ip, int port, const wchar_t*dbName, const wchar_t*id, const wchar_t*password);
 	bool disconnect();	
 	bool isConnected();
     

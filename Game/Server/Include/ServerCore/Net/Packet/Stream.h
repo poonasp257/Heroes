@@ -1,8 +1,6 @@
 #ifndef STREAM_H
 #define STERAM_H
 
-#define SOCKET_BUFSIZE  (1024 * 10)
-
 class Stream {
 private:
     size_t offset;

@@ -87,7 +87,7 @@ void IOCPSession::recv(WSABUF wsaBuf) {
 		ioBuffer[IOType::Read].getOverlapped(), NULL);
 	if (errorCode == SOCKET_ERROR
 		&& WSAGetLastError() != ERROR_IO_PENDING) {
-		SystemLogger::Log(Logger::Error, "socket error", WSAGetLastError());
+		SystemLogger::Log(Logger::Error, L"socket error", WSAGetLastError());
 	}
 }
 
@@ -117,7 +117,7 @@ void IOCPSession::send(WSABUF wsaBuf) {
 		ioBuffer[IOType::Write].getOverlapped(), NULL);
 	if (errorCode == SOCKET_ERROR
 		&& WSAGetLastError() != ERROR_IO_PENDING) {
-		SystemLogger::Log(Logger::Error, "socket error: %d", WSAGetLastError());
+		SystemLogger::Log(Logger::Error, L"socket error: %d", WSAGetLastError());
 	}
 }
 
@@ -132,7 +132,7 @@ void IOCPSession::sendPacket(Packet *packet) {
 	
 	packet->serialize(stream);
 	if (ioBuffer[IOType::Write].getBufferSize() <= stream.getSize()) {
-		SystemLogger::Log(Logger::Warning, "packet size is too big %d byte", stream.getSize());
+		SystemLogger::Log(Logger::Warning, L"packet size is too big %d byte", stream.getSize());
 		return;
 	}
 
@@ -159,7 +159,7 @@ Package* IOCPSession::onRecv(size_t transferSize) {
 	Byte *packetData = (Byte*)ioBuffer[IOType::Read].getBuffer() + offset;
 	Packet *packet = PacketAnalyzer::Analyzer((const char*)packetData, packetDataSize);
 	if(!packet) {
-		SystemLogger::Log(Logger::Warning, "invalid packet");
+		SystemLogger::Log(Logger::Warning, L"invalid packet");
 		this->onClose(true);
 		return nullptr;
 	}

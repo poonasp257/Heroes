@@ -8,11 +8,11 @@ class DBManager : public Singleton <DBManager> {
 	int                                 workerCount;
 	std::vector<Database*>	            dbPool;
 
-	std::string							ip;
+	std::wstring						ip;
 	int									port;
-	std::string							dbName;
-	std::string							id;
-	std::string							password;
+	std::wstring						dbName;
+	std::wstring						id;
+	std::wstring						password;
 	ThreadJobQueue<Query*>				*queryPool;
 
 public:

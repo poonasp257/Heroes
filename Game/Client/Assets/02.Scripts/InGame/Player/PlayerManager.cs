@@ -95,7 +95,7 @@ namespace Heroes {
 				
 		public void connectChannelRequest() {
 			ConnectChannelRequestPacket packet = new ConnectChannelRequestPacket();
-			packet.channelId = PlayerData.Instance.ChannelId;
+			//packet.channelId = PlayerData.Instance.Channel.;
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.characterId = PlayerData.Instance.CharacterId;
 

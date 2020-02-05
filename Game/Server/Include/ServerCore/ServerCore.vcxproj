@@ -184,7 +184,10 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\Clock.h" />
     <ClInclude Include="Util\Json.h" />
-    <ClInclude Include="Util\Logger.h" />
+    <ClInclude Include="Util\Logger\ConsoleLogger.h" />
+    <ClInclude Include="Util\Logger\FileLogger.h" />
+    <ClInclude Include="Util\Logger\Logger.h" />
+    <ClInclude Include="Util\Logger\SystemLogger.h" />
     <ClInclude Include="Util\Singleton.h" />
     <ClInclude Include="Util\Thread.h" />
     <ClInclude Include="Util\ThreadJobQueue.h" />
@@ -217,7 +220,10 @@
     </ClCompile>
     <ClCompile Include="Util\Clock.cpp" />
     <ClCompile Include="Util\Json.cpp" />
-    <ClCompile Include="Util\Logger.cpp" />
+    <ClCompile Include="Util\Logger\ConsoleLogger.cpp" />
+    <ClCompile Include="Util\Logger\FileLogger.cpp" />
+    <ClCompile Include="Util\Logger\Logger.cpp" />
+    <ClCompile Include="Util\Logger\SystemLogger.cpp" />
     <ClCompile Include="Util\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

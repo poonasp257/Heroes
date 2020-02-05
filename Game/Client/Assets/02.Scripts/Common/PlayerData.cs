@@ -4,11 +4,6 @@ namespace Heroes {
 	public class PlayerData {
 		private static PlayerData instance = null;
 
-		private UInt16 channelId;
-		private UInt64 accountId;
-		private UInt64 characterId;
-		private CharacterInfo characterInfo;
-
 		public static PlayerData Instance {
 			get {
 				if(instance == null) {
@@ -19,37 +14,13 @@ namespace Heroes {
 			}
 		}
 
-		public UInt16 ChannelId {
-			get {
-				return channelId;
-			}
-			set {
-				channelId = value;
-			}
-		}
-
-		public UInt64 AccountId {
-			get {
-				return accountId;
-			}
-			set {
-				accountId = value;
-			}
-		}
-
-		public UInt64 CharacterId {
-			get {
-				return characterId;
-			}
-			set {
-				characterId = value;
-			}
-		}
+		public ChannelInfo Channel { get; set; }
+		public UInt64 AccountId { get; set; }
+		public UInt64 CharacterId { get; set; }
 
 		public PlayerData() {
-			accountId = 0;
-			channelId = 0;
-			characterId = 0;
+			AccountId = 0;
+			CharacterId = 0;
 		}
 	}
 }

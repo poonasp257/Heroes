@@ -8,10 +8,8 @@ int _tmain() {
 	}
 
 	std::shared_ptr<Server> server(new IOCPServer(new ChannelManagerProcess()));
-	if (!server->run()) {
-		SystemLogger::Log(Logger::Error, "iocp server closed...");
-		return -1;
-	}
+	if (!server->run()) return -1;
+
 
 	WSACleanup();
 	return 0;

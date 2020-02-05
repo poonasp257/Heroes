@@ -80,7 +80,7 @@ public:
 		SQLINTEGER rowCount;
 		SQLRETURN retVal = SQLRowCount(statement, &rowCount);
 		if (retVal == SQL_ERROR) {
-			SystemLogger::Log(Logger::Error, "* DB Query Fetch error!");
+			SystemLogger::Log(Logger::Error, L"* DB Query Fetch error!");
 			packet.errorCode = 0;
 		}
 
@@ -111,11 +111,11 @@ public:
 		SQLINTEGER rowCount;
 		SQLRETURN retVal = SQLRowCount(statement, &rowCount);
 		if (retVal == SQL_ERROR) {
-			SystemLogger::Log(Logger::Error, "* DB Query error!");
+			SystemLogger::Log(Logger::Error, L"* DB Query error!");
 		}
 
 		if (rowCount < 0) {
-			SystemLogger::Log(Logger::Error, "* does not exists character");
+			SystemLogger::Log(Logger::Error, L"* does not exists character");
 		}
 
 		SQLFreeStmt(statement, SQL_CLOSE);
@@ -167,7 +167,7 @@ public:
 				
 		SQLRETURN retVal = SQLFetch(statement);
 		if (retVal == SQL_NO_DATA) {
-			SystemLogger::Log(Logger::Error, "* DB Fetch error!!");
+			SystemLogger::Log(Logger::Error, L"* DB Fetch error!!");
 			return;
 		}
 

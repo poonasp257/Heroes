@@ -25,7 +25,7 @@ void Stream::operator=(Stream& stream) {
 
 bool Stream::checkWriteBound(size_t len) {
 	if(offset + len > sizeof(stream)) {
-		SystemLogger::Log(Logger::Warning, "stream data over");
+		SystemLogger::Log(Logger::Warning, L"stream data over");
 		return false;
 	}
 
@@ -34,7 +34,7 @@ bool Stream::checkWriteBound(size_t len) {
 
 bool Stream::checkReadBound(size_t len) {
 	if(readOffset + len > offset) {
-		SystemLogger::Log(Logger::Warning, "stream has no more buffer");
+		SystemLogger::Log(Logger::Warning, L"stream has no more buffer");
 		return false;
 	}
 

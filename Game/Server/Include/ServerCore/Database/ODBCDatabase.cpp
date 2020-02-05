@@ -32,30 +32,23 @@ ODBCDatabase::~ODBCDatabase() {
 	}
 }
 
-bool ODBCDatabase::connect(const char *ip, int port, const char *dbName, const char *id, const char *password) {
+bool ODBCDatabase::connect(const wchar_t *ip, int port, const wchar_t*dbName, const wchar_t*id, const wchar_t*password) {
     this->name = dbName;
-	SystemLogger::Log(Logger::Info, "* connect try: %s, %s, %s", dbName, id, password);
+	SystemLogger::Log(Logger::Info, L"* connect try: %s, %s, %s", dbName, id, password);
 
-	/*SQLSMALLINT outConnectionLen;
-	std::array<char, SIZE_256> outConnectionStr;
-	std::array<char, SIZE_256> connectionStr;
-	_snprintf_s(connectionStr.data(), connectionStr.size(), ((size_t)-1),
-		"DRIVER={SQL Server};SERVER=%s, %d; DATABASE=%s,UID=%s;PWD=%s;",
+	std::array<wchar_t, SIZE_256> connectionStr;
+	_snwprintf_s(connectionStr.data(), connectionStr.size(), ((size_t)-1),
+		L"DRIVER={SQL Server};SERVER=%s, %d; DATABASE=%s;UID=%s;PWD=%s;",
 		ip, port, dbName, id, password);
-		
-	 SQLRETURN retVal = SQLDriverConnectA(
-		 dbConnection, NULL,
-		 (SQLCHAR*)connectionStr.data(), strlen(connectionStr.data()) + 1,
-		 (SQLCHAR*)outConnectionStr.data(),  outConnectionStr.size(),
-		 &outConnectionLen, SQL_DRIVER_NOPROMPT);*/
-	SQLRETURN retVal = SQLConnectA(dbConnection, (SQLCHAR*)dbName, SQL_NTS,
-		(SQLCHAR*)id, SQL_NTS, (SQLCHAR*)password, SQL_NTS);
+
+	 SQLRETURN retVal = SQLDriverConnect(dbConnection, NULL,
+		 (SQLWCHAR*)connectionStr.data(), SQL_NTS, NULL, 1024, NULL, SQL_DRIVER_NOPROMPT);
 	if (retVal != SQL_SUCCESS && retVal != SQL_SUCCESS_WITH_INFO) {
-		SystemLogger::Log(Logger::Info, "* [%s] connection failed", dbName);
+		SystemLogger::Log(Logger::Info, L"* [%s] connection failed", dbName);
 		return false;
 	}
 
-	SystemLogger::Log(Logger::Info, "* [%s] connection success", dbName);
+	SystemLogger::Log(Logger::Info, L"* [%s] connection success", dbName);
 	return true;
 }
 
@@ -81,11 +74,11 @@ bool ODBCDatabase::disconnect() {
 		
         name.clear();
 
-		SystemLogger::Log(Logger::Info, "* database close");
+		SystemLogger::Log(Logger::Info, L"* database close");
 
 		return true;
 	} catch (...) {
-		SystemLogger::Log(Logger::Error, "! ODBCDatabase[%s] disconnect fail", name.c_str());
+		SystemLogger::Log(Logger::Error, L"! ODBCDatabase[%s] disconnect fail", name.c_str());
 	}
 
 	return false;
@@ -94,13 +87,13 @@ bool ODBCDatabase::disconnect() {
 void ODBCDatabase::prepareStatement(const wchar_t *query) {
 	SQLRETURN retVal = SQLAllocHandle(SQL_HANDLE_STMT, dbConnection, &dbStatement);
 	if (retVal != SQL_SUCCESS && retVal != SQL_SUCCESS_WITH_INFO) {
-		SystemLogger::Log(Logger::Error, "* statement allocate failed");
+		SystemLogger::Log(Logger::Error, L"* statement allocate failed");
 		return;
 	}
 
 	retVal = SQLPrepare(dbStatement, (SQLWCHAR*)query, SQL_NTS);
 	if (retVal != SQL_SUCCESS) {
-		SystemLogger::Log(Logger::Error, "* statement prepare failed");
+		SystemLogger::Log(Logger::Error, L"* statement prepare failed");
 		return;
 	}
 }
@@ -110,7 +103,7 @@ SQLRETURN ODBCDatabase::executeStatement() {
 
 	SQLRETURN retVal = SQLExecute(dbStatement);
 	if (retVal != SQL_SUCCESS) {
-		SystemLogger::Log(Logger::Error, "* prepared statement execute failed");
+		SystemLogger::Log(Logger::Error, L"* prepared statement execute failed");
 	}
 
 	return retVal;
@@ -119,13 +112,13 @@ SQLRETURN ODBCDatabase::executeStatement() {
 SQLRETURN ODBCDatabase::executeStatementDirect(const wchar_t *query) {
 	SQLRETURN retVal = SQLAllocHandle(SQL_HANDLE_STMT, dbConnection, &dbStatement);
 	if (retVal != SQL_SUCCESS && retVal != SQL_SUCCESS_WITH_INFO) {
-		SystemLogger::Log(Logger::Error, "* statement allocate failed");
+		SystemLogger::Log(Logger::Error, L"* statement allocate failed");
 		return retVal;
 	}
 
 	retVal = SQLExecDirect(dbStatement, (SQLWCHAR*)query, SQL_NTS);
 	if (retVal != SQL_SUCCESS && retVal != SQL_SUCCESS_WITH_INFO) {
-		SystemLogger::Log(Logger::Error, "* direct statement execute failed");
+		SystemLogger::Log(Logger::Error, L"* direct statement execute failed");
 		return retVal;
 	}
 }
@@ -157,7 +150,7 @@ void ODBCDatabase::execute() {
 	state = DBState::StandBy;
 
 	if (retVal != SQL_SUCCESS && retVal != SQL_SUCCESS_WITH_INFO) {
-		SystemLogger::Log(Logger::Warning, "* query : [%s] have error code [%d] ", sqlQuery, retVal);
+		SystemLogger::Log(Logger::Warning, L"* query : [%s] have error code [%d] ", sqlQuery, retVal);
 	}
 	
 	query->doResponse(dbStatement);
@@ -166,11 +159,6 @@ void ODBCDatabase::execute() {
 
 void ODBCDatabase::process() {
     while (true) {
-		/*if (!this->isConnected()) {
-			SystemLogger::Log(Logger::Info, "! db[%s] connection disconnect", name.c_str());
-			continue;
-		}*/
-
 		this->execute();
 		Sleep(1);
     }

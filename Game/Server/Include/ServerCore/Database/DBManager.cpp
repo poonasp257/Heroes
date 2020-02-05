@@ -4,7 +4,7 @@ DBManager::DBManager() {
 	Json json;
 	bool result = json.readFile("config.json");
 	if (!result) {
-		SystemLogger::Log(Logger::Error, "File could not be opened!");
+		SystemLogger::Log(Logger::Error, L"File could not be opened!");
 		// assert
 		return;
 	}
@@ -12,16 +12,16 @@ DBManager::DBManager() {
 	Json::Document& document = json.getDocument();
 	Json::Value& config = document["App"]["Database"];
 	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, "\'Database\' document is not exist");
+		SystemLogger::Log(Logger::Error, L"\'Database\' document is not exist");
 		// assert
 		return;
 	}
 
-	ip = config["Ip"].GetString();
+	ip = convertAnsiToUnicode(config["Ip"].GetString());
 	port = config["Port"].GetInt();
-	dbName = config["DBName"].GetString();
-	id = config["Id"].GetString();
-	password = config["Password"].GetString();
+	dbName = convertAnsiToUnicode(config["DBName"].GetString());
+	id = convertAnsiToUnicode(config["Id"].GetString());
+	password = convertAnsiToUnicode(config["Password"].GetString());
 	workerCount = config["ThreadCount"].GetInt();
 	
 	queryPool = new ThreadJobQueue<Query*>();
@@ -58,7 +58,7 @@ void DBManager::run() {
         if (db->getState() != DBState::Stop) continue;
 
 		if (!db->connect(ip.c_str(), port, dbName.c_str(), id.c_str(), password.c_str())) {
-			SystemLogger::Log(Logger::Error, "! db[%s] connection error", dbName.c_str());
+			SystemLogger::Log(Logger::Error, L"! db[%s] connection error", dbName.c_str());
 		}
 
         db->run();

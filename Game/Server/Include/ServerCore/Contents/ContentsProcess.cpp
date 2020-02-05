@@ -4,7 +4,7 @@ ContentsProcess::ContentsProcess() : packageQueue(new ThreadJobQueue<Package*>()
 	Json json;
 	bool result = json.readFile("config.json");
 	if (!result) {
-		SystemLogger::Log(Logger::Error, "File could not be opened!");
+		SystemLogger::Log(Logger::Error, L"File could not be opened!");
 		// assert
 	}
 
@@ -20,7 +20,7 @@ ContentsProcess::~ContentsProcess() {
 void ContentsProcess::initialize(Json::Document& document) {
 	Json::Value& config = document["App"]["Contents"];
 	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, "\'App\' document is not exist");
+		SystemLogger::Log(Logger::Error, L"\'App\' document is not exist");
 		// assert
 	}
 
@@ -44,7 +44,7 @@ void ContentsProcess::run(Package *package) {
 
 	auto itr = processTable.find(type);
 	if (itr == processTable.end()) {
-		SystemLogger::Log(Logger::Warning, "invaild packet runFunction. type[%d]", type);
+		SystemLogger::Log(Logger::Warning, L"invaild packet runFunction. type[%d]", type);
 		session->onClose();
 		return;
 	}

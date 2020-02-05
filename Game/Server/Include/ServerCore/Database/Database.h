@@ -13,7 +13,7 @@ public:
 	Database() : state(DBState::Stop) {}
 	virtual ~Database() {}
 
-	virtual bool connect(const char *ip, int port, const char *dbName, const char *id, const char *password) = 0;
+	virtual bool connect(const wchar_t *ip, int port, const wchar_t *dbName, const wchar_t *id, const wchar_t *password) = 0;
 	virtual bool disconnect() = 0;
 	virtual bool isConnected() = 0;
 

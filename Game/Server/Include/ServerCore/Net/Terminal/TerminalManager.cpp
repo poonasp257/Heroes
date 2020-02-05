@@ -15,7 +15,7 @@ void TerminalManager::initialize() {
 	Json json;
 	bool result = json.readFile("config.json");
 	if (!result) {
-		SystemLogger::Log(Logger::Error, "File could not be opened!");
+		SystemLogger::Log(Logger::Error, L"File could not be opened!");
 		// assert
 		return;
 	}
@@ -23,14 +23,14 @@ void TerminalManager::initialize() {
 	Json::Document& document = json.getDocument();
 	Json::Value& config = document["App"]["Terminal"];
 	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, "\'Terminal\' document is not exist");
+		SystemLogger::Log(Logger::Error, L"\'Terminal\' document is not exist");
 		// assert
 		return;
 	}
 
 	for (auto itr = config.MemberBegin(); itr != config.MemberEnd(); ++itr) {
-		std::wstring terminalName = convertToWString(itr->name.GetString());
-
+		std::wstring terminalName = convertAnsiToUnicode(itr->name.GetString());
+		
 		Terminal *terminal = new Terminal(server, terminalName);
 		std::string ip = itr->value["IP"].GetString();
 		int port = itr->value["Port"].GetInt();

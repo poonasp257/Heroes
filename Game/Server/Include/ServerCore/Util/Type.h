@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#define SOCKET_BUFSIZE  (1024 * 5)
+
 #define SIZE_8			8
 #define SIZE_16			16
 #define SIZE_64			64

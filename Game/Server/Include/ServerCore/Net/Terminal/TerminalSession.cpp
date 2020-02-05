@@ -11,7 +11,7 @@ TerminalSession::~TerminalSession() {
 bool TerminalSession::connectTo(const char *ip, int port) {
 	sessionInfo.socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (sessionInfo.socket == INVALID_SOCKET) {
-		SystemLogger::Log(Logger::Error, "! terminal socket fail");
+		SystemLogger::Log(Logger::Error, L"! terminal socket create failed");
 		return false;
 	}
 
@@ -22,7 +22,7 @@ bool TerminalSession::connectTo(const char *ip, int port) {
 	
 	int retVal = connect(sessionInfo.socket, (sockaddr*)&sessionInfo.addrInfo, sizeof(sessionInfo.addrInfo));
 	if (retVal == SOCKET_ERROR) {
-		SystemLogger::Log(Logger::Error, "! terminal socket connect fail");
+		SystemLogger::Log(Logger::Error, L"! terminal socket connect failed");
 		return false;
 	}
 

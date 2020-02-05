@@ -19,7 +19,7 @@ void ChannelManagerProcess::ChannelListRequest(Session *session, Packet *rowPack
 		const Terminal* terminal = TerminalManager::Instance().getTerminal(i);
 		
 		channel.name = terminal->getName();
-		channel.ip = convertToWString(terminal->getIP());
+		channel.ip = terminal->getIP();
 		channel.port = terminal->getPort();
 
 		responsePacket.channelList.push_back(channel);

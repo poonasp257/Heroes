@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-Server::Server(const char *logFileName, ContentsProcess *process)
-	: logger(logFileName), process(process) {
+Server::Server(ContentsProcess *process) : process(process) {
 	status = ServerStatus::Stop;
 
 	TerminalManager::Instance().run(this);
@@ -9,7 +8,7 @@ Server::Server(const char *logFileName, ContentsProcess *process)
 	Json json;
 	bool result = json.readFile("config.json");
 	if (!result) {
-		SystemLogger::Log(Logger::Error, "File could not be opened!");
+		SystemLogger::Log(Logger::Error, L"File could not be opened!");
 		// assert
 		return;
 	}
@@ -17,7 +16,7 @@ Server::Server(const char *logFileName, ContentsProcess *process)
 	Json::Document& document = json.getDocument();
 	Json::Value& config = document["App"]["Server"];
 	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, "\'Server\' document is not exist");
+		SystemLogger::Log(Logger::Error, L"\'Server\' document is not exist");
 		// assert
 		return;
 	}
@@ -26,8 +25,8 @@ Server::Server(const char *logFileName, ContentsProcess *process)
 	port = config["Port"].GetInt();
 	workerThreadCount = config["ThreadCount"].GetInt();
 
-	std::string name = document["App"]["Name"].GetString();
-	SystemLogger::Log(Logger::Info, "%s Server start on port %d", name.c_str(), port);
+	std::wstring name = convertAnsiToUnicode(document["App"]["Name"].GetString());
+	SystemLogger::Log(Logger::Info, L"%s Server start on port %d", name.c_str(), port);
 }
 
 Server::~Server() {
@@ -35,11 +34,13 @@ Server::~Server() {
 		delete process;
 		process = nullptr;
 	}
+
+	SystemLogger::Log(Logger::Info, L"iocp server closed...");
 }
 
 void Server::putPackage(Package *package) {
 	if(!process) {
-		SystemLogger::Log(Logger::Error, "process doesn't exist");
+		SystemLogger::Log(Logger::Error, L"process doesn't exist");
 		return;
 	}
 

@@ -16,7 +16,7 @@ bool SessionManager::addSession(Session *session) {
     if(found != sessionList.end()) return false;
 	
     if(MaxConnection <= sessionList.size()) {
-        SystemLogger::Log(Logger::Info, "No connections are available");
+        SystemLogger::Log(Logger::Info, L"No connections are available");
         return false;
     }
 
@@ -39,8 +39,8 @@ bool SessionManager::closeSession(Session *session) {
     auto found = std::find(sessionList.begin(), sessionList.end(), session);
     if(found == sessionList.end()) return false;
 	
-	SystemLogger::Log(Logger::Info, "disconnected client...[%s]",
-		session->getClientAddress().c_str());
+	SystemLogger::Log(Logger::Info, L"disconnected client...[%s]",
+		session->getIP().c_str());
 
     Session *delSession = *found;
     closesocket(delSession->getSocket());

@@ -32,7 +32,8 @@ public:
 	virtual void onClose(bool isForced = false);
 
 	SOCKET& getSocket() { return sessionInfo.socket; }
-	std::string getClientAddress();
+	UInt16 getPort() const { return ntohs(sessionInfo.addrInfo.sin_port); }
+	std::wstring getIP() const;
 
 	UInt64 getId() const { return id; }
 	void setId(UInt64 id) { this->id = id; }

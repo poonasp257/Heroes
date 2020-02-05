@@ -18,7 +18,7 @@ void Terminal::initialize(const std::string& ip, int port) {
 
 void Terminal::run() {
 	processThread = std::make_unique<Thread>(new std::thread(
-		&Terminal::connectProcess, this));
+		&Terminal::receivePacketProcess, this));
 }
 
 void Terminal::sendPacket(Packet *packet) {
@@ -27,23 +27,33 @@ void Terminal::sendPacket(Packet *packet) {
 	session.sendPacket(packet);
 }
 
-void Terminal::connectProcess() {
-	session.connectTo(ip.data(), port);
+void Terminal::tryConnectProcess() {
+	status = TerminalStatus::Stop;
 
-	status = TerminalStatus::Ready;
+	while (true) {
+		if (session.connectTo(ip.data(), port)) break;
+
+		SystemLogger::Log(Logger::Info, L"*try connect to [%s] terminal", name.c_str());
+		Sleep(3000);
+	}
 
 	NotifyTerminalPacket packet;
 	this->session.sendPacket(&packet);
 
-	SystemLogger::Log(Logger::Info, "* [%s] terminal connect [%s]:[%d] ready",
-		name.c_str(), ip.data(), port);
-	
+	SystemLogger::Log(Logger::Info, L"*[%s] terminal connect ready", name.c_str());
+	status = TerminalStatus::Ready;
+}
+
+void Terminal::receivePacketProcess() {
+	tryConnectProcess();
+
 	while (true) {
 		Package *package = session.onRecv(0);
 
 		if (package == nullptr) {
-			SystemLogger::Log(Logger::Warning, "! termnal [%s] disconnected !", name.c_str());
-			break;
+			SystemLogger::Log(Logger::Warning, L"! termnal [%s] disconnected !", name.c_str());
+			tryConnectProcess();
+			continue;
 		}
 
 		server->putPackage(package);

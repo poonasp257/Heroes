@@ -1,49 +1,45 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Heroes {
 	public class ChannelManager : MonoBehaviour {
-		private NetworkManager networkManager;
-		private MessageBoxHandler messageBoxHandler;
+		public delegate void CreateChannelListAction(List<ChannelInfo> channelList);
 
-		[SerializeField] private GameObject ChannelInfoItem;
-		
+		private NetworkManager networkManager;
+		private CreateChannelListAction createChannelListAction;
+
 		private void Start() {
 			networkManager = GetComponent<NetworkManager>();
-			messageBoxHandler = GameObject.Find("MessageBox Handler").GetComponent<MessageBoxHandler>();
+			networkManager.RegisterNotification(PacketType.ChannelListResponse, channelListResponse);
 
-			networkManager.RegisterNotification(PacketType.ChannelListResponse, ChannelListResponse);
-
-			this.ChannelListRequest();
+			DontDestroyOnLoad(this.gameObject);
 		}
 
-		private void ChannelListRequest() {
+		private void channelListResponse(PacketType type, Packet rowPacket) {
+			ChannelListResponsePacket packet = rowPacket as ChannelListResponsePacket;
+			createChannelListAction?.Invoke(packet.channelList);
+		}
+
+		public void channelListRequest(CreateChannelListAction action) {
 			ChannelListRequestPacket packet = new ChannelListRequestPacket();
 			networkManager.sendPacket(packet);
 
-			messageBoxHandler.notice("채널 목록을 불러오고 있습니다.");
+			createChannelListAction = action;
 		}
 
-		public void ChannelListResponse(PacketType type, Packet rowPacket) {
-			messageBoxHandler.close();
+		public void connectToChannel(string ip, int port) {
+			var channel = transform.Find("Connected Channel")?.gameObject;
+			if(channel == null) {
+				channel = new GameObject("Connected Channel");
+				channel.transform.parent = this.transform;
+			}
 
-			ChannelListResponsePacket packet = rowPacket as ChannelListResponsePacket;	
-			if(packet == null) {
-				Debug.Log("invalid packet");
-				return;
+			var channelNetManager = channel.GetComponent<NetworkManager>();
+			if (channelNetManager == null) { 
+				channelNetManager = channel.AddComponent<NetworkManager>();
 			}
-			
-			GameObject list = GameObject.Find("List");			
-			foreach(ChannelInfo info in packet.channelList) {
-				GameObject Channel = Instantiate(ChannelInfoItem, list.transform);
-				UIChannelInfo ChannelInfo = Channel.GetComponent<UIChannelInfo>();
-				//ChannelInfo.ID = info.id;
-				//ChannelInfo.Traffic = info.traffic;
-				//ChannelInfo.Name = info.name;
-			}
+
+			channelNetManager.connect(ip, port);
 		}
 	}
 }
