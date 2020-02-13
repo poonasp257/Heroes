@@ -1,55 +1,15 @@
--- 계정 테이블 생성
 CREATE TABLE Accounts
-	(accountId BIGINT IDENTITY(1, 1) PRIMARY KEY,
-	id NVARCHAR(50) UNIQUE,
-	password NVARCHAR(50) NOT NULL,	
-	maxCreatableCharacters SMALLINT DEFAULT 10,
-	createdCharacterCount SMALLINT DEFAULT 0,
-	createdDate DATETIME NULL,
-	logoutDate DATETIME NULL)
+	(accountId BIGINT PRIMARY KEY NOT NULL,
+	familyName NVARCHAR(50) NOT NULL,
+	creatableCharactersCount SMALLINT DEFAULT 10,
+	createdDate DATETIME NOT NULL, 
+	logoutDate DATETIME)
 GO
 
--- 계정 데이터 넣기
-CREATE OR ALTER PROC CreateAccount
-@id NVARCHAR(50),
-@password NVARCHAR(50)
-AS
-BEGIN
-	DECLARE @count INT
-	SELECT @count = COUNT(*) FROM dbo.Accounts WHERE id = @id
-	IF @count <> 0
-		RETURN 0
-
-	INSERT INTO dbo.Accounts (id, password, createdDate, logoutDate)
-	VALUES (@id, @password, GETDATE(), NULL)
-
-	RETURN -1
-END
-GO
-
-GRANT EXECUTE ON dbo.CreateAccount To poona
-GO
-
--- 계정 조회
-CREATE OR ALTER PROC SearchAccount
-@id NVARCHAR(50),
-@password NVARCHAR(50)
-AS
-BEGIN
-	SELECT accountId FROM dbo.Accounts
-	WHERE id = @id and password = @password
-	IF @@ROWCOUNT = 0
-		RETURN 0
-
-	RETURN -1
-END
-GO
-
-GRANT EXECUTE ON dbo.SearchAccount To poona
-GO
-
-CREATE TABLE CharacterInfo
-	(characterId BIGINT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE Characters
+	(characterId BIGINT IDENTITY(0,1) PRIMARY KEY,
+	characterName NVARCHAR(50) UNIQUE NOT NULL,
+	characterClass SMALLINT,
 	level INT DEFAULT 1,
 	exp FLOAT DEFAULT 0,
 	currentHP BIGINT DEFAULT 100,
@@ -62,11 +22,80 @@ CREATE TABLE CharacterInfo
 	rx FLOAT DEFAULT 0,
 	ry FLOAT DEFAULT 0,
 	rz FLOAT DEFAULT 0,
-	characterClass SMALLINT,
-	familyName NVARCHAR(50) NOT NULL,
-	characterName NVARCHAR(50) UNIQUE NOT NULL,
 	location NVARCHAR(50) DEFAULT '벨리아 마을',
-	accountId BIGINT NOT NULL)
+	accountId BIGINT NOT NULL,
+	orderNum SMALLINT NOT NULL)
+GO
+
+CREATE OR ALTER PROC SearchAccount
+@accountId BIGINT
+AS
+BEGIN
+	SELECT familyName, creatableCharactersCount FROM dbo.Accounts 
+		WHERE accountId = @accountId
+END
+GO
+
+GRANT EXECUTE ON dbo.SearchAccount To poona
+GO
+
+CREATE OR ALTER PROC CreateAccount
+@accountId BIGINT,
+@familyName NVARCHAR(50)
+AS
+BEGIN
+	DECLARE @count INT
+	SELECT @count = COUNT(*) FROM dbo.Accounts 
+		WHERE accountId = @accountId OR familyName = @familyName
+	IF @count <> 0
+		RETURN 0
+
+	INSERT INTO dbo.Accounts (accountId, familyName, createdDate)
+		VALUES (@accountId, @familyName, GETDATE())
+	IF @@ROWCOUNT = 0
+		RETURN 0
+
+	RETURN 1
+END
+GO
+
+GRANT EXECUTE ON dbo.CreateAccount To poona
+GO
+
+CREATE OR ALTER PROC GetCharacterList
+@accountId BIGINT
+AS
+BEGIN
+	SELECT
+		characterId, characterName, characterClass,	
+		level, exp, currentHP, currentMP, maxHP, maxMP,
+		x, y, z, rx, ry, rz, location		
+	FROM dbo.Characters 
+	WHERE accountId = @accountId
+	ORDER BY orderNum ASC
+END
+GO
+
+GRANT EXECUTE ON dbo.GetCharacterList To poona
+GO
+
+CREATE OR ALTER PROC ChangeCharacterOrder
+@accountId BIGINT,
+@fromIndex SMALLINT,
+@toIndex SMALLINT
+AS
+BEGIN
+	UPDATE dbo.Characters 
+		SET orderNum = 
+			CASE
+				WHEN orderNum = @fromIndex THEN @toIndex
+				ELSE @fromIndex 
+			END
+		WHERE accountId = @accountId AND orderNum in (@fromIndex, @toIndex) 
+END
+GO
+
+GRANT EXECUTE ON dbo.GetCharacterList To poona
 GO
 
 CREATE OR ALTER PROC CreateCharacter
@@ -75,17 +104,16 @@ CREATE OR ALTER PROC CreateCharacter
 @characterName NVARCHAR(50)
 AS
 BEGIN
-	DECLARE @count INT
-	SELECT @count = COUNT(*) FROM dbo.CharacterInfo WHERE characterName = @characterName
-	IF @count <> 0
+	DECLARE @createdCharactersCount INT, @creatableCharactersCount INT
+	SELECT @createdCharactersCount = COUNT(*) FROM dbo.Characters WHERE accountId = @accountId
+	SELECT @creatableCharactersCount = creatableCharactersCount FROM dbo.Accounts WHERE accountId = @accountId
+	IF @creatableCharactersCount = @createdCharactersCount
 		RETURN 0
 
-	INSERT INTO dbo.CharacterInfo (characterClass, familyName, characterName, accountId)
-	VALUES (@characterClass, 'Heroes', @characterName, @accountId)
-
-	UPDATE dbo.Accounts 
-	SET createdCharacterCount += 1
-	WHERE accountId = @accountId
+	INSERT INTO dbo.Characters (accountId, characterClass, characterName, orderNum)
+		VALUES (@accountId, @characterClass, @characterName, @createdCharactersCount)
+	IF @@ROWCOUNT = 0
+		RETURN 0
 
 	RETURN -1
 END
@@ -95,62 +123,25 @@ GRANT EXECUTE ON dbo.CreateCharacter To poona
 GO
 
 CREATE OR ALTER PROC DeleteCharacter
+@accountId BIGINT,
 @characterId BIGINT
 AS
 BEGIN
-	UPDATE t1
-	SET createdCharacterCount -= 1
-	FROM dbo.Accounts AS t1
-	LEFT JOIN dbo.CharacterInfo AS t2
-	ON t1.accountId = t2.accountId
-	WHERE t2.characterId = @characterId
+	DECLARE @deletedOrderNum BIGINT
+	SELECT @deletedOrderNum = orderNum FROM dbo.Characters 
+			WHERE characterId = @characterId
 
-	DELETE FROM dbo.CharacterInfo WHERE characterId = @characterId;	
+	DELETE FROM dbo.Characters WHERE characterId = @characterId
 	IF @@ROWCOUNT = 0
 		RETURN 0
+
+	UPDATE dbo.Characters
+		SET orderNum = orderNum - 1
+		WHERE accountId = @accountId AND orderNum > @deletedOrderNum
 
 	RETURN -1
 END
 GO
 
 GRANT EXECUTE ON dbo.DeleteCharacter To poona
-GO
-
-CREATE OR ALTER PROC SearchCharacterList
-@accountId BIGINT
-AS
-BEGIN
-	SELECT 
-		A1.maxCreatableCharacters, A1.createdCharacterCount,
-		A2.*  
-	FROM dbo.Accounts A1
-	FULL OUTER JOIN dbo.CharacterInfo A2
-	ON A1.accountId = A2.accountId	
-	WHERE A1.accountId = @accountId
-	IF @@RowCount = 0
-	BEGIN
-		RETURN 0
-	END
-
-	RETURN -1
-END
-GO
-
-GRANT EXECUTE ON dbo.SearchCharacterList To poona
-GO
-
-CREATE OR ALTER PROC SearchCharacter
-@characterId BIGINT
-AS
-BEGIN
-	SELECT * FROM dbo.CharacterInfo
-	WHERE characterId = @characterId
-	IF @@ROWCOUNT = 0
-		RETURN 0
-
-	RETURN -1
-END
-GO
-
-GRANT EXECUTE ON dbo.SearchCharacter To poona
 GO

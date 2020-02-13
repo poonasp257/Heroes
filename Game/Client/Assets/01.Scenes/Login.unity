@@ -319,7 +319,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 203423850}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c6a0b9b1c930bc4397e8fd529132ac0, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -352,10 +352,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 203423853}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
-  onSubmit:
-    m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1855788466}
+        m_MethodName: requestLogin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &203423853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,7 +603,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &256321680
 MonoBehaviour:
@@ -750,8 +758,8 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 1920
+    height: 1080
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -1463,13 +1471,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1369470181}
   m_TextComponent: {fileID: 592626559}
   m_Placeholder: {fileID: 0}
-  m_ContentType: 0
+  m_ContentType: 4
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 1
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 3
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -1828,7 +1836,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userIdField: {fileID: 1369470180}
   passwordField: {fileID: 1441008868}
-  loginButton: {fileID: 203423852}
   homepageIP: http://127.0.0.1:3000
   authServerIP: http://127.0.0.1:9000
 --- !u!4 &1855788467
@@ -2086,7 +2093,7 @@ PrefabInstance:
     - target: {fileID: 2803384800008248836, guid: abf6a0b30a0766949b1d15e0fbd90a5e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2803384800008248836, guid: abf6a0b30a0766949b1d15e0fbd90a5e,
         type: 3}

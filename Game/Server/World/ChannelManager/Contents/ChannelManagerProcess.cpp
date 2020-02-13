@@ -2,15 +2,15 @@
 #include "ChannelManagerProcess.h"
 
 ChannelManagerProcess::ChannelManagerProcess() {
-	registerPacketProcess(PacketType::ChannelListRequest, &ChannelManagerProcess::ChannelListRequest);
+	registerPacketProcess(PacketType::GetChannelListRequest, &ChannelManagerProcess::GetChannelListRequest);
 }
 
 ChannelManagerProcess::~ChannelManagerProcess() {
 
 }
 
-void ChannelManagerProcess::ChannelListRequest(Session *session, Packet *rowPacket) {
-	ChannelListResponsePacket responsePacket;
+void ChannelManagerProcess::GetChannelListRequest(Session *session, Packet *rowPacket) {
+	GetChannelListResponsePacket responsePacket;
 
 	ChannelInfo channel;
 	const int terminalCount = TerminalManager::Instance().getTerminalCount();

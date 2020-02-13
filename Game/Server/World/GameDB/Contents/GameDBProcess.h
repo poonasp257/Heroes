@@ -6,7 +6,10 @@ public:
 	GameDBProcess();
 	virtual ~GameDBProcess();
 
-	static void DBAccountInfoRequest(Session *session, Packet *rowPacket);
+	static void DBSearchAccountRequest(Session *session, Packet *rowPacket);
+	static void DBCreateAccountRequest(Session* session, Packet* rowPacket);
+	static void DBGetCharacterListRequest(Session* session, Packet* rowPacket);
+	static void DBChangeCharacterOrderRequest(Session* session, Packet* rowPacket);
 	static void DBCreateCharacterRequest(Session *session, Packet *rowPacket);
 	static void DBDeleteCharacterRequest(Session *session, Packet *rowPacket);
 	static void DBConnectChannelRequest(Session *session, Packet *rowPacket);

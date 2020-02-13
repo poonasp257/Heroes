@@ -79,6 +79,8 @@ namespace Heroes {
 
 		public static void serialize(MemoryStream stream, CharacterInfo value) {
 			serialize(stream, value.characterId);
+			serialize(stream, value.characterName);
+			serialize(stream, value.characterClass);
 			serialize(stream, value.level);
 			serialize(stream, value.exp);
 			serialize(stream, value.currentHp);
@@ -87,9 +89,6 @@ namespace Heroes {
 			serialize(stream, value.maxMp);
 			serialize(stream, value.position);
 			serialize(stream, value.rotation);
-			serialize(stream, value.characterClass);
-			serialize(stream, value.familyName);
-			serialize(stream, value.characterName);
 			serialize(stream, value.location);
 		}
 
@@ -206,6 +205,8 @@ namespace Heroes {
 
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {
 			deserialize(data, ref offset, out value.characterId);
+			deserialize(data, ref offset, out value.characterName);
+			deserialize(data, ref offset, out value.characterClass);
 			deserialize(data, ref offset, out value.level);
 			deserialize(data, ref offset, out value.exp);
 			deserialize(data, ref offset, out value.currentHp);
@@ -214,9 +215,6 @@ namespace Heroes {
 			deserialize(data, ref offset, out value.maxMp);
 			deserialize(data, ref offset, out value.position);
 			deserialize(data, ref offset, out value.rotation);
-			deserialize(data, ref offset, out value.characterClass);
-			deserialize(data, ref offset, out value.familyName);
-			deserialize(data, ref offset, out value.characterName);
 			deserialize(data, ref offset, out value.location);
 		}
 

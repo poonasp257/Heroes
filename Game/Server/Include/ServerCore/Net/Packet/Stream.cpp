@@ -65,6 +65,8 @@ void Stream::operator<<(const ChannelInfo& value) {
 
 void Stream::operator<<(const CharacterInfo& value) {
 	*this << value.characterId;
+	*this << value.characterName;
+	*this << (UInt16)value.characterClass;
 	*this << value.level;
 	*this << value.exp;
 	*this << value.currentHp;
@@ -73,9 +75,6 @@ void Stream::operator<<(const CharacterInfo& value) {
 	*this << value.maxMp;
 	*this << value.position;
 	*this << value.rotation;
-	*this << (UInt16)value.characterClass;
-	*this << value.familyName;
-	*this << value.characterName;
 	*this << value.location;
 }
 
@@ -139,6 +138,8 @@ void Stream::operator>>(ChannelInfo *retVal) {
 
 void Stream::operator>>(CharacterInfo *retVal) {
 	*this >> &retVal->characterId;
+	*this >> &retVal->characterName;
+	*this >> (UInt16*)&retVal->characterClass;
 	*this >> &retVal->level;
 	*this >> &retVal->exp;
 	*this >> &retVal->currentHp;
@@ -147,9 +148,6 @@ void Stream::operator>>(CharacterInfo *retVal) {
 	*this >> &retVal->maxMp;
 	*this >> &retVal->position;
 	*this >> &retVal->rotation;
-	*this >> (UInt16*)&retVal->characterClass;
-	*this >> &retVal->familyName;
-	*this >> &retVal->characterName;
 	*this >> &retVal->location;
 }
 

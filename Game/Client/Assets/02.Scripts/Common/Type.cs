@@ -3,16 +3,27 @@ using UnityEngine;
 
 namespace Heroes {
 	public enum CharacterClass : UInt16 {
+		None,
 		Warrior,
+		Crusader,
 		Archer,
 		Assassin,
-		Mage
+		Wizard,
+		Elementalist
 	}
 
 	public enum ActionType : UInt16 {
 		WeakAttack, SmashAttack, Roll
 	}
 
+	public enum ErrorCode : Byte {
+		Success,
+		Fail,
+		BadRequest,
+		Unauthorized,
+		Conflict
+	}
+	
 	public enum MessageType {
 		Alert,
 		Confirm,
@@ -27,6 +38,8 @@ namespace Heroes {
 
 	public struct CharacterInfo {
 		public UInt64 characterId;
+		public string characterName;
+		public CharacterClass characterClass;
 		public UInt32 level;
 		public float exp;
 		public Int64 currentHp;
@@ -35,9 +48,6 @@ namespace Heroes {
 		public Int64 maxMp;
 		public Vector3 position;
 		public Vector3 rotation;
-		public CharacterClass characterClass;
-		public string familyName;
-		public string characterName;
 		public string location;
 		// 착용 중인 장비
 	}

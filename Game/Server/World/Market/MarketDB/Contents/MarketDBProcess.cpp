@@ -3,17 +3,17 @@
 #include "Query/DBQuery.h"
 
 MarketDBProcess::MarketDBProcess() {
-	//registerPacketProcess(PacketType::DBAccountInfoRequest, &MarketDBProcess::DBAccountInfoRequest);
+	//registerPacketProcess(PacketType::DBSearchAccountRequest, &MarketDBProcess::DBSearchAccountRequest);
 }
 
 MarketDBProcess::~MarketDBProcess() {
 
 }
 
-//void MarketDBProcess::DBAccountInfoRequest(Session *session, Packet *rowPacket) {
-//	DBAccountInfoRequestPacket *packet = dynamic_cast<DBAccountInfoRequestPacket*>(rowPacket);
+//void MarketDBProcess::DBSearchAccountRequest(Session *session, Packet *rowPacket) {
+//	DBSearchAccountRequestPacket *packet = dynamic_cast<DBSearchAccountRequestPacket*>(rowPacket);
 //
-//	DBAccountInfoQuery *query = new DBAccountInfoQuery();
+//	DBSearchAccountQuery *query = new DBSearchAccountQuery();
 //	query->clientId = packet->clientId;
 //
 //	QueryStatement *statement = query->getStatement();

@@ -5,22 +5,26 @@ using UnityEngine.Events;
 
 namespace Heroes {
 	public class UIChannelBox : MonoBehaviour, IScrollHandler {
-		private Text channelName;
 		private ScrollRect scrollRect;
 
-		public UnityAction onClickEvent { get; set; }
+		[SerializeField] private Text channelName;
+
+		public UnityAction onClickAction { get; set; }
+		public UnityAction onConnectAction { get; set; }
 
 		private void Start() {
-			channelName = transform.Find("Channel Name").GetComponent<Text>();
-			channelName.text = gameObject.name;
-
+			channelName.text = this.gameObject.name;
 			scrollRect = GetComponentInParent<ScrollRect>();
 		}
 
-		public void onClick() {
-			onClickEvent?.Invoke();
+		public void OnClick() {
+			onClickAction?.Invoke();
 		}
 
+		public void OnConnect() {
+			onConnectAction?.Invoke();
+		}
+						
 		public void OnScroll(PointerEventData eventData) {
 			scrollRect?.OnScroll(eventData);
 		}

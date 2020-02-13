@@ -6,25 +6,36 @@ namespace Heroes {
 		public delegate void CreateChannelListAction(List<ChannelInfo> channelList);
 
 		private NetworkManager networkManager;
+		private MessageBoxHandler messageBoxHandler;
 		private CreateChannelListAction createChannelListAction;
 
 		private void Start() {
 			networkManager = GetComponent<NetworkManager>();
-			networkManager.RegisterNotification(PacketType.ChannelListResponse, channelListResponse);
+			networkManager.RegisterNotification(PacketType.GetChannelListResponse, getChannelListResponse);
+
+			var msgBoxHandlerObj = GameObject.Find("MessageBox Handler");
+			messageBoxHandler = msgBoxHandlerObj?.GetComponent<MessageBoxHandler>();
 
 			DontDestroyOnLoad(this.gameObject);
 		}
 
-		private void channelListResponse(PacketType type, Packet rowPacket) {
-			ChannelListResponsePacket packet = rowPacket as ChannelListResponsePacket;
+		private void OnDestroy() {
+			networkManager.UnregisterNotification(PacketType.GetChannelListResponse);
+		}
+
+		private void getChannelListResponse(PacketType type, Packet rowPacket) {
+            messageBoxHandler.close();
+
+			GetChannelListResponsePacket packet = rowPacket as GetChannelListResponsePacket;
 			createChannelListAction?.Invoke(packet.channelList);
 		}
 
-		public void channelListRequest(CreateChannelListAction action) {
-			ChannelListRequestPacket packet = new ChannelListRequestPacket();
-			networkManager.sendPacket(packet);
-
+		public void getChannelListRequest(CreateChannelListAction action) {
 			createChannelListAction = action;
+
+			GetChannelListRequestPacket packet = new GetChannelListRequestPacket();
+			networkManager.sendPacket(packet);
+			messageBoxHandler.notice("채널 목록을 불러오고 있습니다.");
 		}
 
 		public void connectToChannel(string ip, int port) {

@@ -30,7 +30,7 @@ namespace Heroes {
 			return newMessageBox;
 		}
 
-		public void alert(string msg) {
+		public void alert(string msg, UnityAction okEvent = null) {
 			if (IsOpened) this.close();
 
 			messageBox = createMessageBox(alertMsgBox, msg);
@@ -39,19 +39,7 @@ namespace Heroes {
 			UIButton okButton = button.GetComponent<UIButton>();
 
 			okButton.registerAction(this.close);
-			okButton.Select();
-		}
-
-		public void alert(string msg, UnityAction okEvent) {
-			if (IsOpened) this.close();
-
-			messageBox = createMessageBox(alertMsgBox, msg);
-
-			GameObject button = messageBox.transform.Find("Content/OK").gameObject;
-			UIButton okButton = button.GetComponent<UIButton>();
-
-			okButton.registerAction(this.close);
-			okButton.registerAction(okEvent);
+			if(okEvent != null) okButton.registerAction(okEvent);
 			okButton.Select();
 		}
 
@@ -64,14 +52,14 @@ namespace Heroes {
 			UIButton yesButton = button.GetComponent<UIButton>();
 
 			yesButton.registerAction(this.close);
-			yesButton.registerAction(yesEvent);
+			if(yesEvent != null) yesButton.registerAction(yesEvent);
 			yesButton.Select();
 
 			button = messageBox.transform.Find("Content/Buttons/No").gameObject;
 			UIButton noButton = button.GetComponent<UIButton>();
 
 			noButton.registerAction(this.close);
-			noButton.registerAction(noEvent);
+			if (noEvent != null) noButton.registerAction(noEvent);
 		}
 
 		public void notice(string msg) {

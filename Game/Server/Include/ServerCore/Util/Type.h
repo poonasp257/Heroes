@@ -32,10 +32,21 @@ enum class ActionType : UInt16 {
 };
 
 enum class CharacterClass : UInt16 {
-	Warrior, 
-	Archer, 
-	Assassin, 
-	Mage
+	None,
+	Warrior,
+	Crusader,
+	Archer,
+	Assassin,
+	Wizard,
+	Elementalist
+};
+
+enum ErrorCode : Byte {
+	Success,
+	Fail,
+	BadRequest,
+	Unauthorized,
+	Conflict,
 };
 
 // struct in game...
@@ -54,6 +65,8 @@ struct ChannelInfo {
 
 struct CharacterInfo {
 	UInt64 characterId;
+	std::wstring characterName;
+	CharacterClass characterClass;
 	UInt32 level;
 	float exp;
 	Int64 currentHp;
@@ -62,9 +75,6 @@ struct CharacterInfo {
 	Int64 maxMp;
 	Vector3 position;
 	Vector3 rotation;
-	CharacterClass characterClass;
-	std::wstring familyName;
-	std::wstring characterName;
 	std::wstring location;
 };
 

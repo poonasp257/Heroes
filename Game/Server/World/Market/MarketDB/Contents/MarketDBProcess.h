@@ -6,6 +6,6 @@ public:
 	MarketDBProcess();
 	virtual ~MarketDBProcess();
 
-	//static void DBAccountInfoRequest(Session *session, Packet *rowPacket);
+	//static void DBSearchAccountRequest(Session *session, Packet *rowPacket);
 };
 #endif

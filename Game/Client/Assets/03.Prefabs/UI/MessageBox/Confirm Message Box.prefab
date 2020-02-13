@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 8324907861868932207}
   - component: {fileID: 7744612815611966783}
   - component: {fileID: 1847314062423389282}
-  - component: {fileID: 597900990060287172}
+  - component: {fileID: 2435849744328152874}
   m_Layer: 5
   m_Name: Yes
   m_TagString: Untagged
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &597900990060287172
+--- !u!114 &2435849744328152874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -308,7 +308,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4333537905152758953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c6a0b9b1c930bc4397e8fd529132ac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -340,6 +340,9 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1847314062423389282}
   m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &5396283489873632915
@@ -507,7 +510,7 @@ GameObject:
   - component: {fileID: 573089073501568330}
   - component: {fileID: 7507800552539778659}
   - component: {fileID: 6031581747055228165}
-  - component: {fileID: 7850550546537456539}
+  - component: {fileID: 8826470078542266385}
   m_Layer: 5
   m_Name: No
   m_TagString: Untagged
@@ -571,7 +574,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7850550546537456539
+--- !u!114 &8826470078542266385
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -580,7 +583,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7550153520777358707}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c6a0b9b1c930bc4397e8fd529132ac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -612,6 +615,9 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 6031581747055228165}
   m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8650375299595850934

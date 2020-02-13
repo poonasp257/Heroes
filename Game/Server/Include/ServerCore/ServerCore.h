@@ -22,6 +22,7 @@
 #include <memory>
 #include <mutex>
 
+#include <regex>
 #include <algorithm>
 #include <string>
 #include <array>

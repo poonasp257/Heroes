@@ -3,6 +3,4 @@
 
 #include "ServerCore.h"
 
-#include "Query/DBQuery.h"
-
 #endif

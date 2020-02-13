@@ -16,7 +16,7 @@ namespace Heroes {
 			familyName = names.Find("Family Name").GetComponent<TextMesh>();
 			characterName = names.Find("Character Name").GetComponent<TextMesh>();
 
-			familyName.text = Info.familyName;
+			//familyName.text = Info.familyName;
 			characterName.text = Info.characterName;
 		}
 

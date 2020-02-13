@@ -3,8 +3,14 @@
 #include "PlayerManager.h"
 
 GameProcess::GameProcess() {
-	registerPacketProcess(PacketType::AccountInfoRequest, &GameProcess::AccountInfoRequest);
-	registerPacketProcess(PacketType::DBAccountInfoResponse, &GameProcess::DBAccountInfoResponse);
+	registerPacketProcess(PacketType::SearchAccountRequest, &GameProcess::SearchAccountRequest);
+	registerPacketProcess(PacketType::DBSearchAccountResponse, &GameProcess::DBSearchAccountResponse);
+	registerPacketProcess(PacketType::CreateAccountRequest, &GameProcess::CreateAccountRequest);
+	registerPacketProcess(PacketType::DBCreateAccountResponse, &GameProcess::DBCreateAccountResponse);
+	registerPacketProcess(PacketType::GetCharacterListRequest, &GameProcess::GetCharacterListRequest);
+	registerPacketProcess(PacketType::DBGetCharacterListResponse, &GameProcess::DBGetCharacterListResponse);
+	registerPacketProcess(PacketType::ChangeCharacterOrderRequest, &GameProcess::ChangeCharacterOrderRequest);
+	registerPacketProcess(PacketType::DBChangeCharacterOrderResponse, &GameProcess::DBChangeCharacterOrderResponse);
 	registerPacketProcess(PacketType::CreateCharacterRequest, &GameProcess::CreateCharacterRequest);
 	registerPacketProcess(PacketType::DBCreateCharacterResponse, &GameProcess::DBCreateCharacterResponse);
 	registerPacketProcess(PacketType::DeleteCharacterRequest, &GameProcess::DeleteCharacterRequest);
@@ -20,10 +26,9 @@ GameProcess::~GameProcess() {
 
 }
 
-void GameProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
-	AccountInfoRequestPacket *packet = dynamic_cast<AccountInfoRequestPacket*>(rowPacket);
-
-	DBAccountInfoRequestPacket dbPacket;
+void GameProcess::SearchAccountRequest(Session *session, Packet *rowPacket) {
+	SearchAccountRequestPacket *packet = dynamic_cast<SearchAccountRequestPacket*>(rowPacket);
+	DBSearchAccountRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();
 	dbPacket.accountId = packet->accountId;
 
@@ -31,22 +36,122 @@ void GameProcess::AccountInfoRequest(Session *session, Packet *rowPacket) {
 	terminal->sendPacket(&dbPacket);
 }
 
-void GameProcess::DBAccountInfoResponse(Session *session, Packet *rowPacket) {
-	DBAccountInfoResponsePacket *packet = dynamic_cast<DBAccountInfoResponsePacket*>(rowPacket);
-	
+void GameProcess::DBSearchAccountResponse(Session *session, Packet *rowPacket) {
+	DBSearchAccountResponsePacket *packet = dynamic_cast<DBSearchAccountResponsePacket*>(rowPacket);
 	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
-	if (!clientSession) return;
+	if (!clientSession) {
+		SystemLogger::Log(Logger::Error, L"*invalid session id");
+		return;
+	}
 
-	AccountInfoResponsePacket responsePacket;
-	responsePacket.maxCreatableCharacters = packet->maxCreatableCharacters;
+	SearchAccountResponsePacket responsePacket;
+	responsePacket.familyName = packet->familyName;
+	responsePacket.creatableCharactersCount = packet->creatableCharactersCount;
+	responsePacket.errorCode = packet->errorCode;
+
+	clientSession->sendPacket(&responsePacket);
+}
+
+void GameProcess::CreateAccountRequest(Session* session, Packet* rowPacket) {
+	CreateAccountRequestPacket* packet = dynamic_cast<CreateAccountRequestPacket*>(rowPacket);
+
+	std::wregex pattern(L"(?=^[^0-9])([a-zA-Z°¡-ÆR0-9]{2,10})");
+	std::wsmatch matchResult;
+	if (!std::regex_match(packet->familyName, matchResult, pattern)) {
+		CreateAccountResponsePacket responsePacket;
+		responsePacket.errorCode = ErrorCode::BadRequest;
+
+		session->sendPacket(&responsePacket);
+		return;
+	}
+	   	  
+	DBCreateAccountRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
+	dbPacket.familyName = packet->familyName;
+
+	Terminal* terminal = TerminalManager::Instance().getTerminal(L"GameDB");
+	terminal->sendPacket(&dbPacket);
+}
+
+void GameProcess::DBCreateAccountResponse(Session* session, Packet* rowPacket) {
+	DBCreateAccountResponsePacket* packet = dynamic_cast<DBCreateAccountResponsePacket*>(rowPacket);
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) {
+		SystemLogger::Log(Logger::Error, L"*invalid session id");
+		return;
+	}
+	
+	CreateAccountResponsePacket responsePacket;
+	responsePacket.errorCode = packet->errorCode;
+	
+	clientSession->sendPacket(&responsePacket);
+}
+
+void GameProcess::GetCharacterListRequest(Session* session, Packet* rowPacket) {
+	GetCharacterListRequestPacket *packet = dynamic_cast<GetCharacterListRequestPacket*>(rowPacket);
+	DBGetCharacterListRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
+
+	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
+	terminal->sendPacket(&dbPacket);
+}
+
+void GameProcess::DBGetCharacterListResponse(Session* session, Packet* rowPacket) {
+	DBGetCharacterListResponsePacket *packet = dynamic_cast<DBGetCharacterListResponsePacket*>(rowPacket);
+	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) {
+		SystemLogger::Log(Logger::Error, L"*invalid session id");
+		return;
+	}
+
+	GetCharacterListResponsePacket responsePacket;
 	responsePacket.characterList = std::move(packet->characterList);
+
+	clientSession->sendPacket(&responsePacket);
+}
+
+void GameProcess::ChangeCharacterOrderRequest(Session* session, Packet* rowPacket) {
+	ChangeCharacterOrderRequestPacket *packet = dynamic_cast<ChangeCharacterOrderRequestPacket*>(rowPacket);
+	DBChangeCharacterOrderRequestPacket dbPacket;
+	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
+	dbPacket.fromIndex = packet->fromIndex;
+	dbPacket.toIndex = packet->toIndex;
+
+	Terminal* terminal = TerminalManager::Instance().getTerminal(L"GameDB");
+	terminal->sendPacket(&dbPacket);
+}
+
+void GameProcess::DBChangeCharacterOrderResponse(Session* session, Packet* rowPacket) {
+	DBChangeCharacterOrderResponsePacket *packet = dynamic_cast<DBChangeCharacterOrderResponsePacket*>(rowPacket);
+	Session* clientSession = SessionManager::Instance().getSession(packet->clientId);
+	if (!clientSession) {
+		SystemLogger::Log(Logger::Error, L"*invalid session id");
+		return;
+	}
+
+	ChangeCharacterOrderResponsePacket responsePacket;
+	responsePacket.fromIndex = packet->fromIndex;
+	responsePacket.toIndex = packet->toIndex;
 
 	clientSession->sendPacket(&responsePacket);
 }
 
 void GameProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 	CreateCharacterRequestPacket *packet = dynamic_cast<CreateCharacterRequestPacket*>(rowPacket);
-	
+
+	std::wregex pattern(L"(?=^[^0-9])([a-zA-Z°¡-ÆR0-9]{2,10})");
+	std::wsmatch matchResult;
+	if (!std::regex_match(packet->characterName, matchResult, pattern)) {
+		CreateCharacterResponsePacket responsePacket;
+		responsePacket.errorCode = ErrorCode::BadRequest;
+
+		session->sendPacket(&responsePacket);
+		return;
+	}
+
 	DBCreateCharacterRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();
 	dbPacket.accountId = packet->accountId;
@@ -74,6 +179,7 @@ void GameProcess::DeleteCharacterRequest(Session *session, Packet *rowPacket) {
 
 	DBDeleteCharacterRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();
+	dbPacket.accountId = packet->accountId;
 	dbPacket.characterId = packet->characterId;
 	   
 	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
@@ -87,6 +193,7 @@ void GameProcess::DBDeleteCharacterResponse(Session *session, Packet *rowPacket)
 	if (!clientSession) return;
 
 	DeleteCharacterResponsePacket responsePacket;
+
 	clientSession->sendPacket(&responsePacket);
 }
 

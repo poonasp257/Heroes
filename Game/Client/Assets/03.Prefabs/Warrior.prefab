@@ -2080,12 +2080,17 @@ PrefabInstance:
     - target: {fileID: 3667888732597038329, guid: 97635489580e10149ae267a52591ed46,
         type: 3}
       propertyPath: m_Text
-      value: Family Name
+      value: "\uAC00\uBB38 \uC774\uB984"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667888732597038329, guid: 97635489580e10149ae267a52591ed46,
+        type: 3}
+      propertyPath: m_FontSize
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3667888732129477550, guid: 97635489580e10149ae267a52591ed46,
         type: 3}
       propertyPath: m_Text
-      value: Character Name
+      value: "\uCE90\uB9AD\uD130 \uC774\uB984"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97635489580e10149ae267a52591ed46, type: 3}
@@ -2167,17 +2172,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1676915761887111027, guid: 9429425e1709f8540872b88bfd0e50dc,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8029132327943181058, guid: 9429425e1709f8540872b88bfd0e50dc,
         type: 3}
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7517561178698684508, guid: 9429425e1709f8540872b88bfd0e50dc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1676915761887111027, guid: 9429425e1709f8540872b88bfd0e50dc,
         type: 3}
       propertyPath: m_Layer
       value: 0

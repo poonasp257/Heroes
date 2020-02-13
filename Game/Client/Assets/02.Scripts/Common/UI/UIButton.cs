@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -18,7 +17,7 @@ namespace Heroes {
         }
 
         public override void OnSubmit(BaseEventData eventData) {
-            onSubmit.Invoke();
+            onSubmit?.Invoke();
         }
     }
 }

@@ -14,19 +14,16 @@ namespace Heroes {
 		[SerializeField] private InputField userIdField;
 		[SerializeField] private InputField passwordField;
 
-		[Header("Interaction Button")]
-		[SerializeField] private UIButton loginButton;
-
 		[Header("Authentication Server Information")]
 		[SerializeField] private string homepageIP = "http://127.0.0.1:3000";
 		[SerializeField] private string authServerIP = "http://127.0.0.1:9000";
 
 		private void Start() {
 			var msgHandlerObject = GameObject.Find("MessageBox Handler");
-			if (msgHandlerObject) messageBoxHandler = msgHandlerObject.GetComponent<MessageBoxHandler>();
-
+			messageBoxHandler = msgHandlerObject?.GetComponent<MessageBoxHandler>();
+			if (messageBoxHandler == null) throw new Exception();
+ 
 			userIdField.ActivateInputField();
-			loginButton.onClick.AddListener(this.requestLogin);
 		}
 		
 		private void Update() {
@@ -48,22 +45,9 @@ namespace Heroes {
 			if (userIdField.isFocused) passwordField.Select();
 			else userIdField.Select();
 		} 
-
-		private void requestLogin() {
-			if (string.IsNullOrWhiteSpace(userIdField.text)) {
-				messageBoxHandler.alert("아이디를 입력해주세요.");
-				return;
-			}
-			if (string.IsNullOrWhiteSpace(passwordField.text)) {
-				messageBoxHandler.alert("비밀번호를 입력해주세요.");
-				return;
-			}
-
-			StartCoroutine("RequestLogin");
-		}
-
+		
 		private IEnumerator RequestLogin() {
-			messageBoxHandler.notice("서버의 응답을 기다리고 있습니다.");
+			messageBoxHandler.notice("처리 중입니다.");
 
 			WWWForm form = new WWWForm();
 			form.AddField("username", userIdField.text);
@@ -91,6 +75,19 @@ namespace Heroes {
 			PlayerData.Instance.AccountId = accountId;
 
 			SceneManager.LoadScene("Channel");
+		}
+
+		public void requestLogin() {
+			if (string.IsNullOrWhiteSpace(userIdField.text)) {
+				messageBoxHandler.alert("아이디를 입력해주세요.");
+				return;
+			}
+			if (string.IsNullOrWhiteSpace(passwordField.text)) {
+				messageBoxHandler.alert("비밀번호를 입력해주세요.");
+				return;
+			}
+
+			StartCoroutine("RequestLogin");
 		}
 
 		public void openHelpPage() {

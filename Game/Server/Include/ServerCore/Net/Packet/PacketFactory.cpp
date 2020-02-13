@@ -3,8 +3,14 @@
 Packet* PacketFactory::CreatePacket(PacketType type) {
     switch(type) {		
 		case PacketType::NotifyTerminal: return new NotifyTerminalPacket();
-		case PacketType::DBAccountInfoRequest: return new DBAccountInfoRequestPacket();
-		case PacketType::DBAccountInfoResponse: return new DBAccountInfoResponsePacket();
+		case PacketType::DBSearchAccountRequest: return new DBSearchAccountRequestPacket();
+		case PacketType::DBSearchAccountResponse: return new DBSearchAccountResponsePacket();
+        case PacketType::DBCreateAccountRequest: return new DBCreateAccountRequestPacket();
+        case PacketType::DBCreateAccountResponse: return new DBCreateAccountResponsePacket();
+        case PacketType::DBGetCharacterListRequest: return new DBGetCharacterListRequestPacket();
+        case PacketType::DBGetCharacterListResponse: return new DBGetCharacterListResponsePacket();
+        case PacketType::DBChangeCharacterOrderRequest: return new DBChangeCharacterOrderRequestPacket();
+        case PacketType::DBChangeCharacterOrderResponse: return new DBChangeCharacterOrderResponsePacket();
 		case PacketType::DBCreateCharacterRequest: return new DBCreateCharacterRequestPacket();
 		case PacketType::DBCreateCharacterResponse: return new DBCreateCharacterResponsePacket();
 		case PacketType::DBDeleteCharacterRequest: return new DBDeleteCharacterRequestPacket();
@@ -13,10 +19,16 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::DBConnectChannelResponse: return new DBConnectChannelResponsePacket();
         case PacketType::ExitRequest: return new ExitRequestPacket();
         case PacketType::ExitResponse: return new ExitResponsePacket();
-		case PacketType::ChannelListRequest: return new ChannelListRequestPacket();
-		case PacketType::ChannelListResponse: return new ChannelListResponsePacket();
-		case PacketType::AccountInfoRequest: return new AccountInfoRequestPacket();
-		case PacketType::AccountInfoResponse: return new AccountInfoResponsePacket();
+		case PacketType::GetChannelListRequest: return new GetChannelListRequestPacket();
+		case PacketType::GetChannelListResponse: return new GetChannelListResponsePacket();
+		case PacketType::SearchAccountRequest: return new SearchAccountRequestPacket();
+		case PacketType::SearchAccountResponse: return new SearchAccountResponsePacket();
+        case PacketType::CreateAccountRequest: return new CreateAccountRequestPacket();
+        case PacketType::CreateAccountResponse: return new CreateAccountResponsePacket();
+        case PacketType::GetCharacterListRequest: return new GetCharacterListRequestPacket();
+        case PacketType::GetCharacterListResponse: return new GetCharacterListResponsePacket();
+        case PacketType::ChangeCharacterOrderRequest: return new ChangeCharacterOrderRequestPacket();
+        case PacketType::ChangeCharacterOrderResponse: return new ChangeCharacterOrderResponsePacket();
 		case PacketType::CreateCharacterRequest: return new CreateCharacterRequestPacket();
 		case PacketType::CreateCharacterResponse: return new CreateCharacterResponsePacket();
 		case PacketType::DeleteCharacterRequest: return new DeleteCharacterRequestPacket();

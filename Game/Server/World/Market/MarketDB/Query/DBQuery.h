@@ -1,17 +1,17 @@
 #ifndef MARKETDB_QUERY_H
 #define MARKETDB_QUERY_H
 
-//class DBAccountInfoQuery : public Query {
+//class DBSearchAccountQuery : public Query {
 //public:
 //	UInt64 clientId;
 //
-//	DBAccountInfoQuery() {
+//	DBSearchAccountQuery() {
 //		statement->setQuery(L"EXEC SearchCharacterList", QueryType::Direct);
 //	}
-//	virtual ~DBAccountInfoQuery() {}
+//	virtual ~DBSearchAccountQuery() {}
 //
 //	void doResponse(SQLHSTMT statement) {
-//		DBAccountInfoResponsePacket packet;
+//		DBSearchAccountResponsePacket packet;
 //		packet.clientId = clientId;
 //
 //		UInt16 createdCharacterCount;

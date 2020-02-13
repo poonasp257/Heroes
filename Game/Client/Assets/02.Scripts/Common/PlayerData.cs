@@ -14,13 +14,9 @@ namespace Heroes {
 			}
 		}
 
-		public ChannelInfo Channel { get; set; }
 		public UInt64 AccountId { get; set; }
-		public UInt64 CharacterId { get; set; }
-
-		public PlayerData() {
-			AccountId = 0;
-			CharacterId = 0;
-		}
+		public ChannelInfo CurrentChannel { get; set; }
+		public CharacterInfo CurrentCharacter { get; set; }
+		public string FamilyName { get; set; }
 	}
 }

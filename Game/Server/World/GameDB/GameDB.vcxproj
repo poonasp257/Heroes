@@ -166,7 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Contents\GameDBProcess.h" />
-    <ClInclude Include="Query\DBQuery.h" />
+    <ClInclude Include="Query\GameDBQuery.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

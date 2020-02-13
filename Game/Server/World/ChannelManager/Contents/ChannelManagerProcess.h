@@ -6,6 +6,6 @@ public:
 	ChannelManagerProcess();
 	virtual ~ChannelManagerProcess();
 
-	static void ChannelListRequest(Session* session, Packet* rowPacket);
+	static void GetChannelListRequest(Session* session, Packet* rowPacket);
 };
 #endif

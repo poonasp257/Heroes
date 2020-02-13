@@ -28,11 +28,11 @@
     <ClInclude Include="stdafx.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Query\DBQuery.h">
-      <Filter>Query</Filter>
-    </ClInclude>
     <ClInclude Include="Contents\GameDBProcess.h">
       <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Query\GameDBQuery.h">
+      <Filter>Query</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

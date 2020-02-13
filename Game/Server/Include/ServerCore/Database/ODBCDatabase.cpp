@@ -154,7 +154,11 @@ void ODBCDatabase::execute() {
 	}
 	
 	query->doResponse(dbStatement);
-	if (query) delete query;
+	delete query;
+
+	SQLFreeStmt(dbStatement, SQL_CLOSE);
+	SQLFreeStmt(dbStatement, SQL_UNBIND);
+	SQLFreeStmt(dbStatement, SQL_RESET_PARAMS);
 }
 
 void ODBCDatabase::process() {

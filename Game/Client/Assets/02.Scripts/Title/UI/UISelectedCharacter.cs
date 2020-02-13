@@ -4,29 +4,31 @@ using UnityEngine.UI;
 
 namespace Heroes {
 	public class UISelectedCharacter : MonoBehaviour {
-		private Text familyName;
-		private Text characterName;
+		[SerializeField] private Text familyNameText;
+		[SerializeField] private Text characterNameText;
 
-		public CharacterInfo Info { get; set; }
-
-		private void Awake() {
-			familyName = transform.Find("Family Name").GetComponent<Text>();
-			characterName = transform.Find("Character Name").GetComponent<Text>();
-
-			familyName.text = "";
-			characterName.text = "";
+		public bool IsSelected { 
+			get { 
+				return !string.IsNullOrWhiteSpace(familyNameText.text);
+			} 
 		}
 
-		public void SelectCharacter(UICharacterInfo character) {
-			UICharacterInfo selectedCharacter = character.GetComponent<UICharacterInfo>();
-			Info = selectedCharacter.Info;
+		public UInt64 CharacterId { get; set; }
 
-			familyName.text = Info.familyName;
-			characterName.text = Info.characterName;
+		private void Start() {
+			familyNameText.text = "";
+			characterNameText.text = "";
 		}
 
-		public bool isSelected() {
-			return string.IsNullOrEmpty(Info.characterName) == false;
+		public void selectCharacter(string familyName, CharacterInfo characterInfo) {
+			familyNameText.text = familyName;
+			characterNameText.text = characterInfo.characterName;
+			CharacterId = characterInfo.characterId;
+		}
+
+		public void deselectCharacter() {
+			familyNameText.text = "";
+			characterNameText.text = "";
 		}
 	}
 }
