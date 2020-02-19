@@ -4,25 +4,25 @@ using UnityEngine;
 
 namespace Heroes {
 	public class DamageCollider : MonoBehaviour {
-		private BoxCollider collider;
+		private BoxCollider damageCollider;
 
 		public int Damage { get { return 10; } }
 
 		private void Start() {
-			collider = GetComponent<BoxCollider>();
-			if (collider) collider.enabled = false;
+			damageCollider = GetComponent<BoxCollider>();
+			if (damageCollider) damageCollider.enabled = false;
 		}
 
 		public void Enable() {
-			if (collider == null) return;
+			if (damageCollider == null) return;
 
-			collider.enabled = true;
+			damageCollider.enabled = true;
 		}
 
 		public void Disable() {
-			if (collider == null) return;
-			
-			collider.enabled = false;
+			if (damageCollider == null) return;
+
+			damageCollider.enabled = false;
 		}
 	}
 }

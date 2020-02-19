@@ -9,7 +9,6 @@ GameDBProcess::GameDBProcess() {
 	registerPacketProcess(PacketType::DBChangeCharacterOrderRequest, &GameDBProcess::DBChangeCharacterOrderRequest);
 	registerPacketProcess(PacketType::DBCreateCharacterRequest, &GameDBProcess::DBCreateCharacterRequest);
 	registerPacketProcess(PacketType::DBDeleteCharacterRequest, &GameDBProcess::DBDeleteCharacterRequest);
-	registerPacketProcess(PacketType::DBConnectChannelRequest, &GameDBProcess::DBConnectChannelRequest);
 }
 
 GameDBProcess::~GameDBProcess() {
@@ -95,19 +94,5 @@ void GameDBProcess::DBDeleteCharacterRequest(Session *session, Packet *rowPacket
 	statement->addParam(packet->accountId);
 	statement->addParam(packet->characterId);
 	
-	DBManager::Instance().pushQuery(query);
-}
-
-void GameDBProcess::DBConnectChannelRequest(Session *session, Packet *rowPacket) {
-	DBConnectChannelRequestPacket *packet = dynamic_cast<DBConnectChannelRequestPacket*>(rowPacket);
-	   	
-	DBCharacterInfoQuery *query = new DBCharacterInfoQuery();
-	query->session = session;
-	query->clientId = packet->clientId;
-	query->accountId = packet->accountId;
-
-	QueryStatement *statement = query->getStatement();
-	statement->addParam(packet->characterId);
-
 	DBManager::Instance().pushQuery(query);
 }

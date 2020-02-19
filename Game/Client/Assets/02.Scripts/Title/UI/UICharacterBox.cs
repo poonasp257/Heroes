@@ -18,19 +18,19 @@ namespace Heroes {
 		private bool changePositionMode = false;
 
 		[Header("Class Icon Sprites")]
-		[SerializeField] private Sprite[] classIcons;
+		[SerializeField] private Sprite[] classIcons = null;
 
 		[Header("Character Status")]
-		[SerializeField] private Image classIcon;
-		[SerializeField] private Text level;
-		[SerializeField] private Text characterName;
-		[SerializeField] private Text location;
+		[SerializeField] private Image classIcon = null;
+		[SerializeField] private Text level = null;
+		[SerializeField] private Text characterName = null;
+		[SerializeField] private Text location = null;
 
 		[Header("Interaction Button")]
-		[SerializeField] private GameObject connectButton;
-		[SerializeField] private GameObject orderButtons;
-		[SerializeField] private UIButton moveUpButton;
-		[SerializeField] private UIButton moveDownButton;
+		[SerializeField] private GameObject connectButton = null;
+		[SerializeField] private GameObject orderButtons = null;
+		[SerializeField] private UIButton moveUpButton = null;
+		[SerializeField] private UIButton moveDownButton = null;
 
 		public bool ChangePositionMode {
 			get { return changePositionMode; } 
@@ -54,6 +54,26 @@ namespace Heroes {
 			moveUpButton.onClick.AddListener(onMoveUpAction);
 			moveDownButton.onClick.AddListener(onMoveDownAction);
 		}
+
+		private void OnMoveUp(int firstIndex, int lastIndex) {
+			int fromIndex = this.transform.GetSiblingIndex();
+			int toIndex = -1;
+
+			if (fromIndex == firstIndex) toIndex = lastIndex;
+			else toIndex = fromIndex - 1;
+
+			accountManager.changeCharacterOrderRequest(fromIndex, toIndex);
+		}
+
+		private void OnMoveDown(int firstIndex, int lastIndex) {
+			int fromIndex = this.transform.GetSiblingIndex();
+			int toIndex = -1;
+
+			if (fromIndex == lastIndex) toIndex = firstIndex;
+			else toIndex = fromIndex + 1;
+
+			accountManager.changeCharacterOrderRequest(fromIndex, toIndex);
+		}
 				
 		public void initialize(CharacterInfo characterInfo, int createdCharactersCount) {
 			classIcon.sprite = classIcons[(int)characterInfo.characterClass - 1];
@@ -65,30 +85,11 @@ namespace Heroes {
 				PlayerData.Instance.FamilyName, characterInfo);
 			onConnectAction = () => {
 				PlayerData.Instance.CurrentCharacter = characterInfo;
-				LoadingSceneManager.LoadScene("Main");
+				SceneLoader.LoadScene("Main");
 			};
 
-			int firstIndex = 0;
-			int lastIndex = createdCharactersCount - 1;
-
-			onMoveUpAction = () => {
-				int fromIndex = this.transform.GetSiblingIndex();
-				int toIndex = -1;
-
-				if (fromIndex == firstIndex) toIndex = lastIndex;
-				else toIndex = fromIndex - 1;
-
-				accountManager.changeCharacterOrderRequest(fromIndex, toIndex);
-			};
-			onMoveDownAction = () => {
-				int fromIndex = this.transform.GetSiblingIndex();
-				int toIndex = -1;
-
-				if (fromIndex == lastIndex) toIndex = firstIndex;
-				else toIndex = fromIndex + 1;
-
-				accountManager.changeCharacterOrderRequest(fromIndex, toIndex);
-			};
+			onMoveUpAction = () => this.OnMoveUp(0, createdCharactersCount - 1);
+			onMoveDownAction = () => this.OnMoveDown(0, createdCharactersCount - 1);
 		}
 
 		public void OnClick() {

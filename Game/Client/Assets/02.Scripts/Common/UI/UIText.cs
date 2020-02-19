@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Heroes {
 	public class UIText : Text {
-		[SerializeField] private bool enableWordWrap;
+		[SerializeField] private bool enableWordWrap = false;
 
 		protected override void Start() {
 			base.Start();

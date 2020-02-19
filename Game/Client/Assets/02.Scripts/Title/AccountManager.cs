@@ -9,20 +9,20 @@ namespace Heroes {
 		private MessageBoxHandler messageBoxHandler;
 		
 		[Header("Family Name Setting Dialog")]
-		[SerializeField] private GameObject familyNameDialog;
-		[SerializeField] private InputField familyNameInputField;
+		[SerializeField] private GameObject familyNameDialog = null;
+		[SerializeField] private InputField familyNameInputField = null;
 
-		[SerializeField] private UICharacterList characterListUI;
-		[SerializeField] private UISelectedCharacter selectedCharacterUI;
+		[SerializeField] private UICharacterList characterListUI = null;
+		[SerializeField] private UISelectedCharacter selectedCharacterUI = null;
 
 		private void Start() {
 			var connectedChannel = GameObject.Find("Channel Manager/Connected Channel");
 			networkManager = connectedChannel?.GetComponent<NetworkManager>();
-			if (networkManager == null) throw new Exception();
+			if (networkManager == null) throw new Exception("Connected Channel not found");
 
 			var msgBoxHandlerObj = GameObject.Find("MessageBox Handler");
 			messageBoxHandler = msgBoxHandlerObj?.GetComponent<MessageBoxHandler>();
-			if (messageBoxHandler == null) throw new Exception();
+			if (messageBoxHandler == null) throw new Exception("MessageBox Handler not found");
 
 			networkManager.RegisterNotification(PacketType.SearchAccountResponse, searchAccountResponse);
 			networkManager.RegisterNotification(PacketType.CreateAccountResponse, createAccountResponse);
@@ -53,7 +53,6 @@ namespace Heroes {
 		private void searchAccountRequest() {
 			SearchAccountRequestPacket packet = new SearchAccountRequestPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-
 			networkManager.sendPacket(packet);
 			messageBoxHandler.notice("계정 정보를 불러오고 있습니다.");
 		}
@@ -93,7 +92,6 @@ namespace Heroes {
 			CreateAccountRequestPacket packet = new CreateAccountRequestPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
 			packet.familyName = familyNameInputField.text;
-
 			networkManager.sendPacket(packet);
 			messageBoxHandler.notice("처리 중입니다.");
 		}
@@ -124,7 +122,6 @@ namespace Heroes {
 		private void getCharacterListRequest() {
 			GetCharacterListRequestPacket packet = new GetCharacterListRequestPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-
 			networkManager.sendPacket(packet);
 			messageBoxHandler.notice("캐릭터 목록을 불러오고 있습니다.");
 		}
@@ -141,7 +138,6 @@ namespace Heroes {
             packet.accountId = PlayerData.Instance.AccountId;
             packet.fromIndex = (UInt16)fromIndex;
             packet.toIndex = (UInt16)toIndex;
-
 			networkManager.sendPacket(packet);
 			messageBoxHandler.notice("처리 중입니다.");
         }

@@ -8,15 +8,15 @@ namespace Heroes {
         private List<UICharacterBox> characterBoxList = new List<UICharacterBox>();
 
         [Header("Character Count")]
-        [SerializeField] private Text charactersCountUI;
+        [SerializeField] private Text charactersCountUI = null;
 
         [Header("Character Box Prefab")]
-        [SerializeField] private GameObject characterBoxPrefab;
-        [SerializeField] private GameObject creatableBoxPrefab;
-        [SerializeField] private GameObject lockedBoxPrefab;
+        [SerializeField] private GameObject characterBoxPrefab = null;
+        [SerializeField] private GameObject creatableBoxPrefab = null;
+        [SerializeField] private GameObject lockedBoxPrefab = null;
 
         [Header("Button")]
-        [SerializeField] private UIButton changePostionButton;
+        [SerializeField] private UIButton changePostionButton = null;
 
         public int CreatableCharactersCount { get; set; }
 

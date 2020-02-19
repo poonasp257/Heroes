@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Heroes {
 	public class UISelectedChannel : MonoBehaviour {
-		[SerializeField] private Text channelText;
+		[SerializeField] private Text channelText = null;
 
 		public bool IsSelected { 
 			get { 

@@ -19,7 +19,6 @@ public:
 	static void DeleteCharacterRequest(Session *session, Packet *rowPacket);
 	static void DBDeleteCharacterResponse(Session *session, Packet *rowPacket);
 	static void ConnectChannelRequest(Session *session, Packet *rowPacket);
-	static void DBConnectChannelResponse(Session *session, Packet *rowPacket);
 	static void DisconnectChannelRequest(Session *session, Packet *rowPacket); 
 	static void NotifyCharacterMovement(Session *session, Packet *rowPacket);
 	static void NotifyCharacterAction(Session *session, Packet *rowPacket);

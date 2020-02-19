@@ -6,8 +6,8 @@ namespace Heroes {
 	public class UICharacterClass : MonoBehaviour {
 		private Button button;
 
-		[SerializeField] private CreateCharacterManager createCharacterManager;
-		[SerializeField] private CharacterClass characterClass;
+		[SerializeField] private CreateCharacterManager createCharacterManager = null;
+		[SerializeField] private CharacterClass characterClass = CharacterClass.None;
 
 		private void Start() {
 			gameObject.name = Enum.GetName(typeof(CharacterClass), characterClass);

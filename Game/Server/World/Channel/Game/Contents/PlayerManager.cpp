@@ -9,22 +9,39 @@ PlayerManager::~PlayerManager() {
 
 }
 
-void PlayerManager::registerPlayer(UInt64 newSessionId, const PlayerInfo& newCharacterInfo) {
-	for (auto oldPlayer : playerTable) {
-		if (oldPlayer.second.accountId != newCharacterInfo.accountId) continue;
+PlayerInfo* PlayerManager::findBySessionId(UInt64 sessionId) {
+	auto itr = playerTable.find(sessionId);
+	if (itr == playerTable.end()) return nullptr;
 
-		SessionManager::Instance().closeSession(oldPlayer.first);
-	}
-
-	playerTable.insert(std::make_pair(newSessionId, newCharacterInfo));
+	return &itr->second;
 }
 
-void PlayerManager::unregisterPlayer(UInt64 sessionId) {
-	NotifyDisconnectPlayerPacket packet;
-	packet.accountId = playerTable[sessionId].accountId;
+PlayerInfo* PlayerManager::findByAccountId(UInt64 accountId) {
+	/*auto itr = std::find_if(playerTable.begin(), playerTable.end(),
+		[&]( player) -> bool { return player.accountId == accountId; });
+	if (itr == playerTable.end()) */
+		return nullptr;
 
-	SessionManager::Instance().BroadcastPacket(&packet);
+	//return &itr->second;
 }
+
+void PlayerManager::registerPlayer(UInt64 sessionId, const PlayerInfo& playerInfo) {
+	playerTable.insert(std::make_pair(sessionId, playerInfo));
+}
+
+void PlayerManager::unregisterPlayerBySessionId(UInt64 sessionId) {
+//	auto itr = playerTable.find
+
+}
+
+void PlayerManager::unregisterPlayerByAccountId(UInt64 accountId) {
+	
+}
+//
+//NotifyDisconnectPlayerPacket packet;
+//packet.accountId = playerTable[sessionId].accountId;
+//
+//SessionManager::Instance().BroadcastPacket(&packet);
 
 void PlayerManager::process() {
 	while (true) {
@@ -32,7 +49,7 @@ void PlayerManager::process() {
 			auto session = SessionManager::Instance().getSession(it->first);
 			if (session) ++it;
 			else {
-				this->unregisterPlayer(it->first);
+				//this->unregisterPlayer(it->first);
 				it = playerTable.erase(it);
 			}
 		}

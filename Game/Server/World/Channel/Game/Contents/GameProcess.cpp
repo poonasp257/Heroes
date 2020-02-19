@@ -16,7 +16,6 @@ GameProcess::GameProcess() {
 	registerPacketProcess(PacketType::DeleteCharacterRequest, &GameProcess::DeleteCharacterRequest);
 	registerPacketProcess(PacketType::DBDeleteCharacterResponse, &GameProcess::DBDeleteCharacterResponse);
 	registerPacketProcess(PacketType::ConnectChannelRequest, &GameProcess::ConnectChannelRequest);
-	registerPacketProcess(PacketType::DBConnectChannelResponse, &GameProcess::DBConnectChannelResponse);
 	registerPacketProcess(PacketType::DisconnectChannelRequest, &GameProcess::DisconnectChannelRequest);
 	registerPacketProcess(PacketType::NotifyCharacterMovement, &GameProcess::NotifyCharacterMovement);
 	registerPacketProcess(PacketType::NotifyCharacterAction, &GameProcess::NotifyCharacterAction);
@@ -31,7 +30,7 @@ void GameProcess::SearchAccountRequest(Session *session, Packet *rowPacket) {
 	DBSearchAccountRequestPacket dbPacket;
 	dbPacket.clientId = session->getId();
 	dbPacket.accountId = packet->accountId;
-
+		
 	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
 	terminal->sendPacket(&dbPacket);
 }
@@ -48,7 +47,6 @@ void GameProcess::DBSearchAccountResponse(Session *session, Packet *rowPacket) {
 	responsePacket.familyName = packet->familyName;
 	responsePacket.creatableCharactersCount = packet->creatableCharactersCount;
 	responsePacket.errorCode = packet->errorCode;
-
 	clientSession->sendPacket(&responsePacket);
 }
 
@@ -83,8 +81,7 @@ void GameProcess::DBCreateAccountResponse(Session* session, Packet* rowPacket) {
 	}
 	
 	CreateAccountResponsePacket responsePacket;
-	responsePacket.errorCode = packet->errorCode;
-	
+	responsePacket.errorCode = packet->errorCode;	
 	clientSession->sendPacket(&responsePacket);
 }
 
@@ -108,7 +105,6 @@ void GameProcess::DBGetCharacterListResponse(Session* session, Packet* rowPacket
 
 	GetCharacterListResponsePacket responsePacket;
 	responsePacket.characterList = std::move(packet->characterList);
-
 	clientSession->sendPacket(&responsePacket);
 }
 
@@ -135,7 +131,6 @@ void GameProcess::DBChangeCharacterOrderResponse(Session* session, Packet* rowPa
 	ChangeCharacterOrderResponsePacket responsePacket;
 	responsePacket.fromIndex = packet->fromIndex;
 	responsePacket.toIndex = packet->toIndex;
-
 	clientSession->sendPacket(&responsePacket);
 }
 
@@ -147,7 +142,6 @@ void GameProcess::CreateCharacterRequest(Session *session, Packet *rowPacket) {
 	if (!std::regex_match(packet->characterName, matchResult, pattern)) {
 		CreateCharacterResponsePacket responsePacket;
 		responsePacket.errorCode = ErrorCode::BadRequest;
-
 		session->sendPacket(&responsePacket);
 		return;
 	}
@@ -170,7 +164,6 @@ void GameProcess::DBCreateCharacterResponse(Session *session, Packet *rowPacket)
 
 	CreateCharacterResponsePacket responsePacket;
 	responsePacket.errorCode = packet->errorCode;
-
 	clientSession->sendPacket(&responsePacket);
 }
 
@@ -193,47 +186,57 @@ void GameProcess::DBDeleteCharacterResponse(Session *session, Packet *rowPacket)
 	if (!clientSession) return;
 
 	DeleteCharacterResponsePacket responsePacket;
-
 	clientSession->sendPacket(&responsePacket);
 }
 
 void GameProcess::ConnectChannelRequest(Session *session, Packet *rowPacket) {
 	ConnectChannelRequestPacket *packet = dynamic_cast<ConnectChannelRequestPacket*>(rowPacket);
 
-	DBConnectChannelRequestPacket dbPacket;
-	dbPacket.clientId = session->getId();
-	dbPacket.characterId = packet->characterId;
-	dbPacket.accountId = packet->accountId;
+	auto player = PlayerManager::Instance().findByAccountId(packet->playerInfo.accountId);
+	if (player != nullptr) {
+		SystemLogger::Log(Logger::Warning, L"*aleady registered player: %s", 
+			session->getIP().c_str());
+		session->onClose();
+		return;
+	}
 
-	Terminal *terminal = TerminalManager::Instance().getTerminal(L"GameDB");
-	terminal->sendPacket(&dbPacket);
-}
 
-void GameProcess::DBConnectChannelResponse(Session *session, Packet *rowPacket) {
-	DBConnectChannelResponsePacket *packet = dynamic_cast<DBConnectChannelResponsePacket*>(rowPacket);
 
-	Session *clientSession = SessionManager::Instance().getSession(packet->clientId);
-	if (!clientSession) return;
 
-	PlayerInfo playerInfo;
-	playerInfo.accountId = packet->accountId;
-	playerInfo.characterInfo = packet->characterInfo;
 
-	PlayerManager::Instance().registerPlayer(clientSession->getId(), playerInfo);
 
-	ConnectChannelResponsePacket responsePacket;
-	responsePacket.playerTable = std::move(PlayerManager::Instance().getPlayerTable());
-	clientSession->sendPacket(&responsePacket);
 
-	NotifyConnectPlayerPacket notifyPacket;
-	notifyPacket.accountId = packet->accountId;
-	notifyPacket.characterInfo = packet->characterInfo;
 
-	SessionManager::Instance().BroadcastPacket(&notifyPacket);
+
+
+
+
+
+	//PlayerManager::Instance().registerPlayer(session->getId(), packet->playerInfo);
+
+
+	//ConnectChannelResponsePacket responsePacket;
+	//responsePacket.playerTable = PlayerManager::Instance().getPlayerTable();
+	//session->sendPacket(&responsePacket);
+
+	//NotifyConnectPlayerPacket notifyPacket;
+	//notifyPacket.accountId = packet->accountId;
+	//notifyPacket.characterInfo = packet->characterInfo;
+
+	//SessionManager::Instance().BroadcastPacket(&notifyPacket);
 }
 
 void GameProcess::DisconnectChannelRequest(Session *session, Packet *rowPacket) {
 	DisconnectChannelRequestPacket *packet = dynamic_cast<DisconnectChannelRequestPacket*>(rowPacket);
+	auto player = PlayerManager::Instance().findBySessionId(session->getId());
+	if (player == nullptr) {
+		SystemLogger::Log(Logger::Warning, L"*not registered player: %s",
+			session->getIP().c_str());
+		session->onClose();
+		return;
+	}
+
+	//PlayerManager::Instance().unregisterPlayer(session->getId());
 }
 
 void GameProcess::NotifyCharacterMovement(Session *session, Packet *rowPacket) {

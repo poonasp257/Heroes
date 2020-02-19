@@ -52,6 +52,12 @@ namespace Heroes {
 		// 착용 중인 장비
 	}
 
+	public struct PlayerInfo {
+		public UInt64 accountId;
+		public string familyName;
+		public CharacterInfo characterInfo;
+	}
+
 	public struct CharacterMovement {
 		public float moveAmount;
 		public Vector3 position;

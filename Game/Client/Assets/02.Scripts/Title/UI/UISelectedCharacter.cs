@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 namespace Heroes {
 	public class UISelectedCharacter : MonoBehaviour {
-		[SerializeField] private Text familyNameText;
-		[SerializeField] private Text characterNameText;
+		[SerializeField] private Text familyNameText = null;
+		[SerializeField] private Text characterNameText = null;
 
 		public bool IsSelected { 
 			get { 

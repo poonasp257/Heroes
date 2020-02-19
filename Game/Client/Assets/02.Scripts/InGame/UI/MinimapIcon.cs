@@ -6,8 +6,8 @@ namespace Heroes {
 
 		[SerializeField] private GameObject fieldOfViewPrefab;
 		
-		[SerializeField] private Sprite playerIcon;
-		[SerializeField] private Sprite otherPlayerIcon;
+		[SerializeField] private Sprite playerIcon = null;
+		[SerializeField] private Sprite otherPlayerIcon = null;
 
 		private void Start() {
 			iconRenderer = GetComponent<SpriteRenderer>();

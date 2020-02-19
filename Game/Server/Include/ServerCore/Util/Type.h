@@ -78,6 +78,12 @@ struct CharacterInfo {
 	std::wstring location;
 };
 
+struct PlayerInfo {
+	UInt64 accountId;
+	std::wstring familyName;
+	CharacterInfo characterInfo;
+};
+
 struct CharacterMovement {
 	float moveAmount;
 	Vector3 position;

@@ -13,7 +13,7 @@ namespace Heroes {
 		private float barWidth;
 		private Image barImage;
 
-		[SerializeField] private GameObject bar;
+		[SerializeField] private GameObject bar = null;
 
 		public float CurrentFigure { get; set; }
 		public float MaxFigure { get; set; }

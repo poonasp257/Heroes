@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Heroes {
@@ -12,9 +13,10 @@ namespace Heroes {
 		private void Start() {
 			networkManager = GetComponent<NetworkManager>();
 			networkManager.RegisterNotification(PacketType.GetChannelListResponse, getChannelListResponse);
-
+			
 			var msgBoxHandlerObj = GameObject.Find("MessageBox Handler");
 			messageBoxHandler = msgBoxHandlerObj?.GetComponent<MessageBoxHandler>();
+			if (messageBoxHandler == null) throw new Exception("MessageBox Handler not found");
 
 			DontDestroyOnLoad(this.gameObject);
 		}

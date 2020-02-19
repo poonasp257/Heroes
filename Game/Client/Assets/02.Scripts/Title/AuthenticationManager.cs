@@ -11,8 +11,8 @@ namespace Heroes {
 		private MessageBoxHandler messageBoxHandler;
 
 		[Header("Input Fields")]
-		[SerializeField] private InputField userIdField;
-		[SerializeField] private InputField passwordField;
+		[SerializeField] private InputField userIdField = null;
+		[SerializeField] private InputField passwordField = null;
 
 		[Header("Authentication Server Information")]
 		[SerializeField] private string homepageIP = "http://127.0.0.1:3000";
@@ -21,7 +21,7 @@ namespace Heroes {
 		private void Start() {
 			var msgHandlerObject = GameObject.Find("MessageBox Handler");
 			messageBoxHandler = msgHandlerObject?.GetComponent<MessageBoxHandler>();
-			if (messageBoxHandler == null) throw new Exception();
+			if (messageBoxHandler == null) throw new Exception("MessageBox Handler not found");
  
 			userIdField.ActivateInputField();
 		}

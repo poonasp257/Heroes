@@ -239,21 +239,15 @@ namespace Heroes {
 	};
 
 	public class ConnectChannelRequestPacket : Packet {
-		public UInt16 channelId; 
-		public UInt64 accountId;
-		public UInt64 characterId;
+		public PlayerInfo playerInfo;
 				
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, channelId);
-			Serializer.serialize(stream, accountId);
-			Serializer.serialize(stream, characterId);
+			Serializer.serialize(stream, playerInfo);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out channelId);
-			Serializer.deserialize(data, ref offset, out accountId);
-			Serializer.deserialize(data, ref offset, out characterId);
+			Serializer.deserialize(data, ref offset, out playerInfo);
 		}
 
 		public override PacketType type() { return PacketType.ConnectChannelRequest; }
@@ -283,18 +277,15 @@ namespace Heroes {
 	}
 
 	public class NotifyConnectPlayerPacket : Packet {
-		public UInt64 accountId;
-		public CharacterInfo characterInfo;
+		public PlayerInfo playerInfo;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, accountId);
-			Serializer.serialize(stream, characterInfo);
+			Serializer.serialize(stream, playerInfo);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out accountId);
-			Serializer.deserialize(data, ref offset, out characterInfo);
+			Serializer.deserialize(data, ref offset, out playerInfo);
 		}
 
 		public override PacketType type() { return PacketType.NotifyConnectPlayer; }

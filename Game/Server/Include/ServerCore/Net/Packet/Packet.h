@@ -531,24 +531,18 @@ public:
 
 class ConnectChannelRequestPacket : public Packet {
 public:
-	UInt16 channelId;
-	UInt64 accountId;
-	UInt64 characterId;
+	PlayerInfo playerInfo;
 
 public:
 	PacketType type() const { return PacketType::ConnectChannelRequest; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << channelId;
-		stream << accountId;
-		stream << characterId;
+		stream << playerInfo;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &channelId;
-		stream >> &accountId;
-		stream >> &characterId;
+		stream >> &playerInfo;
 	}
 };
 
@@ -569,52 +563,6 @@ public:
 	}
 };
 
-class DBConnectChannelRequestPacket : public Packet {
-public:
-	UInt64 clientId;
-	UInt64 accountId;
-	UInt64 characterId;
-
-public:
-	PacketType type() const { return PacketType::DBConnectChannelRequest; }
-
-	void serialize(Stream& stream) {
-		stream << (UInt32)this->type();
-		stream << clientId;
-		stream << accountId;
-		stream << characterId;
-	}
-
-	void deSerialize(Stream& stream) {
-		stream >> &clientId;
-		stream >> &accountId;
-		stream >> &characterId;
-	}
-};
-
-class DBConnectChannelResponsePacket : public Packet {
-public:
-	UInt64 clientId;
-	UInt64 accountId;
-	CharacterInfo characterInfo;
-
-public:
-	PacketType type() const { return PacketType::DBConnectChannelResponse; }
-
-	void serialize(Stream& stream) {
-		stream << (UInt32)this->type();
-		stream << clientId;
-		stream << accountId;
-		stream << characterInfo;
-	}
-
-	void deSerialize(Stream& stream) {
-		stream >> &clientId;
-		stream >> &accountId;
-		stream >> &characterInfo;
-	}
-};
-
 class DisconnectChannelRequestPacket : public Packet {
 public:
 	PacketType type() const { return PacketType::DisconnectChannelRequest; }
@@ -627,21 +575,18 @@ public:
 
 class NotifyConnectPlayerPacket : public Packet {
 public:
-	UInt64 accountId;
-	CharacterInfo characterInfo;
+	PlayerInfo playerInfo;
 
 public:
 	PacketType type() const { return PacketType::NotifyConnectPlayer; }
 
 	void serialize(Stream& stream) {
 		stream << (UInt32)this->type();
-		stream << accountId;
-		stream << characterInfo;
+		stream << playerInfo;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
-		stream >> &characterInfo;
+		stream >> &playerInfo;
 	}
 };
 

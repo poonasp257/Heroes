@@ -15,8 +15,6 @@ Packet* PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::DBCreateCharacterResponse: return new DBCreateCharacterResponsePacket();
 		case PacketType::DBDeleteCharacterRequest: return new DBDeleteCharacterRequestPacket();
 		case PacketType::DBDeleteCharacterResponse: return new DBDeleteCharacterResponsePacket();
-		case PacketType::DBConnectChannelRequest: return new DBConnectChannelRequestPacket();
-		case PacketType::DBConnectChannelResponse: return new DBConnectChannelResponsePacket();
         case PacketType::ExitRequest: return new ExitRequestPacket();
         case PacketType::ExitResponse: return new ExitResponsePacket();
 		case PacketType::GetChannelListRequest: return new GetChannelListRequestPacket();

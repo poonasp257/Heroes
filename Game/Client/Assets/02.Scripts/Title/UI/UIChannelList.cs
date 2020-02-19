@@ -6,8 +6,8 @@ namespace Heroes {
     public class UIChannelList : MonoBehaviour {
         private ChannelManager channelManager;
 
-        [SerializeField] private GameObject channelPrefab;
-        [SerializeField] private UISelectedChannel selectedChannelUI;
+        [SerializeField] private GameObject channelPrefab = null;
+        [SerializeField] private UISelectedChannel selectedChannelUI = null;
 
         private void Start() {
             var channelManagerObj = GameObject.Find("Channel Manager");

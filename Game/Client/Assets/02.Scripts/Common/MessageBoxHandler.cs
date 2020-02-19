@@ -4,9 +4,9 @@ using UnityEngine.Events;
 
 namespace Heroes {
 	public class MessageBoxHandler : MonoBehaviour {
-		[SerializeField] private GameObject alertMsgBox;
-		[SerializeField] private GameObject confirmMsgBox;
-		[SerializeField] private GameObject noticeMsgBox;
+		[SerializeField] private GameObject alertMsgBox = null;
+		[SerializeField] private GameObject confirmMsgBox = null;
+		[SerializeField] private GameObject noticeMsgBox = null;
 
 		private GameObject messageBox;
 

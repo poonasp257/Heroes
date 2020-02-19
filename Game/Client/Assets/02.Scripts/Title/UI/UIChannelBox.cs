@@ -7,7 +7,7 @@ namespace Heroes {
 	public class UIChannelBox : MonoBehaviour, IScrollHandler {
 		private ScrollRect scrollRect;
 
-		[SerializeField] private Text channelName;
+		[SerializeField] private Text channelName = null;
 
 		public UnityAction onClickAction { get; set; }
 		public UnityAction onConnectAction { get; set; }

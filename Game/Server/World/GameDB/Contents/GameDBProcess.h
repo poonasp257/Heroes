@@ -12,6 +12,5 @@ public:
 	static void DBChangeCharacterOrderRequest(Session* session, Packet* rowPacket);
 	static void DBCreateCharacterRequest(Session *session, Packet *rowPacket);
 	static void DBDeleteCharacterRequest(Session *session, Packet *rowPacket);
-	static void DBConnectChannelRequest(Session *session, Packet *rowPacket);
 };
 #endif

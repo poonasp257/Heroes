@@ -8,11 +8,11 @@ namespace Heroes {
 		private NetworkManager networkManager;
 		private MessageBoxHandler messageBoxHandler;
 
-		[SerializeField] private CharacterClass selectedCharacterClass;
-		[SerializeField] private Text selectedClassName;
-		[SerializeField] private Text selectedClassDescription;
+		[SerializeField] private CharacterClass selectedCharacterClass = CharacterClass.None;
+		[SerializeField] private Text selectedClassName = null;
+		[SerializeField] private Text selectedClassDescription = null;
 
-		[SerializeField] private GameObject createDialog;
+		[SerializeField] private GameObject createDialog = null;
 
 		private void Start() {
 			var connectedChannel = GameObject.Find("Channel Manager/Connected Channel");
@@ -90,7 +90,6 @@ namespace Heroes {
 				packet.accountId = PlayerData.Instance.AccountId;
 				packet.characterClass = this.selectedCharacterClass;
 				packet.characterName = characterName;
-
 				networkManager.sendPacket(packet);
 				messageBoxHandler.notice("캐릭터를 생성하고 있습니다.");
 			});

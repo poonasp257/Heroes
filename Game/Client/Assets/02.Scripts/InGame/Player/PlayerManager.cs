@@ -10,7 +10,7 @@ namespace Heroes {
 		private Queue<CharacterMovement> movementQueue;
 		private Queue<ActionType> actionQueue;
 
-		[SerializeField] private GameObject characterPrefab;
+		[SerializeField] private GameObject characterPrefab = null;
 
 		private void Awake() {
 			networkManager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
@@ -19,7 +19,6 @@ namespace Heroes {
 			movementQueue = new Queue<CharacterMovement>();
 			actionQueue = new Queue<ActionType>();
 
-			networkManager.RegisterNotification(PacketType.ConnectChannelResponse, connectChannelResponse);
 			networkManager.RegisterNotification(PacketType.NotifyConnectPlayer, notifyConnectPlayer);
 			networkManager.RegisterNotification(PacketType.NotifyDisconnectPlayer, notifyDisconnectPlayer);
 			networkManager.RegisterNotification(PacketType.NotifyCharacterMovement, notifyCharacterMovement);
@@ -28,8 +27,6 @@ namespace Heroes {
 	
 		private void Start() {
 			DontDestroyOnLoad(this.gameObject);	
-
-			this.connectChannelRequest();
 		}
 
 		private void Update() {
@@ -40,22 +37,18 @@ namespace Heroes {
 		private void processCharacterMovement() {
 			if (movementQueue.Count == 0) return;
 			
-			var movement = movementQueue.Dequeue();
 			NotifyCharacterMovementPacket packet = new NotifyCharacterMovementPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-			packet.movement = movement;
-
+			packet.movement = movementQueue.Dequeue();
 			networkManager.sendPacket(packet);
 		}
 
 		private void processActionMovement() {
 			if (actionQueue.Count == 0) return;
 			
-			var action = actionQueue.Dequeue();
 			NotifyCharacterActionPacket packet = new NotifyCharacterActionPacket();
 			packet.accountId = PlayerData.Instance.AccountId;
-			packet.actionType = action;
-
+			packet.actionType = actionQueue.Dequeue();
 			networkManager.sendPacket(packet);
 		}
 
@@ -92,38 +85,13 @@ namespace Heroes {
 		public void inputAction(ActionType action) {
 			actionQueue.Enqueue(action);
 		}
-				
-		public void connectChannelRequest() {
-			ConnectChannelRequestPacket packet = new ConnectChannelRequestPacket();
-			//packet.channelId = PlayerData.Instance.Channel.;
-			packet.accountId = PlayerData.Instance.AccountId;
-			//packet.characterId = PlayerData.Instance.CharacterId;
-
-			networkManager.sendPacket(packet);
-		}
-
-		public void connectChannelResponse(PacketType type, Packet rowPacket) {
-			ConnectChannelResponsePacket packet = rowPacket as ConnectChannelResponsePacket;
-			
-			foreach(var info in packet.playerTable) {
-				var playerInfo = info.Value;
-				
-				GameObject player = createCharacter(info.Key, playerInfo);
-				player.SetActive(false);
-
-				if (info.Key == PlayerData.Instance.AccountId) { 
-					player.tag = "Player";
-					player.AddComponent<PlayerController>();
-				}
-			}
-		}
 
 		public void notifyConnectPlayer(PacketType type, Packet rowPacket) {
 			NotifyConnectPlayerPacket packet = rowPacket as NotifyConnectPlayerPacket;
 
-			if (playerTable.ContainsKey(packet.accountId)) return;
+			//if (playerTable.ContainsKey(packet.accountId)) return;
 
-			createCharacter(packet.accountId, packet.characterInfo);
+			//createCharacter(packet.accountId, packet.characterInfo);
 		}
 
 		public void notifyDisconnectPlayer(PacketType type, Packet rowPacket) {

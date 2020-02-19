@@ -3,16 +3,10 @@ using UnityEngine;
 
 namespace Heroes {
 	public class CameraFX : MonoBehaviour {
-		private Camera camera;
-
 		[Header("Shake FX")]
 		private Vector3 startPosition;
 		[SerializeField, Range(0, 10)] private float shakeDuration = 1.0f;
 		[SerializeField, Range(0, 10)] private float range = 1.0f;
-
-		private void Start() {
-			camera = GetComponent<Camera>();
-		}
 
 		public void Shake() {
 			startPosition = transform.position;

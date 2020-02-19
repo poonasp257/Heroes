@@ -98,6 +98,12 @@ namespace Heroes {
 			serialize(stream, value.rotation);
 		}
 
+		public static void serialize(MemoryStream stream, PlayerInfo value) {
+			serialize(stream, value.accountId);
+			serialize(stream, value.familyName);
+			serialize(stream, value.characterInfo);
+		}
+
 		public static void serialize(MemoryStream stream, List<ChannelInfo> list) {
 			serialize(stream, list.Count);
 			foreach(ChannelInfo value in list) {
@@ -119,7 +125,7 @@ namespace Heroes {
 				serialize(stream, pair.Value);
 			}
 		}
-
+			   
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterClass type) {
 			UInt16 value = BitConverter.ToUInt16(data, offset);
 			type = (CharacterClass)value;
@@ -217,13 +223,19 @@ namespace Heroes {
 			deserialize(data, ref offset, out value.rotation);
 			deserialize(data, ref offset, out value.location);
 		}
+				
+		public static void deserialize(byte[] data, ref Int32 offset, out PlayerInfo value) {
+			deserialize(data, ref offset, out value.accountId);
+			deserialize(data, ref offset, out value.familyName);
+			deserialize(data, ref offset, out value.characterInfo);
+		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterMovement value) {
 			deserialize(data, ref offset, out value.moveAmount);
 			deserialize(data, ref offset, out value.position);
 			deserialize(data, ref offset, out value.rotation);
 		}
-
+		
 		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChannelInfo> list) {
 			Int32 size;
 			deserialize(data, ref offset, out size);

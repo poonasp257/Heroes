@@ -15,8 +15,6 @@ enum class PacketType : UInt32 {
 	DBCreateCharacterResponse,
 	DBDeleteCharacterRequest,
 	DBDeleteCharacterResponse,
-	DBConnectChannelRequest,
-	DBConnectChannelResponse,
 	ExitRequest = 100,
 	ExitResponse,
 	GetChannelListRequest,
