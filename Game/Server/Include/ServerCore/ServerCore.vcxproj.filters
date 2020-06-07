@@ -85,9 +85,6 @@
     <ClCompile Include="Util\Clock.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="Util\GameObject.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="Util\HttpRequest.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -123,6 +120,18 @@
     </ClCompile>
     <ClCompile Include="Util\Assert.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Component\GameObject.cpp">
+      <Filter>Util\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Component\Transform.cpp">
+      <Filter>Util\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Boundary\BoundingBox2D.cpp">
+      <Filter>Util\Boudary</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Boundary\BoundingCircle2D.cpp">
+      <Filter>Util\Boudary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -222,9 +231,6 @@
     <ClInclude Include="Util\Clock.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\GameObject.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\HttpRequest.h">
       <Filter>Util</Filter>
     </ClInclude>
@@ -288,6 +294,24 @@
     <ClInclude Include="Util\Container\SynchronizedQueue.h">
       <Filter>Util\Container</Filter>
     </ClInclude>
+    <ClInclude Include="Net\Packet\NotifyPacket.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Component\GameObject.h">
+      <Filter>Util\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Component\Transform.h">
+      <Filter>Util\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingBox2D.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingCircle2D.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingObject2D.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">
@@ -340,6 +364,9 @@
     </Filter>
     <Filter Include="Util\Boudary">
       <UniqueIdentifier>{07fc9b85-8896-4c3d-9103-9133040ed38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Component">
+      <UniqueIdentifier>{d635c674-9c73-46e0-bf17-9fad5f829f1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -21,12 +21,12 @@ private:
 	DBManager();
 	~DBManager();
 
-public:
-	DBManager(const DBManager&) = delete;
 	DBManager(DBManager&&) = delete;
-	DBManager& operator=(const DBManager&) = delete;
+	DBManager(const DBManager&) = delete;
 	DBManager& operator=(DBManager&&) = delete;
+	DBManager& operator=(const DBManager&) = delete;
 
+public:
 	bool isQueryPoolEmpty() const { return queryPool->isEmpty(); }
 	void pushQuery(std::unique_ptr<Query> query);
 	void popQuery(std::unique_ptr<Query>& query);

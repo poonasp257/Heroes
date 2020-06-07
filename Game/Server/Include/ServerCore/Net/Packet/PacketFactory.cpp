@@ -15,6 +15,23 @@ std::unique_ptr<Packet> PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::DBCreateCharacterResponse: return std::make_unique<DBCreateCharacterResponsePacket>();
 		case PacketType::DBDeleteCharacterRequest: return std::make_unique<DBDeleteCharacterRequestPacket>();
 		case PacketType::DBDeleteCharacterResponse: return std::make_unique<DBDeleteCharacterResponsePacket>();
+        case PacketType::DBUpdateCharacterStatusRequest: return std::make_unique<DBUpdateCharacterStatusRequestPacket>();
+
+        case PacketType::NotifyConnectPlayer: return std::make_unique<NotifyConnectPlayerPacket>();
+        case PacketType::NotifyDisconnectPlayer: return std::make_unique<NotifyDisconnectPlayerPacket>();
+        case PacketType::NotifyChat: return std::make_unique<NotifyChatPacket>();
+        case PacketType::NotifyPlayerMovement: return std::make_unique<NotifyPlayerMovementPacket>();
+        case PacketType::NotifyPlayerAction: return std::make_unique<NotifyPlayerActionPacket>();
+        case PacketType::NotifyTakeDamagePlayer: return std::make_unique<NotifyTakeDamagePlayerPacket>();
+        case PacketType::NotifyPlayerRevive: return std::make_unique<NotifyPlayerRevivePacket>();
+        case PacketType::NotifyPlayerDead: return std::make_unique<NotifyPlayerDeadPacket>();
+        case PacketType::NotifyLevelUpPlayer: return std::make_unique<NotifyLevelUpPlayerPacket>();
+        case PacketType::NotifyMonsterMovement: return std::make_unique<NotifyMonsterMovementPacket>();
+        case PacketType::NotifyMonsterAction: return std::make_unique<NotifyMonsterActionPacket>();
+        case PacketType::NotifyTakeDamageMonster: return std::make_unique<NotifyTakeDamageMonsterPacket>();
+        case PacketType::NotifyRespawnMonster: return std::make_unique<NotifyRespawnMonsterPacket>();
+        case PacketType::NotifyLoseAggressionMonster: return std::make_unique<NotifyLoseAggressionMonsterPacket>();
+
         case PacketType::ExitRequest: return std::make_unique<ExitRequestPacket>();
         case PacketType::ExitResponse: return std::make_unique<ExitResponsePacket>();
 		case PacketType::GetChannelListRequest: return std::make_unique<GetChannelListRequestPacket>();
@@ -35,16 +52,11 @@ std::unique_ptr<Packet> PacketFactory::CreatePacket(PacketType type) {
 		case PacketType::ConnectChannelResponse: return std::make_unique<ConnectChannelResponsePacket>();
 		case PacketType::DisconnectChannelRequest: return std::make_unique<DisconnectChannelRequestPacket>();
 		case PacketType::DisconnectChannelResponse: return std::make_unique<DisconnectChannelResponsePacket>();
-		case PacketType::NotifyConnectPlayer: return std::make_unique<NotifyConnectPlayerPacket>();
-		case PacketType::NotifyDisconnectPlayer: return std::make_unique<NotifyDisconnectPlayerPacket>();
-		case PacketType::NotifyCharacterMovement: return std::make_unique<NotifyCharacterMovementPacket>();
-		case PacketType::NotifyCharacterAction: return std::make_unique<NotifyCharacterActionPacket>();
-        //case PacketType::CharacterMoveRequest: return new CharacterMoveRequest;
-        // case PacketType::CharacterMoveResponse: return new CharacterMoveResponse;
-        // case PacketType::CharacterAttackRequest: return new CharacterAttackRequest;
-        // case PacketType::CharacterAttackResponse: return new CharacterAttackResponse;
-        // case PacketType::CharacterActionRequest: return new CharacterActionRequest;
-        // case PacketType::CharacterActionResponse: return new CharacterActionResponse;
+        case PacketType::GetMonsterList: return std::make_unique<GetMonsterListPacket>();
+        case PacketType::TakeDamageMonster: return std::make_unique<TakeDamageMonsterPacket>();
+        case PacketType::GainMonsterExp: return std::make_unique<GainMonsterExpPacket>();
+        case PacketType::RevivePlayerRequest: return std::make_unique<RevivePlayerRequestPacket>();
+        case PacketType::RevivePlayerResponse: return std::make_unique<RevivePlayerResponsePacket>();
         // case PacketType::ApplyCharacterStatRequest: return new ApplyCharacterStatRequest;
         // case PacketType::ApplyCharacterStatResponse: return new ApplyCharacterStatResponse;
         // case PacketType::ResetCharacterStatRequest: return new ResetCharacterStatRequest;

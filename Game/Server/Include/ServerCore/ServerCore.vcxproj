@@ -75,40 +75,42 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Lib\</OutDir>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(LibraryPath);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Lib\</OutDir>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Lib\</OutDir>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,14 +127,14 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +148,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;CPPCONN_PUBLIC_FUNC=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -154,7 +156,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -171,7 +173,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>true</SDLCheck>
@@ -195,6 +197,7 @@
     <ClInclude Include="Database\QueryStatement.h" />
     <ClInclude Include="Net\IOCP\IOCPServer.h" />
     <ClInclude Include="Net\IOCP\IOCPSession.h" />
+    <ClInclude Include="Net\Packet\NotifyPacket.h" />
     <ClInclude Include="Net\Packet\Package.h" />
     <ClInclude Include="Net\Packet\Packet.h" />
     <ClInclude Include="Net\Packet\PacketAnalyzer.h" />
@@ -214,16 +217,20 @@
     <ClInclude Include="Util\Algorithm\PathFinding.h" />
     <ClInclude Include="Util\Assert.h" />
     <ClInclude Include="Util\Boundary\BoundingBox.h" />
+    <ClInclude Include="Util\Boundary\BoundingBox2D.h" />
     <ClInclude Include="Util\Boundary\BoundingCircle.h" />
+    <ClInclude Include="Util\Boundary\BoundingCircle2D.h" />
     <ClInclude Include="Util\Boundary\BoundingObject.h" />
+    <ClInclude Include="Util\Boundary\BoundingObject2D.h" />
     <ClInclude Include="Util\Clock.h" />
+    <ClInclude Include="Util\Component\Transform.h" />
+    <ClInclude Include="Util\Component\GameObject.h" />
     <ClInclude Include="Util\ConfigManager.h" />
     <ClInclude Include="Util\Container\QuadTree.h" />
     <ClInclude Include="Util\Container\QuadTree.hpp" />
     <ClInclude Include="Util\Container\SynchronizedQueue.h" />
     <ClInclude Include="Util\FSM\State.h" />
     <ClInclude Include="Util\FSM\StateMachine.h" />
-    <ClInclude Include="Util\GameObject.h" />
     <ClInclude Include="Util\HttpRequest.h" />
     <ClInclude Include="Util\Json.h" />
     <ClInclude Include="Util\Lock\Lock.h" />
@@ -265,14 +272,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Util\Assert.cpp" />
     <ClCompile Include="Util\Boundary\BoundingBox.cpp" />
+    <ClCompile Include="Util\Boundary\BoundingBox2D.cpp" />
     <ClCompile Include="Util\Boundary\BoundingCircle.cpp" />
+    <ClCompile Include="Util\Boundary\BoundingCircle2D.cpp" />
     <ClCompile Include="Util\Clock.cpp" />
+    <ClCompile Include="Util\Component\Transform.cpp" />
+    <ClCompile Include="Util\Component\GameObject.cpp" />
     <ClCompile Include="Util\ConfigManager.cpp" />
     <ClCompile Include="Util\Container\QuadTree.cpp" />
-    <ClCompile Include="Util\GameObject.cpp" />
     <ClCompile Include="Util\HttpRequest.cpp" />
     <ClCompile Include="Util\Json.cpp" />
     <ClCompile Include="Util\Lock\Lock.cpp" />

@@ -37,7 +37,7 @@ namespace Heroes {
 			int keyIdx = 0;
 
 			for (int i = startIdx; i < endIdx; ++i) {
-				Util.swap<Byte>(ref src[i], ref nextKey[keyIdx]);
+				Util.Swap<Byte>(ref src[i], ref nextKey[keyIdx]);
 				src[i] ^= nextKey[keyIdx++];
 				if (keyIdx == originalKeyLen) keyIdx = 0;
 			}

@@ -1,14 +1,22 @@
 {
-  "Name": "ChannelManager",
+  "Name": "World-1",
   "Server": {
     "IP": "127.0.0.1",
-    "Port": 9400,
+    "Port": 10000,
     "ThreadCount": 1
   },
+  "AuthServer": {
+    "IP": "http://192.168.31.116",
+    "Port": 9000
+  },
   "Terminal": {
-    "World-1": {
+    "WorldServerManager": {
       "IP": "127.0.0.1",
-      "Port": 10000
+      "Port": 9400
+    },
+    "WorldDB": {
+      "IP": "127.0.0.1",
+      "Port": 9500
     }
   },
   "Contents": {

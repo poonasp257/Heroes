@@ -25,7 +25,7 @@ size_t HttpRequest::readCallback(void* ptr, size_t size, size_t count, void* buf
     return 0;
 }
 
-bool HttpRequest::Get(const std::string& url, HttpForm form, std::string& buffer) {
+bool HttpRequest::get(const std::string& url, HttpForm form, std::string& buffer) {
     if (curlContext == nullptr) throw std::runtime_error("CurlContext doesn't exist");
 
     curl_easy_setopt(curlContext, CURLOPT_URL, url.c_str());
@@ -42,7 +42,7 @@ bool HttpRequest::Get(const std::string& url, HttpForm form, std::string& buffer
     return true;
 }
 
-bool HttpRequest::Post(const std::string& url, HttpForm form, HttpCallback callBack) {
+bool HttpRequest::post(const std::string& url, HttpForm form, HttpCallback callBack) {
     if (curlContext == nullptr) throw std::runtime_error("CurlContext doesn't exist");
 
     std::string jsonData = form.getJsonData();

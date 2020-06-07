@@ -55,7 +55,7 @@ bool ODBCDatabase::connect(const wchar_t* ip, int port, const wchar_t* dbName, c
 bool ODBCDatabase::isConnected() {
 	SQLUINTEGER uIntVal;
 	SQLRETURN retVal = SQLGetConnectAttr(dbConnection, SQL_ATTR_CONNECTION_DEAD,
-		(SQLPOINTER)&uIntVal, (SQLINTEGER) sizeof(uIntVal), NULL);
+		(SQLPOINTER)&uIntVal, (SQLINTEGER)sizeof(uIntVal), NULL);
 
     return uIntVal == SQL_CD_TRUE;
 }

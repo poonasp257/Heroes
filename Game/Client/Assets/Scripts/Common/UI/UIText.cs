@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 
 namespace Heroes {
+	[ExecuteInEditMode]
 	public class UIText : Text {
 		[SerializeField] private bool enableWordWrap = false;
 

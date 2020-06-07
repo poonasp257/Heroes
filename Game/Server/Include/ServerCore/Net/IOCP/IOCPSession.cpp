@@ -83,9 +83,10 @@ void IOCPSession::recv(WSABUF wsaBuf) {
 	DWORD recvBytes;
 	DWORD errorCode = WSARecv(sessionInfo.socket, &wsaBuf, 1, &recvBytes, &flags,
 		ioBuffer[IOType::Read].getOverlapped(), NULL);
-	if (errorCode == SOCKET_ERROR && 
+	if (errorCode == SOCKET_ERROR &&
 		WSAGetLastError() != ERROR_IO_PENDING) {
-		WARNING_LOG(L"socket error %d", WSAGetLastError());
+		//SessionManager::Instance().closeSession(this);
+		//ERROR_LOG(L"socket error: %d", WSAGetLastError());
 		return;
 	}
 }
@@ -104,7 +105,7 @@ void IOCPSession::recvStandBy() {
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = ioBuffer[IOType::Read].getBuffer();
-	wsaBuf.len = ioBuffer[IOType::Read].getBufferSize();
+	wsaBuf.len = (ULONG)ioBuffer[IOType::Read].getBufferSize();
 	this->recv(wsaBuf);
 }
 
@@ -115,7 +116,9 @@ void IOCPSession::send(WSABUF wsaBuf) {
 		ioBuffer[IOType::Write].getOverlapped(), NULL);
 	if (errorCode == SOCKET_ERROR
 		&& WSAGetLastError() != ERROR_IO_PENDING) {
-		ERROR_LOG(L"socket error: %d", WSAGetLastError());
+		//SessionManager::Instance().closeSession(this);
+		//ERROR_LOG(L"socket error: %d", WSAGetLastError());
+		return;
 	}
 }
 
@@ -135,11 +138,11 @@ void IOCPSession::sendPacket(const Packet& packet) {
 	ioBuffer[IOType::Write].setBuffer(stream);
 
 	size_t packetLen = ioBuffer[IOType::Write].getTotalBytes();
-	INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
+	//INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = ioBuffer[IOType::Write].getBuffer();
-	wsaBuf.len = packetLen;
+	wsaBuf.len = (ULONG)packetLen;
 
 	this->send(wsaBuf);
 	this->recvStandBy();
@@ -148,9 +151,7 @@ void IOCPSession::sendPacket(const Packet& packet) {
 std::unique_ptr<Package> IOCPSession::onRecv(size_t transferSize) {
 	int32_t offset = 0;
 	offset += ioBuffer[IOType::Read].setupTotalBytes();
-	if(this->isRecving(transferSize)) {
-		return nullptr;
-	}
+	if (this->isRecving(transferSize)) return nullptr;
 
 	const size_t packetHeaderSize = sizeof(int32_t);
 	const int32_t packetDataSize = (int32_t)(ioBuffer[IOType::Read].getTotalBytes() - packetHeaderSize);
@@ -159,12 +160,12 @@ std::unique_ptr<Package> IOCPSession::onRecv(size_t transferSize) {
 	std::unique_ptr<Packet> packet = PacketAnalyzer::Analyzer((const char*)packetData + offset, packetDataSize);
 	if(!packet) {
 		WARNING_LOG(L"invalid packet");
-		//SessionManager::Instance().forceCloseSession(this);
+		SessionManager::Instance().forceCloseSession(this);
 		return nullptr;
 	}
 
 	size_t packetLen = packetHeaderSize + packetDataSize;
-	INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
+	//INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
 
 	this->recvStandBy();
 	return std::make_unique<Package>(shared_from_this(), std::move(packet));

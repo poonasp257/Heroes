@@ -57,11 +57,9 @@ void ContentsProcess::execute(std::unique_ptr<Package>& package) {
 
 void ContentsProcess::processThread() {
 	while (Server::getState() == ServerState::Running) {
-		if (!packageQueue->isEmpty()) {
-			std::unique_ptr<Package> package = nullptr;
-			packageQueue->pop(package);
-			this->execute(package);
-		}   
+		std::unique_ptr<Package> package = nullptr;
+		packageQueue->pop(package);
+		if(package != nullptr) this->execute(package);
 
 		Sleep(1);
 	}

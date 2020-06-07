@@ -67,7 +67,7 @@ public:
 	HttpRequest();
 	~HttpRequest();
 
-	bool Get(const std::string& url, HttpForm form, std::string& buffer);
-	bool Post(const std::string& url, HttpForm form, HttpCallback callBack);
+	bool get(const std::string& url, HttpForm form, std::string& buffer);
+	bool post(const std::string& url, HttpForm form, HttpCallback callBack);
 };
 #endif

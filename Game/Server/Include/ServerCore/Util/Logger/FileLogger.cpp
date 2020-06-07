@@ -45,7 +45,7 @@ void FileLogger::log(Level level, const wchar_t* message, ...) {
 void FileLogger::log(Level level, const wchar_t* message, va_list args) {
 	array<wchar_t, SIZE_256> buf;
 	vswprintf_s(buf.data(), buf.size(), message, args);
-	wstring text = Format(L"[%s][%s] %s", logTypes[level], 
+	wstring text = Format(L"[%s][%s] %s\n", logTypes[level], 
 		Clock::NowTickToWStr().c_str(), buf.data());
 	SAFE_LOCK(lock);
 	fs << text;

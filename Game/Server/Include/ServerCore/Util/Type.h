@@ -30,8 +30,8 @@ using objectId_t = UInt64;
 struct IntPoint {
 	int x, y;
 
-	IntPoint(int x = 0, int y = 0) 
-		: x(x), y(y) {}
+	IntPoint(int x = 0, int y = 0) : 
+		x(x), y(y) {}
 
 	int magnitude() const { return (int)sqrt((x * x) + (y * y)); }
 	IntPoint normalized() const {
@@ -90,8 +90,8 @@ struct IntPoint {
 struct FloatPoint {
 	float x, y;
 
-	FloatPoint(float x = 0.0f, float y = 0.0f) 
-		: x(x), y(y) {}
+	FloatPoint(float x = 0.0f, float y = 0.0f) :
+		x(x), y(y) {}
 
 	float magnitude() const { return sqrt((x * x) + (y * y)); }
 	FloatPoint normalized() const {
@@ -150,8 +150,8 @@ struct FloatPoint {
 struct IntVector {
 	int x, y, z;
 
-	IntVector(int x = 0, int y = 0, int z = 0) 
-		: x(x), y(y), z(z) {}
+	IntVector(int x = 0, int y = 0, int z = 0) :
+		x(x), y(y), z(z) {}
 
 	int magnitude() const { return (int)sqrt((x * x) + (y * y) + (z * z)); }
 	IntVector normalized() const {
@@ -211,8 +211,8 @@ struct IntVector {
 struct FloatVector {
 	float x, y, z;
 
-	FloatVector(float x = 0.0f, float y = 0.0f, float z = 0.0f) 
-		: x(x), y(y), z(z) {}
+	FloatVector(float x = 0.0f, float y = 0.0f, float z = 0.0f) : 
+		x(x), y(y), z(z) {}
 
 	float magnitude() const { return  sqrt((x * x) + (y * y) + (z * z)); }
 	FloatVector normalized() const {
@@ -229,6 +229,16 @@ struct FloatVector {
 		this->x /= magnitude();
 		this->y /= magnitude();
 		this->z /= magnitude();
+	}
+
+	static FloatVector MoveTowards(const FloatVector& current, const FloatVector& target, float maxDistanceDelta) {
+		FloatVector dir = target - current;
+		float magnitude = dir.magnitude();
+		if (magnitude <= maxDistanceDelta || magnitude == 0.0f) {
+			return target;
+		}
+
+		return current + dir / magnitude * maxDistanceDelta;
 	}
 
 	FloatVector operator+(const FloatVector& rhs) const {
@@ -293,10 +303,14 @@ struct OcTreeNode {
 
 // enum type
 enum class ActionType : UInt16 {
-	WeakAttack, SmashAttack, Roll
+	Roll,
+	Attack,
+	Hit,
+	Die,
+	Revive
 };
 
-enum class CharacterClass : UInt16 {
+enum class CharacterClassType : UInt16 {
 	None,
 	Warrior,
 	Crusader,
@@ -331,35 +345,81 @@ struct ChannelInfo {
 };
 
 struct CharacterInfo {
-	objectId_t characterId;
-	std::wstring characterName;
-	CharacterClass characterClass;
+	objectId_t id;
+	std::wstring name;
+	CharacterClassType type;
 	UInt32 level;
 	float exp;
 	Int64 currentHp;
 	Int64 currentMp;
 	Int64 maxHp;
 	Int64 maxMp;
+	Int64 defense;
+	UInt64 damage;
 	Vector3 position;
 	Vector3 rotation;
 	std::wstring location;
 
-	CharacterInfo()
-		: characterId(0), characterClass(CharacterClass::None),
-		level(0), exp(0), currentHp(0), currentMp(0), maxHp(0), maxMp(0) {}
+	CharacterInfo() : 
+		id(0),
+		type(CharacterClassType::None),
+		level(1), 
+		exp(0), 
+		currentHp(0), 
+		currentMp(0), 
+		maxHp(0), 
+		maxMp(0),
+		defense(0),
+		damage(0) {}
 };
 
 struct PlayerInfo {
+	objectId_t id;
 	std::wstring familyName;
 	CharacterInfo characterInfo;
+	PlayerInfo() : id(0) {}
 };
 
 struct CharacterMovement {
 	float moveAmount;
 	Vector3 direction;
-	Vector3 rotation;
+	Vector3 position;
 
-	CharacterMovement() : moveAmount(0.0f) {}
+	CharacterMovement() : 
+		moveAmount(0.0f) {}
+};
+
+struct MonsterInfo {
+	objectId_t id;
+	objectId_t typeId;
+	std::wstring name;
+	UInt32 level;
+	Int64 currentHp;
+	Int64 maxHp;
+	UInt32 damage;
+	UInt32 defense;
+	Vector3 position;
+	Vector3 rotation;
+	Vector3 originPosition;
+	Vector3 originRotation;
+
+	MonsterInfo() :
+		id(0),
+		typeId(0),
+		level(0),
+		currentHp(0),
+		maxHp(0),
+		damage(0),
+		defense(0) {}
+};
+
+struct MonsterZoneInfo {
+	objectId_t id;
+	Vector3 position;
+	std::vector<MonsterInfo> monsterList;
+
+	MonsterZoneInfo() : 
+		id(0) {}
 };
 
 #endif

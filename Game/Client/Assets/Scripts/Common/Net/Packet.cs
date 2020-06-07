@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Heroes {
 	public abstract class Packet {
@@ -182,19 +181,19 @@ namespace Heroes {
 
 	public class CreateCharacterRequestPacket : Packet {
 		public string accessKey;
-		public CharacterClass characterClass;
+		public CharacterClassType classType;
 		public string characterName;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
 			Serializer.serialize(stream, accessKey);
-			Serializer.serialize(stream, characterClass);
+			Serializer.serialize(stream, classType);
 			Serializer.serialize(stream, characterName);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) { 
 			Serializer.deserialize(data, ref offset, out accessKey);
-			Serializer.deserialize(data, ref offset, out characterClass);
+			Serializer.deserialize(data, ref offset, out classType);
 			Serializer.deserialize(data, ref offset, out characterName);
 		}
 
@@ -240,108 +239,135 @@ namespace Heroes {
 
 	public class ConnectChannelRequestPacket : Packet {
 		public string accessKey;
-		public PlayerInfo playerInfo;
+		public string familyName;
+		public CharacterInfo characterInfo;
 				
 		public override void serialize() {
 			Serializer.serialize(stream, type());
 			Serializer.serialize(stream, accessKey);
-			Serializer.serialize(stream, playerInfo);
+			Serializer.serialize(stream, familyName);
+			Serializer.serialize(stream, characterInfo);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
 			Serializer.deserialize(data, ref offset, out accessKey);
-			Serializer.deserialize(data, ref offset, out playerInfo);
+			Serializer.deserialize(data, ref offset, out familyName);
+			Serializer.deserialize(data, ref offset, out characterInfo);
 		}
 
 		public override PacketType type() { return PacketType.ConnectChannelRequest; }
 	}
 
 	public class ConnectChannelResponsePacket : Packet {
-		public List<KeyValuePair<UInt64, PlayerInfo>> playerList = new List<KeyValuePair<UInt64, PlayerInfo>>();
+		public UInt64 playerId;
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, playerList);
+			Serializer.serialize(stream, playerId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, ref playerList);
+			Serializer.deserialize(data, ref offset, out playerId);
 		}
 
 		public override PacketType type() { return PacketType.ConnectChannelResponse; }
 	}
 	
 	public class DisconnectChannelRequestPacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChannelRequest; }
+		public UInt64 playerId;
+		public string accessKey;
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, playerId);
+			Serializer.serialize(stream, accessKey);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out playerId);
+			Serializer.deserialize(data, ref offset, out accessKey);
+		}
+
+		public override PacketType type() { return PacketType.DisconnectChannelRequest; }
 	}
 
 	public class DisconnectChannelResponsePacket : Packet {
-		public override PacketType type() { return PacketType.ConnectChannelResponse; }
+		public override PacketType type() { return PacketType.DisconnectChannelResponse; }
 	}
 
-	public class NotifyConnectPlayerPacket : Packet {
-		public PlayerInfo playerInfo;
+	public class GetMonsterListPacket : Packet {
+		public MonsterZoneInfo monsterZone;
+
+		public override PacketType type() { return PacketType.GetMonsterList; }
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, playerInfo);
+			Serializer.serialize(stream, monsterZone);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out playerInfo);
+			Serializer.deserialize(data, ref offset, out monsterZone);
 		}
-
-		public override PacketType type() { return PacketType.NotifyConnectPlayer; }
 	}
 
-	public class NotifyDisconnectPlayerPacket : Packet  {
+	public class TakeDamageMonsterPacket : Packet {
 		public string accessKey;
+		public UInt64 zoneId;
+		public UInt64 monsterId;
+		public UInt64 playerId;
+
+		public override PacketType type() { return PacketType.TakeDamageMonster; }
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
 			Serializer.serialize(stream, accessKey);
+			Serializer.serialize(stream, zoneId);
+			Serializer.serialize(stream, monsterId);
+			Serializer.serialize(stream, playerId);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
 			Serializer.deserialize(data, ref offset, out accessKey);
-		}
-
-		public override PacketType type() { return PacketType.NotifyDisconnectPlayer; }
-	}
-	
-	public class NotifyCharacterMovementPacket : Packet {
-		public string accessKey;
-		public CharacterMovement movement;
-		
-		public override PacketType type() { return PacketType.NotifyCharacterMovement; }
-
-		public override void serialize() {
-			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, accessKey);
-			Serializer.serialize(stream, movement);
-		}
-
-		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out accessKey);
-			Serializer.deserialize(data, ref offset, out movement);
+			Serializer.deserialize(data, ref offset, out zoneId);
+			Serializer.deserialize(data, ref offset, out monsterId);
+			Serializer.deserialize(data, ref offset, out playerId);
 		}
 	}
 
-	public class NotifyCharacterActionPacket : Packet {
-		public string accessKey;
-		public ActionType actionType;
+	public class GainMonsterExpPacket : Packet {
+		public UInt64 playerId;
+		public float exp;
 
-		public override PacketType type() { return PacketType.NotifyCharacterAction; }
+		public override PacketType type() { return PacketType.GainMonsterExp; }
 
 		public override void serialize() {
 			Serializer.serialize(stream, type());
-			Serializer.serialize(stream, accessKey);
-			Serializer.serialize(stream, actionType);
+			Serializer.serialize(stream, playerId);
+			Serializer.serialize(stream, exp);
 		}
 
 		public override void deserialize(Byte[] data, Int32 offset) {
-			Serializer.deserialize(data, ref offset, out accessKey);
-			Serializer.deserialize(data, ref offset, out actionType);
+			Serializer.deserialize(data, ref offset, out playerId);
+			Serializer.deserialize(data, ref offset, out exp);
 		}
+	}
+
+	public class RevivePlayerRequestPacket : Packet {
+		public UInt64 playerId;
+
+		public override PacketType type() { return PacketType.RevivePlayerRequest; }
+
+		public override void serialize() {
+			Serializer.serialize(stream, type());
+			Serializer.serialize(stream, playerId);
+		}
+
+		public override void deserialize(Byte[] data, Int32 offset) {
+			Serializer.deserialize(data, ref offset, out playerId);
+		}
+	}
+
+	public class RevivePlayerResponsePacket : Packet {
+		public override PacketType type() { return PacketType.RevivePlayerResponse; }
 	}
 }

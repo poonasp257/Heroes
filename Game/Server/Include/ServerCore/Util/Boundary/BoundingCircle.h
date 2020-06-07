@@ -7,11 +7,11 @@ private:
 
 public:
 	BoundingCircle(float radius = 0.0f);
-	BoundingCircle(const FloatPoint& position, float radius);
+	BoundingCircle(const FloatVector& position, float radius);
 	~BoundingCircle();
 
-	virtual bool contains(const FloatPoint& point) const;
-	virtual bool collide(const FloatPoint& point) const;
+	virtual bool contains(const FloatVector& position) const;
+	virtual bool collide(const FloatVector& position) const;
 
 	virtual bool contains(BoundingObject* otherObj) const;
 	virtual bool collide(BoundingObject* otherObj) const;

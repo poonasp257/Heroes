@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-BoundingBox::BoundingBox(const FloatPoint& topLeft, const FloatPoint& bottomRight)
+BoundingBox::BoundingBox(const FloatVector& topLeft, const FloatVector& bottomRight)
 	: BoundingObject((topLeft + bottomRight) / 2), 
 	left(topLeft.x), top(topLeft.y), bottom(bottomRight.y), right(bottomRight.x) {
 
@@ -24,19 +24,22 @@ bool BoundingBox::collide(BoundingObject* otherObj) const {
 	return false;
 };
 
-bool BoundingBox::contains(const FloatPoint& point) const {
-	return (((left < point.x) && (point.x < right))
-		&& ((bottom < point.y) && (point.y < top)));
+bool BoundingBox::contains(const FloatVector& point) const {
+	return false;
+	//return (((left < point.x) && (point.x < right))
+	//	&& ((bottom < point.y) && (point.y < top)));
 }
 
-bool BoundingBox::collide(const FloatPoint& point) const {
-	return (((left <= point.x) && (point.x <= right))
-		&& ((bottom <= point.y) && (point.y <= top)));
+bool BoundingBox::collide(const FloatVector& point) const {
+	return false;
+	//return (((left <= point.x) && (point.x <= right))
+	//	&& ((bottom <= point.y) && (point.y <= top)));
 }
 
 bool BoundingBox::contains(const BoundingBox& otherBox) const {
-	return (left <= otherBox.left && otherBox.right <= right &&
-		top <= otherBox.top && otherBox.bottom <= bottom);
+	return false;
+	//return (left <= otherBox.left && otherBox.right <= right &&
+	//	top <= otherBox.top && otherBox.bottom <= bottom);
 }
 
 bool BoundingBox::collide(const BoundingBox& otherBox) const {

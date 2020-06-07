@@ -5,8 +5,6 @@
 #pragma comment(lib, "mswsock.lib")
 #pragma comment(lib, "Winmm.lib")
 
-#define WIN32_LEAN_AND_MEAN
-
 // C standard library
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,6 +21,7 @@
 #include <filesystem>
 #include <ctime>
 #include <cmath>
+#include <limits>
 #include <chrono>
 
 #include <string>
@@ -54,10 +53,14 @@
 #include "Util/Json.h"
 #include "Util/Clock.h"
 #include "Util/HttpRequest.h"
-#include "Util/GameObject.h"
 #include "Util/Assert.h"
 #include "Util/ConfigManager.h"
+#include "Util/Component/GameObject.h"
+#include "Util/Component/Transform.h"
 
+#include "Util/Boundary/BoundingObject2D.h"
+#include "Util/Boundary/BoundingBox2D.h"
+#include "Util/Boundary/BoundingCircle2D.h"
 #include "Util/Boundary/BoundingObject.h"
 #include "Util/Boundary/BoundingBox.h"
 #include "Util/Boundary/BoundingCircle.h"
@@ -90,6 +93,7 @@
 #include "Net/Packet/Stream.h"
 #include "Net/Packet/PacketType.h"
 #include "Net/Packet/Packet.h"
+#include "Net/Packet/NotifyPacket.h"
 #include "Net/Packet/PacketAnalyzer.h"
 #include "Net/Packet/PacketFactory.h"
 #include "Net/Packet/Package.h"

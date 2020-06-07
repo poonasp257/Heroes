@@ -27,7 +27,7 @@ public:
     bool checkWriteBound(size_t len);
     bool checkReadBound(size_t len);
     
-    template<typename T>
+	template<typename T>
 	void operator<<(const T& value);
     template<typename T>
 	void operator<<(const std::vector<T>& values);
@@ -39,7 +39,7 @@ public:
 	void operator<<(const std::list<std::pair<KEY, VALUE>>& values);
 	template<typename KEY, typename VALUE>
 	void operator<<(const std::unordered_map<KEY, VALUE>& values);
-
+	
     void operator<<(const std::string& value);
 	void operator<<(const std::wstring& value);
 	void operator<<(const Vector3& value);
@@ -47,6 +47,8 @@ public:
 	void operator<<(const CharacterInfo& value);
 	void operator<<(const PlayerInfo& value);
 	void operator<<(const CharacterMovement& value);
+	void operator<<(const MonsterInfo& value);
+	void operator<<(const MonsterZoneInfo& value);
 
     template<typename T> 
 	void operator>>(T* retVal);
@@ -68,6 +70,8 @@ public:
 	void operator>>(CharacterInfo* retVal);
 	void operator>>(PlayerInfo* retVal);
 	void operator>>(CharacterMovement* retVal);
+	void operator>>(MonsterInfo* retVal);
+	void operator>>(MonsterZoneInfo* retVal);
 };
 
 #include "Stream.hpp"

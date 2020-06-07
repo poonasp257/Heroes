@@ -17,6 +17,7 @@ namespace Heroes {
 
 		public string accessKey { get; set; }
 		public ChannelInfo CurrentChannel { get; set; }
+		public UInt64 PlayerId { get; set; }
 		public CharacterInfo CurrentCharacter { get; set; }
 		public string FamilyName { get; set; }
 	}

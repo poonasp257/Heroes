@@ -25,7 +25,7 @@ namespace Heroes {
 			bgm.loop = true;
 			bgm.Play();
 
-			DontDestroyOnLoad(this.gameObject);
+			ObjectManager.Instance.DontDestroyOnLoad(this.gameObject);
 		}
 
 		private void Update() {

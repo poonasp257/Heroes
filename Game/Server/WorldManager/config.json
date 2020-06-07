@@ -1,0 +1,17 @@
+{
+  "Name": "WorldServerManager",
+  "Server": {
+    "IP": "127.0.0.1",
+    "Port": 9400,
+    "ThreadCount": 1
+  },
+  "Terminal": {
+    "World-1": {
+      "IP": "127.0.0.1",
+      "Port": 10000
+    }
+  },
+  "Contents": {
+    "ThreadCount": 1
+  }
+}

@@ -43,6 +43,7 @@ public:
     void addParam(Int64 value);
     void addParam(UInt64 value);
     void addParam(float value);
-    void addParam(double value);
+    void addParam(double value); 
+	void addParam(Vector3 value);
 };
 #endif

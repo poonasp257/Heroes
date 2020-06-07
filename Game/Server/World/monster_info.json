@@ -1,0 +1,26 @@
+{
+  "0": {
+    "name": "불 거미",
+    "level": 1,
+    "hp": 70,
+    "damage": 5,
+    "defense": 5,
+    "respawnTime": 8.0
+  },
+  "1": {
+    "name": "땅 거미",
+    "level": 8,
+    "hp": 150,
+    "damage": 10,
+    "defense": 10,
+    "respawnTime": 15.0
+  },
+  "2": {
+    "name": "독 거미",
+    "level": 15,
+    "hp": 150,
+    "damage": 25,
+    "defense": 25,
+    "respawnTime": 12.0
+  }
+}

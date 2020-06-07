@@ -1,0 +1,38 @@
+{
+  "1": {
+    "maxHp": 100,
+    "maxMp": 100,
+    "defense": 0,
+    "damage": 10
+  },
+  "2": {
+    "maxHp": 200,
+    "maxMp": 60,
+    "defense": 5,
+    "damage": 5
+  },
+  "3": {
+    "maxHp": 80,
+    "maxMp": 80,
+    "defense": 4,
+    "damage": 4
+  },
+  "4": {
+    "maxHp": 70,
+    "maxMp": 80,
+    "defense": 0,
+    "damage": 7
+  },
+  "5": {
+    "maxHp": 60,
+    "maxMp": 140,
+    "defense": 0,
+    "damage": 8
+  },
+  "6": {
+    "maxHp": 80,
+    "maxMp": 100,
+    "defense": 3,
+    "damage": 5
+  }
+}

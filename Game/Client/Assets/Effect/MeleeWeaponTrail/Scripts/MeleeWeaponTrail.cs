@@ -9,7 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using Heroes;
 
 public class MeleeWeaponTrail : MonoBehaviour
 {
@@ -77,9 +77,16 @@ public class MeleeWeaponTrail : MonoBehaviour
 
 	void Start()
 	{
+		var root = GameObject.Find("Trails");
+		if(root == null) {
+			root = new GameObject();
+			root.name = "Trails";
+			ObjectManager.Instance.DontDestroyOnLoad(root);
+		}
+
 		_lastPosition = transform.position;
 		_trailObject = new GameObject("Trail");
-		_trailObject.transform.parent = null;
+		_trailObject.transform.parent = root.transform;
 		_trailObject.transform.position = Vector3.zero;
 		_trailObject.transform.rotation = Quaternion.identity;
 		_trailObject.transform.localScale = Vector3.one;

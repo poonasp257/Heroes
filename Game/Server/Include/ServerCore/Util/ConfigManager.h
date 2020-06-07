@@ -9,12 +9,12 @@ private:
 	ConfigManager();
 	~ConfigManager();
 
-public:
-	ConfigManager(const ConfigManager&) = delete;
 	ConfigManager(ConfigManager&&) = delete;
-	ConfigManager& operator=(const ConfigManager&) = delete;
+	ConfigManager(const ConfigManager&) = delete;
 	ConfigManager& operator=(ConfigManager&&) = delete;
+	ConfigManager& operator=(const ConfigManager&) = delete;
 
+public:
 	const Json::Document& getConfig() const { return config; }
 
 	static auto& Instance() {

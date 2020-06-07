@@ -67,21 +67,24 @@ void Stream::operator<<(const ChannelInfo& value) {
 }
 
 void Stream::operator<<(const CharacterInfo& value) {
-	*this << value.characterId;
-	*this << value.characterName;
-	*this << (UInt16)value.characterClass;
+	*this << value.id;
+	*this << value.name;
+	*this << (UInt16)value.type;
 	*this << value.level;
 	*this << value.exp;
 	*this << value.currentHp;
 	*this << value.currentMp;
 	*this << value.maxHp;
 	*this << value.maxMp;
+	*this << value.defense;
+	*this << value.damage;
 	*this << value.position;
 	*this << value.rotation;
 	*this << value.location;
 }
 
 void Stream::operator<<(const PlayerInfo& value) {
+	*this << value.id;
 	*this << value.familyName;
 	*this << value.characterInfo;
 }
@@ -89,7 +92,28 @@ void Stream::operator<<(const PlayerInfo& value) {
 void Stream::operator<<(const CharacterMovement& value) {
 	*this << value.moveAmount;
 	*this << value.direction;
+	*this << value.position;
+}
+
+void Stream::operator<<(const MonsterInfo& value) {
+	*this << value.id;
+	*this << value.typeId;
+	*this << value.name;
+	*this << value.level;
+	*this << value.currentHp;
+	*this << value.maxHp;
+	*this << value.damage;
+	*this << value.defense;
+	*this << value.position;
 	*this << value.rotation;
+	*this << value.originPosition;
+	*this << value.originRotation;
+}
+
+void Stream::operator<<(const MonsterZoneInfo& value) {
+	*this << value.id;
+	*this << value.position;
+	*this << value.monsterList;
 }
 
 void Stream::operator>>(std::string* retVal) {
@@ -145,21 +169,24 @@ void Stream::operator>>(ChannelInfo* retVal) {
 }
 
 void Stream::operator>>(CharacterInfo* retVal) {
-	*this >> &retVal->characterId;
-	*this >> &retVal->characterName;
-	*this >> (UInt16*)&retVal->characterClass;
+	*this >> &retVal->id;
+	*this >> &retVal->name;
+	*this >> (UInt16*)&retVal->type;
 	*this >> &retVal->level;
 	*this >> &retVal->exp;
 	*this >> &retVal->currentHp;
 	*this >> &retVal->currentMp;
 	*this >> &retVal->maxHp;
 	*this >> &retVal->maxMp;
+	*this >> &retVal->defense;
+	*this >> &retVal->damage;
 	*this >> &retVal->position;
 	*this >> &retVal->rotation;
 	*this >> &retVal->location;
 }
 
 void Stream::operator>>(PlayerInfo* retVal) {
+	*this >> &retVal->id;
 	*this >> &retVal->familyName;
 	*this >> &retVal->characterInfo;
 }
@@ -167,5 +194,26 @@ void Stream::operator>>(PlayerInfo* retVal) {
 void Stream::operator>>(CharacterMovement* retVal) {
 	*this >> &retVal->moveAmount;
 	*this >> &retVal->direction;
+	*this >> &retVal->position;
+}
+
+void Stream::operator>>(MonsterInfo* retVal) {
+	*this >> &retVal->id;
+	*this >> &retVal->typeId;
+	*this >> &retVal->name;
+	*this >> &retVal->level;
+	*this >> &retVal->currentHp;
+	*this >> &retVal->maxHp;
+	*this >> &retVal->damage;
+	*this >> &retVal->defense;
+	*this >> &retVal->position;
 	*this >> &retVal->rotation;
+	*this >> &retVal->originPosition;
+	*this >> &retVal->originRotation;
+}
+
+void Stream::operator>>(MonsterZoneInfo* retVal) {
+	*this >> &retVal->id;
+	*this >> &retVal->position;
+	*this >> &retVal->monsterList;
 }

@@ -11,12 +11,12 @@ private:
 	ThreadManager();
 	~ThreadManager();
 
-public:
-	ThreadManager(const ThreadManager&) = delete;
 	ThreadManager(ThreadManager&&) = delete;
-	ThreadManager& operator=(const ThreadManager&) = delete;
+	ThreadManager(const ThreadManager&) = delete;
 	ThreadManager& operator=(ThreadManager&&) = delete;
+	ThreadManager& operator=(const ThreadManager&) = delete;
 
+public:
 	void put(std::shared_ptr<Thread> thread);
 	void remove(threadId_t threadId);
 	Thread* at(threadId_t threadId) const;

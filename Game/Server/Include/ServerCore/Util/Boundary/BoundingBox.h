@@ -6,14 +6,14 @@ private:
 	float left, top, bottom, right;
 
 public:
-	BoundingBox(const FloatPoint& topLeft, const FloatPoint& bottomRight);
+	BoundingBox(const FloatVector& topLeft, const FloatVector& bottomRight);
 	~BoundingBox();
 
 	virtual bool contains(BoundingObject* otherObj) const;
 	virtual bool collide(BoundingObject* otherObj) const;
 
-	virtual bool contains(const FloatPoint& point) const;
-	virtual bool collide(const FloatPoint& point) const;
+	virtual bool contains(const FloatVector& point) const;
+	virtual bool collide(const FloatVector& point) const;
 
 	float getTop() const { return top; }
 	float getLeft() const { return left; }

@@ -17,6 +17,8 @@ namespace Heroes {
 
 		private bool changePositionMode = false;
 
+		private SceneLoader sceneLoader = null;
+
 		[Header("Class Icon Sprites")]
 		[SerializeField] private Sprite[] classIcons = null;
 
@@ -48,6 +50,10 @@ namespace Heroes {
 			var accountManagerObj = GameObject.Find("Account Manager");
 			accountManager = accountManagerObj?.GetComponent<AccountManager>();
 			if (accountManager == null) throw new Exception("Account Manager not found");
+			
+			var sceneLoaderObj = GameObject.Find("Scene Loader");
+			sceneLoader = sceneLoaderObj?.GetComponent<SceneLoader>();
+			if (sceneLoader == null) throw new Exception("Scene Loader not found");
 
 			scrollRect = GetComponentInParent<ScrollRect>();			
 
@@ -76,16 +82,16 @@ namespace Heroes {
 		}
 				
 		public void initialize(CharacterInfo characterInfo, int createdCharactersCount) {
-			classIcon.sprite = classIcons[(int)characterInfo.characterClass - 1];
+			classIcon.sprite = classIcons[(int)characterInfo.type - 1];
 			level.text = "Lv. " + characterInfo.level.ToString();
-			characterName.text = characterInfo.characterName;
+			characterName.text = characterInfo.name;
 			location.text = characterInfo.location;
 
 			onClickAction = () => selectedCharacterUI.selectCharacter(
 				AccountData.Instance.FamilyName, characterInfo);
 			onConnectAction = () => {
 				AccountData.Instance.CurrentCharacter = characterInfo;
-				SceneLoader.LoadScene("Main");
+				sceneLoader.LoadMainScene();
 			};
 
 			onMoveUpAction = () => this.OnMoveUp(0, createdCharactersCount - 1);

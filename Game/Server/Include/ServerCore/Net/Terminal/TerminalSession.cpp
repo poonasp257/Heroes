@@ -52,7 +52,7 @@ void TerminalSession::sendPacket(const Packet& packet) {
 	PacketObfuscator::Instance().encodeHeader(data);
 	PacketObfuscator::Instance().encodeData(data, stream.getSize());
 	send(sessionInfo.socket, buffer.data(), offset, 0);
-	INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
+	//INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
 }
 
 std::unique_ptr<Package> TerminalSession::onRecv(size_t transferSize) {
@@ -80,7 +80,7 @@ std::unique_ptr<Package> TerminalSession::onRecv(size_t transferSize) {
 		return nullptr;
 	}
 
-	INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
+	//INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
 	return std::make_unique<Package>(shared_from_this(), std::move(packet));
 }
 

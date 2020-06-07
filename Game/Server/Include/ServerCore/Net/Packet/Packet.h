@@ -9,11 +9,6 @@ public:
 	virtual void deSerialize(Stream& stream) { }
 };
 
-class NotifyTerminalPacket : public Packet {
-public:
-	PacketType type() const { return PacketType::NotifyTerminal; }
-};
-
 class ExitRequestPacket : public Packet {
 public:
 	PacketType type() const { return PacketType::ExitRequest; }
@@ -381,7 +376,7 @@ public:
 class CreateCharacterRequestPacket : public Packet {
 public:
 	std::wstring accessKey;
-	CharacterClass characterClass;
+	CharacterClassType classType;
 	std::wstring characterName;
 
 public:
@@ -390,13 +385,13 @@ public:
 	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << accessKey;
-		stream << characterClass;
+		stream << classType;
 		stream << characterName;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &accessKey;
-		stream >> &characterClass;
+		stream >> &classType;
 		stream >> &characterName;
 	}
 };
@@ -422,8 +417,10 @@ class DBCreateCharacterRequestPacket : public Packet {
 public:
 	objectId_t clientId;
 	objectId_t accountId;
-	CharacterClass characterClass;
+	CharacterClassType classType;
 	std::wstring characterName;
+	Int64 hp;
+	Int64 mp;
 
 public:
 	PacketType type() const { return PacketType::DBCreateCharacterRequest; }
@@ -432,15 +429,19 @@ public:
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
-		stream << characterClass;
+		stream << classType;
 		stream << characterName;
+		stream << hp;
+		stream << mp;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &clientId;
 		stream >> &accountId;
-		stream >> &characterClass;
+		stream >> &classType;
 		stream >> &characterName;
+		stream >> &hp;
+		stream >> &mp;
 	}
 };
 
@@ -529,10 +530,49 @@ public:
 	}
 };
 
+class DBUpdateCharacterStatusRequestPacket : public Packet {
+public:
+	objectId_t accountId;
+	objectId_t characterId;
+	UInt32 level;
+	float exp;
+	Int64 hp;
+	Int64 mp;
+	Vector3 position;
+	Vector3 rotation;
+
+public:
+	PacketType type() const { return PacketType::DBUpdateCharacterStatusRequest; }
+
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << accountId;
+		stream << characterId;
+		stream << level;
+		stream << exp;
+		stream << hp;
+		stream << mp;
+		stream << position;
+		stream << rotation;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accountId;
+		stream >> &characterId;
+		stream >> &level;
+		stream >> &exp;
+		stream >> &hp;
+		stream >> &mp;
+		stream >> &position;
+		stream >> &rotation;
+	}
+};
+
 class ConnectChannelRequestPacket : public Packet {
 public:
 	std::wstring accessKey;
-	PlayerInfo	playerInfo;
+	std::wstring familyName;
+	CharacterInfo characterInfo;
 
 public:
 	PacketType type() const { return PacketType::ConnectChannelRequest; }
@@ -540,77 +580,23 @@ public:
 	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << accessKey;
-		stream << playerInfo;
+		stream << familyName;
+		stream << characterInfo;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &accessKey;
-		stream >> &playerInfo;
+		stream >> &familyName;
+		stream >> &characterInfo;
 	}
 };
 
 class ConnectChannelResponsePacket : public Packet {
 public:
-	std::list<std::pair<objectId_t, PlayerInfo>> playerList;
-
-public:
-	PacketType type() const { return PacketType::ConnectChannelResponse; }
-
-	void serialize(Stream& stream) const {
-		stream << (UInt32)this->type();
-		stream << playerList;
-	}
-
-	void deSerialize(Stream& stream) {
-		stream >> &playerList;
-	}
-};
-
-class DisconnectChannelRequestPacket : public Packet {
-public:
-	std::wstring accessKey;
-
-public:
-	PacketType type() const { return PacketType::DisconnectChannelRequest; }
-
-	void serialize(Stream& stream) const {
-		stream << (UInt32)this->type();
-		stream << accessKey;
-	}
-
-	void deSerialize(Stream& stream) {
-		stream >> &accessKey;
-	}
-};
-
-class DisconnectChannelResponsePacket : public Packet {
-public:
-	PacketType type() const { return PacketType::DisconnectChannelResponse; }
-};
-
-class NotifyConnectPlayerPacket : public Packet {
-public:
-	PlayerInfo playerInfo;
-
-public:
-	PacketType type() const { return PacketType::NotifyConnectPlayer; }
-
-	void serialize(Stream& stream) const {
-		stream << (UInt32)this->type();
-		stream << playerInfo;
-	}
-
-	void deSerialize(Stream& stream) {
-		stream >> &playerInfo;
-	}
-};
-
-class NotifyDisconnectPlayerPacket : public Packet {
-public:
 	objectId_t playerId;
 
 public:
-	PacketType type() const { return PacketType::NotifyDisconnectPlayer; }
+	PacketType type() const { return PacketType::ConnectChannelResponse; }
 
 	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
@@ -622,44 +608,137 @@ public:
 	}
 };
 
-class NotifyCharacterMovementPacket : public Packet {
+class DisconnectChannelRequestPacket : public Packet {
 public:
+	objectId_t playerId;
 	std::wstring accessKey;
-	CharacterMovement movement;
 
 public:
-	PacketType type() const { return PacketType::NotifyCharacterMovement; }
+	PacketType type() const { return PacketType::DisconnectChannelRequest; }
+
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << playerId;
+		stream << accessKey;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &playerId;
+		stream >> &accessKey;
+	}
+};
+
+class DisconnectChannelResponsePacket : public Packet {
+public:
+	PacketType type() const { return PacketType::DisconnectChannelResponse; }
+};
+
+class WhisperChatPacket : public Packet {
+public:
+	objectId_t playerId;
+	std::wstring receiverName;
+	std::wstring message;
+
+public:
+	PacketType type() const { return PacketType::WhisperChat; }
+
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << playerId;
+		stream << receiverName;
+		stream << message;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &playerId;
+		stream >> &receiverName;
+		stream >> &message;
+	}
+};
+
+class GetMonsterListPacket : public Packet {
+public:
+	MonsterZoneInfo monsterZone;
+
+public:
+	PacketType type() const { return PacketType::GetMonsterList; }
+	
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << monsterZone;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &monsterZone;
+	}
+};
+
+class TakeDamageMonsterPacket : public Packet {
+public:
+	std::wstring accessKey;
+	objectId_t zoneId;
+	objectId_t monsterId;
+	objectId_t playerId;
+
+public:
+	PacketType type() const { return PacketType::TakeDamageMonster; }
 
 	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << accessKey;
-		stream << movement;
+		stream << zoneId;
+		stream << monsterId;
+		stream << playerId;
 	}
 
 	void deSerialize(Stream& stream) {
 		stream >> &accessKey;
-		stream >> &movement;
+		stream >> &zoneId;
+		stream >> &monsterId;
+		stream >> &playerId;
 	}
 };
 
-class NotifyCharacterActionPacket : public Packet {
+class GainMonsterExpPacket : public Packet {
 public:
-	objectId_t accountId;
-	ActionType actionType;
+	objectId_t playerId;
+	float exp;
 
 public:
-	PacketType type() const { return PacketType::NotifyCharacterAction; }
+	PacketType type() const { return PacketType::GainMonsterExp; }
 
 	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
-		stream << (UInt16)actionType;
+		stream << playerId;
+		stream << exp;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
-		stream >> (UInt16*)&actionType;
+		stream >> &playerId;
+		stream >> &exp;
 	}
+};
+
+class RevivePlayerRequestPacket : public Packet {
+public:
+	objectId_t playerId;
+
+public:
+	PacketType type() const { return PacketType::RevivePlayerRequest; }
+
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << playerId;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &playerId;
+	}
+};
+
+class RevivePlayerResponsePacket : public Packet {
+public:
+	PacketType type() const { return PacketType::RevivePlayerResponse; }
 };
 
 #endif

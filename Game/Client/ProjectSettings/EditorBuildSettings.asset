@@ -23,7 +23,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/In Game/Main.unity
     guid: 47081d47682614342b929336f396ac7d
-  - enabled: 0
-    path: Assets/01.Scenes/In Game/Dungeon_Desert.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 6d3b671d1aaade3428859bcc7bd2fd59,
+      type: 2}

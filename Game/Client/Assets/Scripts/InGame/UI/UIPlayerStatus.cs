@@ -1,70 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Heroes { 
 	public class UIPlayerStatus : MonoBehaviour {
-		private CharacterStateManager characterState;
+		private PlayerStateManager stateManager;
 
-		private Text level;
-		private Text exp;
-
-		private Image hpBarImage;
-		private Image mpBarImage;
-		private UIIndicator hpBarIndicator;
-		private UIIndicator mpBarIndicator;	
+		[SerializeField] private UIStatusBar hpBar;
+		[SerializeField] private UIStatusBar mpBar;
+		[SerializeField] private UIIndicator hpBarIndicator;
+		[SerializeField] private UIIndicator mpBarIndicator;	
+		[SerializeField] private Text level;
+		[SerializeField] private Text exp;
 
 		private void Start()  {
-	        GameObject playerManagerObj = GameObject.Find("Player Manager");
-			if(!playerManagerObj) {
-				Debug.Log("Player Manager object doesn't exist");
-				return;
-			}
+			var player = GameObject.FindWithTag("Player");
+			if (player == null) throw new Exception("Player not found");
 
-			PlayerManager playerManager = playerManagerObj.GetComponent<PlayerManager>();
-			if (!playerManagerObj) {
-				Debug.Log("Player Manager doesn't exist");
-				return;
-			}
+			stateManager = player.GetComponent<PlayerStateManager>();
 
-			characterState = playerManager.getCharacterState(AccountData.Instance.accessKey);
-
-			level = transform.Find("Panel/Level").gameObject.GetComponent<Text>();
-			exp = transform.Find("Panel/EXP").gameObject.GetComponent<Text>();
-
-			Transform hp = transform.Find("HP");
-			Transform mp = transform.Find("MP");
-
-			hpBarImage = hp.transform.Find("Bar").GetComponent<Image>();
-			mpBarImage = mp.transform.Find("Bar").GetComponent<Image>();
-
-			hpBarIndicator = hp.transform.Find("Indicator").GetComponent<UIIndicator>();
-			mpBarIndicator = mp.transform.Find("Indicator").GetComponent<UIIndicator>();
+			hpBar.initialize((float)stateManager.info.currentHp / (float)stateManager.info.maxHp);
+			mpBar.initialize((float)stateManager.info.currentMp / (float)stateManager.info.maxMp);
 		}
 
 		private void Update() {
-			if (characterState == null) return;
-
-			level.text = characterState.Info.level.ToString();
-			exp.text = characterState.Info.exp.ToString("F3") + "%";
-
-			updateHPUI();
-			updateMPUI();
+			UInt32 playerLevel = stateManager.info.level;
+			float goalExp = 100 * playerLevel * playerLevel;
+			level.text = playerLevel.ToString();
+			exp.text = (((float)stateManager.info.exp / goalExp) * 100).ToString("F3") + "%";
+			
+			updateHealthPoint();
+			updateManaPoint();
 		}
 
-		private void updateHPUI() {
-			CharacterInfo playerInfo = characterState.Info;
-			hpBarImage.fillAmount = (float)playerInfo.currentHp / (float)playerInfo.maxHp;
-
-			hpBarIndicator.CurrentFigure = playerInfo.currentHp;
-			hpBarIndicator.MaxFigure = playerInfo.maxHp;
+		private void updateHealthPoint() {
+			hpBar.updateBar((float)stateManager.info.currentHp / (float)stateManager.info.maxHp);
+			hpBarIndicator.CurrentFigure = stateManager.info.currentHp;
+			hpBarIndicator.MaxFigure = stateManager.info.maxHp;
 		}
 		
-		private void updateMPUI() {
-			CharacterInfo playerInfo = characterState.Info;
-			mpBarImage.fillAmount = (float)playerInfo.currentMp / (float)playerInfo.maxMp;
-
-			mpBarIndicator.CurrentFigure = playerInfo.currentMp;
-			mpBarIndicator.MaxFigure = playerInfo.maxMp;
+		private void updateManaPoint() {
+			mpBar.updateBar((float)stateManager.info.currentMp / (float)stateManager.info.maxMp);
+			mpBarIndicator.CurrentFigure = stateManager.info.currentMp;
+			mpBarIndicator.MaxFigure = stateManager.info.maxMp;
 		}
 	}
 }

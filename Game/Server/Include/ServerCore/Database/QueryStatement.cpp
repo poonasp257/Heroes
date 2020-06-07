@@ -55,3 +55,9 @@ void QueryStatement::addParam(float value) {
 void QueryStatement::addParam(double value) {
 	this->addArg(L"'%lf'", value);
 }
+
+void QueryStatement::addParam(Vector3 value) {
+	this->addParam(value.x);
+	this->addParam(value.y);
+	this->addParam(value.z);
+}

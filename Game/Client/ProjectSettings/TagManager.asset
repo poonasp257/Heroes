@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Other Player
+  - Main Canvas
+  - Weapon
+  - Monster
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Minimap
   - Enviroment
   - Ground
-  - 
+  - WorldMap
   - 
   - 
   - 

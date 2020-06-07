@@ -6,10 +6,14 @@ class QuadTree {
 private: 
 	std::unique_ptr<QuadTreeNode<value_type>> rootNode;
 	
+private:
+	bool inBoundary(const FloatVector& position);
+
 public:
 	QuadTree();
 	~QuadTree();
 
+	value_type find(const FloatVector& position);
 	void insert(value_type value);
 	void remove();
 	void clear();

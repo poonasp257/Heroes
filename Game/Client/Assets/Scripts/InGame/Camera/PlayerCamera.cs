@@ -2,35 +2,70 @@
 
 namespace Heroes {
 	public class PlayerCamera : MonoBehaviour {
-		private float mouseX;
-		private float mouseY;
-		private Vector3 rotation;
+		private bool enabledRotating = false;
+		private Vector3 currentRotation;
 
-		[SerializeField] private const float ClampAngle = 80.0f;
-		[SerializeField] private const float InputSensitivity = 150.0f;
+		[SerializeField] private float ClampAngle = 80.0f;
+		[SerializeField] private float InputSensitivity = 150.0f;
 
 		private void Start() {
-			rotation = transform.localRotation.eulerAngles;
+			currentRotation = transform.localRotation.eulerAngles;
 
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
+			ShowCursor();
+			EnabledInput = true;
 		}
+
+		public static bool EnabledCursor { 
+			get { return Cursor.visible; }
+		}
+
+		public static bool EnabledInput { get; set;	}
 
 		private void Update() {
-			RotateCamera();
+			if (!EnabledCursor || enabledRotating) {
+				processInput();
+			}
+
+			if (!EnabledInput) return;
+
+			if(Input.GetMouseButtonDown(1) && EnabledCursor) {
+				HideCursor();
+				enabledRotating = true;
+			}
+			else if(Input.GetMouseButtonUp(1) && enabledRotating) {
+				ShowCursor();
+				enabledRotating = false;
+			}
+						
+			if (Input.GetButtonDown("Cursor")) {
+				if (EnabledCursor) {
+					HideCursor();
+					return;
+				}
+				
+				ShowCursor();
+			}
+		}
+		
+		private void processInput() {
+			float mouseX = Input.GetAxis("Mouse X");
+			float mouseY = -Input.GetAxis("Mouse Y");
+			currentRotation.y += mouseX * InputSensitivity * Time.deltaTime;
+			currentRotation.x += mouseY * InputSensitivity * Time.deltaTime;
+			currentRotation.x = Mathf.Clamp(currentRotation.x, -ClampAngle, ClampAngle);
+
+			Quaternion localRotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0.0f);
+			transform.rotation = localRotation;
 		}
 
-		private void RotateCamera() {			
-			mouseX = Input.GetAxis("Mouse X");
-			mouseY = Input.GetAxis("Mouse Y");
+		public static void ShowCursor() {
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+		}
 
-			rotation.y += mouseX * InputSensitivity * Time.deltaTime;
-			rotation.x += mouseY * InputSensitivity * Time.deltaTime;
-
-			rotation.x = Mathf.Clamp(rotation.x, -ClampAngle, ClampAngle);
-
-			Quaternion localRotation = Quaternion.Euler(rotation.x, rotation.y, 0.0f);
-			transform.rotation = localRotation;
+		public static void HideCursor() {
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
 		}
 	}
 }

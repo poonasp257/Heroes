@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster\Monster.cpp">
+      <Filter>Contents\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster\MonsterManager.cpp">
+      <Filter>Contents\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Monster\MonsterZone.cpp">
+      <Filter>Contents\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Player\PlayerManager.cpp">
+      <Filter>Contents\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Player\UserManager.cpp">
+      <Filter>Contents\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Player\Player.cpp">
+      <Filter>Contents\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\World\WorldManager.cpp">
+      <Filter>Contents\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\WorldProcess.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Monster\Monster.h">
+      <Filter>Contents\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Monster\MonsterManager.h">
+      <Filter>Contents\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Monster\MonsterZone.h">
+      <Filter>Contents\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Player\PlayerManager.h">
+      <Filter>Contents\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Player\UserManager.h">
+      <Filter>Contents\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\WorldProcess.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Player\Player.h">
+      <Filter>Contents\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\World\WorldManager.h">
+      <Filter>Contents\World</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="monster_info.json">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="monster_zone_info.json">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="config.json">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="world_map.json">
+      <Filter>Data</Filter>
+    </None>
+    <None Include="character_info.json">
+      <Filter>Data</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{fde36099-e7f4-419f-a02c-4ec622bcb1f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{f0ccce6b-f696-4fd2-90c8-2e5ed5cdf4f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Monster">
+      <UniqueIdentifier>{e0be6ad8-0662-4601-bf99-f725ab823083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Player">
+      <UniqueIdentifier>{d592306f-416f-4fb7-844c-31f2cbcebcb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{b5e06db8-41c1-4511-ab7e-5a73079129a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\World">
+      <UniqueIdentifier>{a717fe8d-71af-4b2e-8481-adf5b66daa31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

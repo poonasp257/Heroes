@@ -10,14 +10,14 @@ private:
 
 private:
 	TerminalManager();
+	TerminalManager(TerminalManager&&) = delete;
+	TerminalManager(const TerminalManager&) = delete;
 	~TerminalManager();
 
-public:
-	TerminalManager(const TerminalManager&) = delete;
-	TerminalManager(TerminalManager&&) = delete;
-	TerminalManager& operator=(const TerminalManager&) = delete;
 	TerminalManager& operator=(TerminalManager&&) = delete;
+	TerminalManager& operator=(const TerminalManager&) = delete;
 
+public:
 	bool initialize(std::shared_ptr<Server> server);
 	bool run();
 

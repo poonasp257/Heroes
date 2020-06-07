@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 namespace Heroes {
 	public class UISelectedCharacter : MonoBehaviour {
+		private GameObject previewCharacter = null;
+		[SerializeField] private Transform previewNode = null;
 		[SerializeField] private Text familyNameText = null;
 		[SerializeField] private Text characterNameText = null;
 
@@ -22,8 +24,11 @@ namespace Heroes {
 
 		public void selectCharacter(string familyName, CharacterInfo characterInfo) {
 			familyNameText.text = familyName;
-			characterNameText.text = characterInfo.characterName;
-			CharacterId = characterInfo.characterId;
+			characterNameText.text = characterInfo.name;
+			CharacterId = characterInfo.id;
+			if (previewCharacter) previewCharacter.SetActive(false);
+			previewCharacter = previewNode.Find(characterInfo.type.ToString())?.gameObject;
+			previewCharacter.SetActive(true);
 		}
 
 		public void deselectCharacter() {

@@ -17,7 +17,7 @@ public:
 	IOBuffer();
 	IOBuffer(IOType ioType);
 	~IOBuffer();
-
+	
 	void clear();
 
 	bool needMoreIO(size_t transferSize);	

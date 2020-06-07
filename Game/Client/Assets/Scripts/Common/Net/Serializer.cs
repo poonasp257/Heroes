@@ -10,7 +10,7 @@ namespace Heroes {
 			serialize(stream, (UInt32)type);
 		}
 
-		public static void serialize(MemoryStream stream, CharacterClass type) {
+		public static void serialize(MemoryStream stream, CharacterClassType type) {
 			serialize(stream, (UInt16)type);
 		}
 
@@ -78,15 +78,17 @@ namespace Heroes {
 		}
 
 		public static void serialize(MemoryStream stream, CharacterInfo value) {
-			serialize(stream, value.characterId);
-			serialize(stream, value.characterName);
-			serialize(stream, value.characterClass);
+			serialize(stream, value.id);
+			serialize(stream, value.name);
+			serialize(stream, value.type);
 			serialize(stream, value.level);
 			serialize(stream, value.exp);
 			serialize(stream, value.currentHp);
 			serialize(stream, value.currentMp);
 			serialize(stream, value.maxHp);
 			serialize(stream, value.maxMp);
+			serialize(stream, value.defense);
+			serialize(stream, value.damage);
 			serialize(stream, value.position);
 			serialize(stream, value.rotation);
 			serialize(stream, value.location);
@@ -94,13 +96,35 @@ namespace Heroes {
 
 		public static void serialize(MemoryStream stream, CharacterMovement value) {
 			serialize(stream, value.moveAmount);
+			serialize(stream, value.direction);
 			serialize(stream, value.position);
-			serialize(stream, value.rotation);
 		}
 
 		public static void serialize(MemoryStream stream, PlayerInfo value) {
+			serialize(stream, value.id);
 			serialize(stream, value.familyName);
 			serialize(stream, value.characterInfo);
+		}
+
+		public static void serialize(MemoryStream stream, MonsterInfo value) {
+			serialize(stream, value.id);
+			serialize(stream, value.typeId);
+			serialize(stream, value.name);
+			serialize(stream, value.level);
+			serialize(stream, value.currentHp);
+			serialize(stream, value.maxHp);
+			serialize(stream, value.damage);
+			serialize(stream, value.defense);
+			serialize(stream, value.position);
+			serialize(stream, value.rotation);
+			serialize(stream, value.originPosition);
+			serialize(stream, value.originRotation);
+		}
+
+		public static void serialize(MemoryStream stream, MonsterZoneInfo value) {
+			serialize(stream, value.id);
+			serialize(stream, value.position);
+			serialize(stream, value.monsterList);
 		}
 
 		public static void serialize(MemoryStream stream, List<ChannelInfo> list) {
@@ -116,18 +140,29 @@ namespace Heroes {
 				serialize(stream, value);
 			}
 		}
-
-		public static void serialize(MemoryStream stream, List<KeyValuePair<UInt64, PlayerInfo>> list) {
+		public static void serialize(MemoryStream stream, List<PlayerInfo> list) {
 			serialize(stream, list.Count);
-			foreach(var pair in list) {
-				serialize(stream, pair.Key);
-				serialize(stream, pair.Value);
+			foreach (PlayerInfo value in list) {
+				serialize(stream, value);
 			}
 		}
-			   
-		public static void deserialize(byte[] data, ref Int32 offset, out CharacterClass type) {
+
+		public static void serialize(MemoryStream stream, List<MonsterInfo> list) {
+			serialize(stream, list.Count);
+			foreach (MonsterInfo value in list) {
+				serialize(stream, value);
+			}
+		}
+		public static void serialize(MemoryStream stream, List<MonsterZoneInfo> list) {
+			serialize(stream, list.Count);
+			foreach (MonsterZoneInfo value in list) {
+				serialize(stream, value);
+			}
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out CharacterClassType type) {
 			UInt16 value = BitConverter.ToUInt16(data, offset);
-			type = (CharacterClass)value;
+			type = (CharacterClassType)value;
 			offset += sizeof(UInt16);
 		}
 
@@ -162,7 +197,7 @@ namespace Heroes {
 			offset += sizeof(UInt16);
 		}
 
-		public static void  deserialize(byte[] data, ref Int32 offset, out float value) {
+		public static void deserialize(byte[] data, ref Int32 offset, out float value) {
 			value = BitConverter.ToSingle(data, offset);
 			offset += sizeof(float);
 		}
@@ -209,31 +244,57 @@ namespace Heroes {
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterInfo value) {
-			deserialize(data, ref offset, out value.characterId);
-			deserialize(data, ref offset, out value.characterName);
-			deserialize(data, ref offset, out value.characterClass);
+			deserialize(data, ref offset, out value.id);
+			deserialize(data, ref offset, out value.name);
+			deserialize(data, ref offset, out value.type);
 			deserialize(data, ref offset, out value.level);
 			deserialize(data, ref offset, out value.exp);
 			deserialize(data, ref offset, out value.currentHp);
 			deserialize(data, ref offset, out value.currentMp);
 			deserialize(data, ref offset, out value.maxHp);
 			deserialize(data, ref offset, out value.maxMp);
+			deserialize(data, ref offset, out value.defense);
+			deserialize(data, ref offset, out value.damage);
 			deserialize(data, ref offset, out value.position);
 			deserialize(data, ref offset, out value.rotation);
 			deserialize(data, ref offset, out value.location);
 		}
 				
 		public static void deserialize(byte[] data, ref Int32 offset, out PlayerInfo value) {
+			deserialize(data, ref offset, out value.id);
 			deserialize(data, ref offset, out value.familyName);
 			deserialize(data, ref offset, out value.characterInfo);
 		}
 
 		public static void deserialize(byte[] data, ref Int32 offset, out CharacterMovement value) {
 			deserialize(data, ref offset, out value.moveAmount);
+			deserialize(data, ref offset, out value.direction);
+			deserialize(data, ref offset, out value.position);
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, out MonsterInfo value) {
+			deserialize(data, ref offset, out value.id);
+			deserialize(data, ref offset, out value.typeId);
+			deserialize(data, ref offset, out value.name);
+			deserialize(data, ref offset, out value.level);
+			deserialize(data, ref offset, out value.currentHp);
+			deserialize(data, ref offset, out value.maxHp);
+			deserialize(data, ref offset, out value.damage);
+			deserialize(data, ref offset, out value.defense);
 			deserialize(data, ref offset, out value.position);
 			deserialize(data, ref offset, out value.rotation);
+			deserialize(data, ref offset, out value.originPosition);
+			deserialize(data, ref offset, out value.originRotation);
 		}
-		
+
+		public static void deserialize(byte[] data, ref Int32 offset, out MonsterZoneInfo value) {
+			deserialize(data, ref offset, out value.id);
+			deserialize(data, ref offset, out value.position);
+			
+			value.monsterList = new List<MonsterInfo>();
+			deserialize(data, ref offset, ref value.monsterList);
+		}
+
 		public static void deserialize(byte[] data, ref Int32 offset, ref List<ChannelInfo> list) {
 			Int32 size;
 			deserialize(data, ref offset, out size);
@@ -254,19 +315,39 @@ namespace Heroes {
 				deserialize(data, ref offset, out value);
 				list.Add(value);
 			}
-		} 
+		}
 
-		public static void deserialize(byte[] data, ref Int32 offset, ref List<KeyValuePair<UInt64, PlayerInfo>> list) {
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<PlayerInfo> list) {
 			Int32 size;
 			deserialize(data, ref offset, out size);
-			
-			UInt64 key;
+
 			PlayerInfo value;
-			for(int i = 0; i < size; ++i) {
-				deserialize(data, ref offset, out key);
+			for (int i = 0; i < size; ++i) {
 				deserialize(data, ref offset, out value);
-				list.Add(new KeyValuePair<UInt64, PlayerInfo>(key, value));
+				list.Add(value);
 			}
-		} 
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<MonsterInfo> list) {
+			Int32 size;
+			deserialize(data, ref offset, out size);
+
+			MonsterInfo value;
+			for (int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out value);
+				list.Add(value);
+			}
+		}
+
+		public static void deserialize(byte[] data, ref Int32 offset, ref List<MonsterZoneInfo> list) {
+			Int32 size;
+			deserialize(data, ref offset, out size);
+
+			MonsterZoneInfo value;
+			for (int i = 0; i < size; ++i) {
+				deserialize(data, ref offset, out value);
+				list.Add(value);
+			}
+		}
 	}
 }
