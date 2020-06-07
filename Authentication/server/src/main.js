@@ -1,10 +1,18 @@
 import express from 'express';
-import session from 'express-session';
 import mongoose from 'mongoose';
 import account from './routes/account';
+import cors from 'cors';
 
 const app = express();
-const port = 9000;
+const clientIP = process.env.CLIENT_IP;
+const clientPort = process.env.CLIENT_PORT;
+const serverPort = process.env.SERVER_PORT;
+
+const corsOptions = { 
+    origin: `${clientIP}:${clientPort}`, 
+    credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
@@ -19,12 +27,6 @@ mongoose.connect('mongodb://127.0.0.1/heroes', {
     useFindAndModify: false 
 });
 
-app.use(session({
-    secret: '#@!#DSFWErHeroesFDG#$',
-    resave: false,
-    saveUninitialized: true
-}));
-
 app.use('/account', account);
 
-app.listen(port, () => console.log("Login Server listening on port " + port));    
+app.listen(serverPort, () => console.log("Login Server listening on port " + serverPort));    

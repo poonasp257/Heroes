@@ -4,8 +4,8 @@
 class MarketDBProcess : public ContentsProcess {
 public:
 	MarketDBProcess();
-	virtual ~MarketDBProcess();
+	~MarketDBProcess();
 
-	//static void DBSearchAccountRequest(Session *session, Packet *rowPacket);
+	//static void DBSearchAccountRequest(Session* session, Packet* rowPacket);
 };
 #endif

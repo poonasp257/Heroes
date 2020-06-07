@@ -56,7 +56,7 @@
 //		SQLFreeStmt(statement, SQL_UNBIND);
 //		SQLFreeStmt(statement, SQL_RESET_PARAMS);
 //
-//		Terminal *terminal = TerminalManager::Instance().getTerminal("Game");
+//		Terminal* terminal = TerminalManager::Instance().getTerminal("Game");
 //		terminal->sendPacket(&packet);
 //	}
 //};

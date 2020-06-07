@@ -1,20 +1,30 @@
 #include "stdafx.h"
 
-IOCPServer::IOCPServer(ContentsProcess *process) : Server(process),
-	listenSocket(INVALID_SOCKET), iocp(nullptr), acceptThread(nullptr) {
-	status = ServerStatus::Initialize;
+IOCPServer::IOCPServer(std::unique_ptr<ContentsProcess> process) : 
+	Server(std::move(process)), 
+	listenSocket(INVALID_SOCKET), 
+	iocp(nullptr) {
+
 }
 
 IOCPServer::~IOCPServer() {
+	state = ServerState::Stop;
+
+	DBManager::Instance().stopAll();
+	TerminalManager::Instance().stopAll();
+	ThreadManager::Instance().joinAll();
+
 	closesocket(listenSocket);
 	CloseHandle(iocp);
+
+	INFO_LOG(L"IOCP server closed...");
 }
 
 bool IOCPServer::createListenSocket() {
 	listenSocket = WSASocket(PF_INET, SOCK_STREAM, IPPROTO_TCP,
 		NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (listenSocket == INVALID_SOCKET) {
-		SystemLogger::Log(Logger::Error, L"WSASocekt() error!!");
+		ERROR_LOG(L"WSASocekt() error!!");
 		return false;
 	}
 
@@ -24,69 +34,57 @@ bool IOCPServer::createListenSocket() {
 	inet_pton(AF_INET, ip.data(), &(servAddr.sin_addr));
 
 	int opt = 1;
-	setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, 
-		(char*)&opt, sizeof(opt));
+	setsockopt(listenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt));
 
 	int socketError = bind(listenSocket, (SOCKADDR*)&servAddr, sizeof(servAddr));
 	if (socketError == SOCKET_ERROR) {
-		SystemLogger::Log(Logger::Error, L"bind() error!!");
+		ERROR_LOG(L"bind() error!!");
 		return false;
 	}
 
 	socketError = listen(listenSocket, 5);
 	if (socketError == SOCKET_ERROR) {
-		SystemLogger::Log(Logger::Error, L"listen() error!!");
+		ERROR_LOG(L"listen() error!!");
 		return false;
 	}
 
+	INFO_LOG(L"%s Server listening on port %d", name.c_str(), port);
+	
 	return true;
 }
 
-unsigned int WINAPI IOCPServer::AcceptThread(LPVOID serverPtr) {
-	IOCPServer *server = (IOCPServer*)serverPtr;
-
-	while (true) {
+void IOCPServer::acceptThread() {
+	while (this->state == ServerState::Running) {
 		SOCKET acceptSocket = INVALID_SOCKET;
 		SOCKADDR_IN recvAddr;
 		int addrLen = sizeof(recvAddr);
-
-		acceptSocket = WSAAccept(server->listenSocket, (SOCKADDR*)&recvAddr,
-			&addrLen, NULL, 0);
+		acceptSocket = WSAAccept(this->listenSocket, (SOCKADDR*)&recvAddr, &addrLen, NULL, 0);
 		if (acceptSocket == SOCKET_ERROR) {
-			if(server->getStatus() == ServerStatus::Stop) {
-				SystemLogger::Log(Logger::Error, L"Accept failed");
+			if (this->state == ServerState::Stop) {
+				ERROR_LOG(L"Accept failed");
 				break;
 			}
 		}
 
-		server->onAccept(acceptSocket, recvAddr);
-
-		if(server->getStatus() != ServerStatus::Ready) {
-			break;
-		}
+		this->onAccept(acceptSocket, recvAddr);
 	}
-
-	return 0;
 }
 
-unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
-	IOCPServer *server = (IOCPServer*)serverPtr;
-
-	while (true) {
-		IOCPSession *session = nullptr;
-		IOBuffer *ioBuffer = nullptr;
+void IOCPServer::workerThread() {
+	SessionManager& sessionManager = SessionManager::Instance();
+	while (this->state == ServerState::Running) {
 		DWORD transferSize;
-
-		BOOL result = GetQueuedCompletionStatus(server->getIOCP(), 
+		IOCPSession* session = nullptr;
+		IOBuffer* ioBuffer = nullptr;
+		BOOL result = GetQueuedCompletionStatus(this->iocp,
 			&transferSize, (PULONG_PTR)&session, (LPOVERLAPPED*)&ioBuffer, INFINITE);
 		if (!result) continue;
 
 		if (!session) {
-			SystemLogger::Log(Logger::Error, L"socket data broken");
-			return 0;
+			ERROR_LOG(L"socket data broken");
+			return;
 		}
 
-		SessionManager& sessionManager = SessionManager::Instance();
 		if (transferSize == 0) {
 			sessionManager.closeSession(session);
 			continue;
@@ -94,82 +92,78 @@ unsigned int WINAPI IOCPServer::WorkerThread(LPVOID serverPtr) {
 
 		switch (ioBuffer->getType()) {
 		case IOType::Write:
-			SystemLogger::Log(Logger::Info, L"*send %d bytes...", transferSize);
 			session->onSend((size_t)transferSize);
-			continue;
+			break;
 
-		case IOType::Read: 
-			{
-				SystemLogger::Log(Logger::Info, L"*receive %d bytes...", transferSize);
-				Package *package = session->onRecv((size_t)transferSize);
-				if (package != nullptr)  server->putPackage(package);
+		case IOType::Read: {
+				auto package = session->onRecv((size_t)transferSize);
+				if (package != nullptr)  this->putPackage(package);
 			}
-			continue;
+			break;
 
 		case IOType::Error:
 			sessionManager.closeSession(session);
-			continue;
+			break;
 		}
 	}
-
-	return 0;
 }
 
 bool IOCPServer::run() {
 	iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, workerThreadCount);
 	if (!iocp) {
-		SystemLogger::Log(Logger::Error, L"CreateIoCompletionPort() error!!");
+		ERROR_LOG(L"CreateIoCompletionPort() error!!");
 		return false;
 	}
 
 	if (!this->createListenSocket()) {
-		SystemLogger::Log(Logger::Error, L"CreateListenSocket() error!!");
+		ERROR_LOG(L"CreateListenSocket() error!!");
 		return false;
 	}
 
-	acceptThread = std::make_unique<Thread>(new std::thread(&AcceptThread, this));
+	if (!contentsProcess->initialize()) {
+		ERROR_LOG(L"Contents Process initialized failed");
+		return false;
+	}
+	if (!TerminalManager::Instance().initialize(shared_from_this())) {
+		ERROR_LOG(L"Terminal Manager initialized failed");
+		return false;
+	}
+
+	state = ServerState::Running;
+	threadPool.push_back(MAKE_THREAD(IOCPServer, acceptThread));
 	for (int i = 0; i < workerThreadCount; ++i) {
-		workerThreads[i] = std::make_unique<Thread>(new std::thread(&WorkerThread, this));
+		threadPool.push_back(MAKE_THREAD(IOCPServer, workerThread));
 	}
-	status = ServerStatus::Ready;
 
-	int key = 0;
-	while (true) {
-		/*if (!_kbhit()) continue;
-
-		key = _getch();*/
+	if (!contentsProcess->run()) {
+		ERROR_LOG(L"Contents Process initialized failed");
+		return false;
 	}
-	
+	if (!TerminalManager::Instance().run()) {
+		ERROR_LOG(L"Terminal Manager couldn't start");
+		return false;
+	}
+
+	while (state == ServerState::Running) Sleep(1);
+
 	return true;
 }
 
 void IOCPServer::onAccept(SOCKET accepter, SOCKADDR_IN addrInfo) {
-	IOCPSession *session = new IOCPSession();
-	if(!session) {
-		SystemLogger::Log(Logger::Warning, L"session creatation failed");
-		return;
-	}
+	std::shared_ptr<IOCPSession> session = std::make_shared<IOCPSession>();
+	session->onAccept(accepter, addrInfo);
 
-	if(!session->onAccept(accepter, addrInfo)) {
-		if(session) delete session;
-		return;
-	}
+	SessionManager& sessionManager = SessionManager::Instance();
+	if (!sessionManager.addSession(session)) return;
 
-	SessionManager &sessionManager = SessionManager::Instance();
-	if(!sessionManager.addSession(session)) {
-		if (session) delete session;
-		return;
-	}
-	
 	HANDLE handle = CreateIoCompletionPort((HANDLE)accepter, this->getIOCP(),
-		(ULONG_PTR)session, NULL);
-	if(!handle) {
-		sessionManager.closeSession(session);
-		if (session) delete session;
+		(ULONG_PTR)session.get(), NULL);
+	if (!handle) {
+		WARNING_LOG(L"! CreateIoCompletionPort() error");
+		sessionManager.closeSession(session.get());
 		return;
 	}
 
-	SystemLogger::Log(Logger::Info, L"new client connected...[%s]",
-		session->getIP().c_str());
 	session->recvStandBy();
+	INFO_LOG(L"new client connected...[%s]", session->getIP().c_str());
 }

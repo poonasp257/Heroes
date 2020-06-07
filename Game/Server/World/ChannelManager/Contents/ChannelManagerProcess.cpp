@@ -9,21 +9,17 @@ ChannelManagerProcess::~ChannelManagerProcess() {
 
 }
 
-void ChannelManagerProcess::GetChannelListRequest(Session *session, Packet *rowPacket) {
-	GetChannelListResponsePacket responsePacket;
-
+void ChannelManagerProcess::GetChannelListRequest(Session* session, const Packet* rowPacket) {
 	ChannelInfo channel;
-	const int terminalCount = TerminalManager::Instance().getTerminalCount();
-
+	GetChannelListResponsePacket responsePacket;
+	size_t terminalCount = TerminalManager::Instance().getConnectedTerminalCount();
 	for (int i = 0; i < terminalCount; ++i) {
-		const Terminal* terminal = TerminalManager::Instance().getTerminal(i);
-		
+		Terminal* terminal = TerminalManager::Instance().getTerminal(i);
 		channel.name = terminal->getName();
 		channel.ip = terminal->getIP();
 		channel.port = terminal->getPort();
-
 		responsePacket.channelList.push_back(channel);
 	}
-	
-	session->sendPacket(&responsePacket);
+
+	session->sendPacket(responsePacket);
 }

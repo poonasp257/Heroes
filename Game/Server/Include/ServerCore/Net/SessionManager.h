@@ -1,27 +1,42 @@
 #ifndef SESSIONMANAGER_H
 #define SESSIONMANAGER_H
 
-class SessionManager : public Singleton<SessionManager> {
+class Session;
+
+class SessionManager {
 private:
 	const size_t 		MaxConnection;
-	UInt64				sessionIdSeed;
-	std::list<Session*> sessionList;
-	std::mutex			lock;
+	CriticalSection		lock;
+	std::list<std::shared_ptr<Session>> sessionList;
+
+private:
+	SessionManager();
+	~SessionManager();
+
+	objectId_t generateId() const {
+		static objectId_t idSeed = 0;
+		return ++idSeed;
+	}
 
 public:
-	SessionManager();
-	virtual ~SessionManager();
+	SessionManager(const SessionManager&) = delete;
+	SessionManager(SessionManager&&) = delete;
+	SessionManager& operator=(const SessionManager&) = delete;
+	SessionManager& operator=(SessionManager&&) = delete;
 
-	bool addSession(Session *session);
-	bool closeSession(UInt64 sessionId);
-	bool closeSession(Session *session);
-	void forceCloseSession(Session *session);
+	bool addSession(std::shared_ptr<Session> session);
+	void closeSession(objectId_t sessionId);
+	void closeSession(const Session* session);
+	void forceCloseSession(const Session* session);
 
-	void BroadcastPacket(Packet *packet, SessionType sessionType = SessionType::Client);
+	void BroadcastPacket(const Packet& packet, SessionType sessionType = SessionType::Client);
 
-	Session* getSession(UInt64 sessionId);
+	Session* getSession(objectId_t sessionId);
 	size_t getConnectionCount() const { return sessionList.size(); }
 
-	UInt64 createSessionId() { return ++sessionIdSeed; }
+	static auto& Instance() {
+		static SessionManager instance;
+		return instance;
+	}
 };
 #endif

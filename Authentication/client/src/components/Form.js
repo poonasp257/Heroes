@@ -14,13 +14,13 @@ const Container = styled.form`
     text-align: center;
 `;
 
-const Title = styled.h2`
+const Name = styled.h2`
     margin: 40px auto;
     color: #5AAEF6;
     letter-spacing: 0.2em;
 `;
 
-const Submit = styled(Button)`
+const SubmitButton = styled(Button)`
     margin: 40px 0 0 0 !important; 
     color: white !important;
     background-color: #5AAEF6 !important;
@@ -28,20 +28,27 @@ const Submit = styled(Button)`
     font-weight: bold !important;
 `;
 
-export default function Form({ title, submitName, onSubmit, children }) {
+export default function Form({ name, children, ...props }) {
+    const { submitName, onSubmit } = props;
     return (
         <Container onSubmit={onSubmit}>
-            <Title>{title}</Title>
+            <Name>{name}</Name>
             {children}
-            <Submit type="submit" fullWidth variant="contained">
-                {submitName}
-            </Submit>
+            {onSubmit ? <Submit name={submitName} /> : null}
         </Container>
     );
 }
 
 Form.propTypes = {
-    title: PropTypes.string.isRequired,
-    submitName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    submitName: PropTypes.string,
     onSubmit: PropTypes.func
+}
+
+const Submit = ({name}) => {
+    return (
+        <SubmitButton type="submit" fullWidth variant="contained">
+            {name}
+        </SubmitButton>
+    );
 }

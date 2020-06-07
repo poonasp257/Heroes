@@ -11,24 +11,24 @@ private:
 	SQLHSTMT dbStatement;
 
 	std::wstring			name;
-	std::unique_ptr<Thread> thread; 
+	std::shared_ptr<Thread> thread; 
 
 private:
-	void prepareStatement(const wchar_t *query);
+	void prepareStatement(const wchar_t* query);
 	SQLRETURN executeStatement();
-	SQLRETURN executeStatementDirect(const wchar_t *query);
+	SQLRETURN executeStatementDirect(const wchar_t* query);
 
 	void execute();
 	void process();
 
 public:
 	ODBCDatabase();
-	virtual ~ODBCDatabase();
+	~ODBCDatabase();
 
-    bool connect(const wchar_t*ip, int port, const wchar_t*dbName, const wchar_t*id, const wchar_t*password);
-	bool disconnect();	
-	bool isConnected();
+    virtual bool connect(const wchar_t* ip, int port, const wchar_t* dbName, const wchar_t* id, const wchar_t* password);
+	virtual bool disconnect();	
+	virtual bool isConnected();
     
-	void run();
+	virtual bool run();
 };
 #endif

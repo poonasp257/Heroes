@@ -15,10 +15,16 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\PlayerManager.cpp">
+    <ClCompile Include="Contents\GameProcess.cpp">
       <Filter>Contents</Filter>
     </ClCompile>
-    <ClCompile Include="Contents\GameProcess.cpp">
+    <ClCompile Include="Contents\UserManager.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\WorldManager.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Contents\Sector.cpp">
       <Filter>Contents</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,10 +32,16 @@
     <ClInclude Include="stdafx.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\PlayerManager.h">
+    <ClInclude Include="Contents\GameProcess.h">
       <Filter>Contents</Filter>
     </ClInclude>
-    <ClInclude Include="Contents\GameProcess.h">
+    <ClInclude Include="Contents\UserManager.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\WorldManager.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Contents\Sector.h">
       <Filter>Contents</Filter>
     </ClInclude>
   </ItemGroup>

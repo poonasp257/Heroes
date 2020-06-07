@@ -4,7 +4,7 @@ export function checkEmailFormat(exp) {
 }
 
 export function checkUsernameFormat(exp) {
-	const regExp = /^[a-z0-9]+$/;
+	const regExp = /^[a-z0-9]{5,20}$/;
 	return regExp.test(exp); 
 }
 

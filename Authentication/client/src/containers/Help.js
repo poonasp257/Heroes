@@ -1,136 +1,44 @@
 import React, { PureComponent } from 'react';
-import axios from 'axios';
 
 import { connect } from 'react-redux';
-import { requestEmailVerifyCode, confirmEmailVerifyCode, expireVerifyCode } from 'modules/verification';
-import { openDialog } from 'modules/dialog';
+import { expireVerifyCode } from 'modules/verification';
 
-import Grid from '@material-ui/core/Grid';
-
-import { Loading, Form, InputField } from 'components';
+import { 
+    Loading, 
+    VerifyCodeRequestForm,
+    SearchAccountForm,
+    PasswordResetForm
+} from 'components';
 
 class Help extends PureComponent {
     constructor(props) {
         super(props);
 
-        this.email = '';
+        const pathName = props.history.location.pathname;
+        const splitedPathName = pathName.split('/');
+
+        this.title = props.title;
+        this.page = splitedPathName[splitedPathName.length - 1];
     }
-    
-    getInputFieldText = (id) => {
-        return document.getElementById(id).value;
-    }
-
-    requestResetPassword = (event) => {
-        event.preventDefault();
-        
-        const newPassword = this.getInputFieldText('newPassword');
-        const confirmPassword = this.getInputFieldText('confirmPassword');
-
-        if(newPassword !== confirmPassword) {
-            this.props.openDialog("비밀번호가 일치하지 않습니다.");
-            return;
-        }
-
-        axios.post('/account/help/password/reset', { email: this.email, newPassword })
-            .then(response => {
-                this.props.openDialog(response.data.message, () => {
-                    this.props.history.push('/');
-                });
-            })
-            .catch(error => {
-                this.props.openDialog(error.response.data.message);
-            })
-    }
-   
-    requestVerifyCode = (event) => {
-        event.preventDefault();
-
-        this.email = this.getInputFieldText('email');
-        if(this.email === "") { 
-            this.props.openDialog("이메일 주소를 입력해주세요.");
-            return;
-        }
-
-        this.props.requestEmailVerifyCode(this.email, false)
-            .then(result => this.props.openDialog(result))
-            .catch(error => this.props.openDialog(error))
-    }
-
-    confirmVerifyCode = (event) => {
-        event.preventDefault();   
-
-        const verifyCode = this.getInputFieldText('verifyCode');
-
-        this.props.confirmEmailVerifyCode(this.email, verifyCode)
-            .catch(error => this.props.openDialog(error))
-    } 
 
     componentWillUnmount() {
         this.props.expireVerifyCode();
     }
     
     render() {
-        const { emailVerification } = this.props;
-
-        if(emailVerification.waitResponse) {
-            return <Loading size="large" color="white" spacing="200px"/>;
+        const { waitResponse, isSentRequest } = this.props.emailVerification;
+        if(waitResponse) return <Loading size="large" color="white" spacing="200px"/>;
+        else if(!isSentRequest) return <VerifyCodeRequestForm name={this.title}/>;
+        
+        switch (this.page) {
+            case 'account':
+                return <SearchAccountForm name={this.title}/>;
+            case 'password':
+                return <PasswordResetForm name={this.title}/>;
+            default:
+                return null;
         }
-
-        if(!emailVerification.isSentRequest) {
-            return (
-                <Form
-                    title="비밀번호 재설정"
-                    submitName="인증번호 요청"
-                    onSubmit={this.requestVerifyCode}
-                >  
-                    <EmailInputField/>
-                </Form>
-            );
-        }
-
-        return (
-            <Form
-                title="비밀번호 재설정"
-                submitName={emailVerification.isVerified ? '재설정하기' : '제출하기'}
-                onSubmit={emailVerification.isVerified ? this.requestResetPassword : this.confirmVerifyCode}
-            >
-                { emailVerification.isVerified ? <PasswordInputField/> : <VerifyCodeInputField/> }
-            </Form>
-        );
     }
-}
-
-const EmailInputField = () => {
-    return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <InputField id="email" label="이메일 주소 입력"/>
-            </Grid>
-        </Grid>
-    );
-}
-
-const VerifyCodeInputField = () => {
-    return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <InputField id="verifyCode" label="인증번호 입력"/>
-            </Grid>
-        </Grid>
-    );
-} 
-
-const PasswordInputField = () => {
-    return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <InputField id="newPassword" type="password" label="새로운 비밀번호 입력" autoComplete="new-password" />
-            </Grid>
-            <Grid item xs={12}>
-                <InputField id="confirmPassword" type="password" label="비밀번호 확인" />
-            </Grid>
-        </Grid>
-    );    
 }
 
 const mapStateToProps = (state) => {
@@ -141,16 +49,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        requestEmailVerifyCode: (email, isNewEmail) => {
-            return dispatch(requestEmailVerifyCode(email, isNewEmail));
-        },
-        confirmEmailVerifyCode: (email, verifyCode) => {
-            return dispatch(confirmEmailVerifyCode(email, verifyCode));
-        },
-        expireVerifyCode: () => dispatch(expireVerifyCode()),
-        openDialog: (message, callback) => { 
-            return dispatch(openDialog({ message: message, callback: callback }));
-        }
+        expireVerifyCode: () => dispatch(expireVerifyCode())
     }
 }
 

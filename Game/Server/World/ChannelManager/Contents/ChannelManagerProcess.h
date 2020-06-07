@@ -4,8 +4,8 @@
 class ChannelManagerProcess : public ContentsProcess {
 public:
 	ChannelManagerProcess();
-	virtual ~ChannelManagerProcess();
+	~ChannelManagerProcess();
 
-	static void GetChannelListRequest(Session* session, Packet* rowPacket);
+	static void GetChannelListRequest(Session* session, const Packet* rowPacket);
 };
 #endif

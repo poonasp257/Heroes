@@ -1,66 +1,93 @@
 #include "stdafx.h"
 
-DBManager::DBManager() {
-	Json json;
-	bool result = json.readFile("config.json");
-	if (!result) {
-		SystemLogger::Log(Logger::Error, L"File could not be opened!");
-		// assert
-		return;
-	}
-
-	Json::Document& document = json.getDocument();
-	Json::Value& config = document["App"]["Database"];
-	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, L"\'Database\' document is not exist");
-		// assert
-		return;
-	}
-
-	ip = convertAnsiToUnicode(config["Ip"].GetString());
-	port = config["Port"].GetInt();
-	dbName = convertAnsiToUnicode(config["DBName"].GetString());
-	id = convertAnsiToUnicode(config["Id"].GetString());
-	password = convertAnsiToUnicode(config["Password"].GetString());
-	workerCount = config["ThreadCount"].GetInt();
+DBManager::DBManager() : 
+	port(0), 
+	workerCount(0) {
 	
-	queryPool = new ThreadJobQueue<Query*>();
-
-	for (int i = 0; i < workerCount; ++i) {
-		std::array<char, SIZE_128> patch = { 0, };
-		Database *db = new ODBCDatabase();
-		dbPool.push_back(db);
-	}
 }
 
 DBManager::~DBManager() {
-	if(queryPool) delete queryPool;
-
-    for (auto db : dbPool) {
+    for (auto& db : dbPool) {
 		if (!db) continue;
 
+		db->setState(DBState::Stop);
         db->disconnect();
-		delete db;
     }
 }
 
-void DBManager::pushQuery(Query *query) {
+void DBManager::pushQuery(std::unique_ptr<Query> query) {
     queryPool->push(query);
 }
 
-bool DBManager::popQuery(Query **query) {
-	queryPool->pop(*query);
-	return (*query) != nullptr;
+void DBManager::popQuery(std::unique_ptr<Query>& query) {
+	queryPool->pop(query);
 }
 
-void DBManager::run() {
-    for (auto db : dbPool) {
+bool DBManager::initialize() {
+	const auto& config = ConfigManager::Instance().getConfig();
+	const Json::Value& dbConfig = config["Database"];
+	if (dbConfig.IsNull()) {
+		ERROR_LOG(L"\'Database\' document doesn't exist");
+		return false;
+	}
+
+	if (dbConfig["IP"].IsNull()) {
+		ERROR_LOG(L"\'Database:IP\' document doesn't exist");
+		return false;
+	}
+	else if (dbConfig["Port"].IsNull()) {
+		ERROR_LOG(L"\'Database:Port\' document doesn't exist");
+		return false;
+	}
+	else if (dbConfig["DBName"].IsNull()) {
+		ERROR_LOG(L"\'Database:DBName\' document doesn't exist");
+		return false;
+	}
+	else if (dbConfig["ID"].IsNull()) {
+		ERROR_LOG(L"\'Database:Id\' document doesn't exist");
+		return false;
+	}
+	else if (dbConfig["Password"].IsNull()) {
+		ERROR_LOG(L"\'Database:Password\' document doesn't exist");
+		return false;
+	}
+	else if (dbConfig["ThreadCount"].IsNull()) {
+		ERROR_LOG(L"\'Database:ThreadCount\' document doesn't exist");
+		return false;
+	}
+
+	ip = ConvertAnsiToUnicode(dbConfig["IP"].GetString());
+	port = dbConfig["Port"].GetInt();
+	dbName = ConvertAnsiToUnicode(dbConfig["DBName"].GetString());
+	id = ConvertAnsiToUnicode(dbConfig["ID"].GetString());
+	password = ConvertAnsiToUnicode(dbConfig["Password"].GetString());
+	workerCount = dbConfig["ThreadCount"].GetInt();
+
+	for (int i = 0; i < workerCount; ++i) {
+		dbPool.push_back(std::make_unique<ODBCDatabase>());
+	}
+
+	queryPool = std::make_unique<SynchronizedQueue<std::unique_ptr<Query>>>(L"DBManager");
+
+	return true;
+}
+
+bool DBManager::run() {
+    for (auto& db : dbPool) {
         if (db->getState() != DBState::Stop) continue;
 
 		if (!db->connect(ip.c_str(), port, dbName.c_str(), id.c_str(), password.c_str())) {
-			SystemLogger::Log(Logger::Error, L"! db[%s] connection error", dbName.c_str());
+			ERROR_LOG(L"! db[%s] connection error", dbName.c_str());
+			continue;
 		}
 
-        db->run();
+		if (!db->run()) WARNING_LOG(L"Database couldn't start");
     }
+
+	return true;
+}
+void DBManager::stopAll() {
+	for (auto& db : dbPool) {
+		db->setState(DBState::Stop);
+	}
 }

@@ -31,7 +31,14 @@ export default function App() {
                 </Link> 
                 <Route exact path="/" component={Home}/>
                 <Route path="/signup" component={SignUp}/>
-                <Route path="/help" component={Help}/>
+                <Route 
+                    path="/help/account" 
+                    render={(props) => <Help {...props} title="계정 찾기"/>}
+                />
+                <Route 
+                    path="/help/password" 
+                    render={(props) => <Help {...props} title="비밀번호 재설정"/>}
+                />
             </Router>
             <AlertBox/>
         </Container>

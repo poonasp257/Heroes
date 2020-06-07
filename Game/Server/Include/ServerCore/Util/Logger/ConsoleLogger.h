@@ -3,10 +3,15 @@
 
 #include "Logger.h"
 
+class CriticalSection;
+
 class ConsoleLogger : public Logger {
+private:
+	CriticalSection lock;
+
 public:
 	ConsoleLogger();
-	virtual ~ConsoleLogger();
+	~ConsoleLogger();
 
 	virtual void log(Level level, const wchar_t* message, ...);
 	virtual void log(Level level, const wchar_t* message, va_list args);

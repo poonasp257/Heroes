@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import axios from 'axios';
 
 import { connect } from 'react-redux';
-import { requestEmailVerifyCode, confirmEmailVerifyCode, expireVerifyCode } from 'modules/verification';
+import { requestEmailVerifyCode, requestConfirmEmailVerifyCode, expireVerifyCode } from 'modules/verification';
 import { openDialog } from 'modules/dialog';
 
 import Grid from '@material-ui/core/Grid';
@@ -16,7 +16,6 @@ class SignUp extends PureComponent {
 
     handleSubmit = (event) => {
         event.preventDefault();
-
         if(!this.props.emailVerification.isVerified) {
             this.props.openDialog("이메일 인증이 필요합니다.");
             return; 
@@ -25,7 +24,6 @@ class SignUp extends PureComponent {
         const email = this.getInputFieldText('email');
         const username =  this.getInputFieldText('username');
         const password =  this.getInputFieldText('password');
-
         axios.post('/account/signup', { email, username, password })
             .then(response => {
                 this.props.openDialog(response.data.message, () => {
@@ -54,8 +52,8 @@ class SignUp extends PureComponent {
 
         const email = this.getInputFieldText('email');
         const verifyCode = this.getInputFieldText('verifyCode');
-
-        this.props.confirmEmailVerifyCode(email, verifyCode)
+        this.props.requestConfirmEmailVerifyCode(email, verifyCode)
+            .then(result => this.props.openDialog(result))
             .catch(error => this.props.openDialog(error))
     } 
 
@@ -68,7 +66,7 @@ class SignUp extends PureComponent {
 
         return (
             <Form
-                title="회원가입"
+                name="회원가입"
                 submitName="가입하기"
                 onSubmit={this.handleSubmit}
             >
@@ -85,6 +83,7 @@ class SignUp extends PureComponent {
                         <InputField 
                             id="verifyCode" 
                             label="인증번호 입력" 
+                            autoComplete="off"
                             disabled={emailVerification.isVerified}
                         />
                     </Grid>
@@ -125,8 +124,8 @@ const mapDispatchToProps = (dispatch) => {
         requestEmailVerifyCode: (email, isNewEmail) => {
             return dispatch(requestEmailVerifyCode(email, isNewEmail));
         },
-        confirmEmailVerifyCode: (email, verifyCode) => {
-            return dispatch(confirmEmailVerifyCode(email, verifyCode));
+        requestConfirmEmailVerifyCode: (email, verifyCode) => {
+            return dispatch(requestConfirmEmailVerifyCode(email, verifyCode));
         },
         expireVerifyCode: () => dispatch(expireVerifyCode()),
         openDialog: (message, callback) => { 

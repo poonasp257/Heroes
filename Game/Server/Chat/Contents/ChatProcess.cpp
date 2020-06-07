@@ -9,7 +9,7 @@ ChatProcess::~ChatProcess() {
 
 }
 
-//void MonsterProcess::AuthRegisterRequest(Session *session, Packet *rowPacket) {
+//void MonsterProcess::AuthRegisterRequest(Session* session, Packet* rowPacket) {
 //
 //
 //}

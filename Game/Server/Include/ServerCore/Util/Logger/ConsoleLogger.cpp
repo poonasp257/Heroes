@@ -1,7 +1,9 @@
 #include "stdafx.h"
 using namespace std;
 
-ConsoleLogger::ConsoleLogger() : Logger() {
+ConsoleLogger::ConsoleLogger() : 
+	Logger(), 
+	lock(L"ConsoleLogger") {
 
 }
 
@@ -17,15 +19,10 @@ void ConsoleLogger::log(Level level, const wchar_t* message, ...) {
 }
 
 void ConsoleLogger::log(Level level, const wchar_t* message, va_list args) {
-	wstring text;
 	array<wchar_t, SIZE_256> buf;
-
 	vswprintf_s(buf.data(), buf.size(), message, args);
-
-	text = L"[" + logTypes[level] + L"]";
-	text += L"[" + convertAnsiToUnicode(Clock::NowTickToStr()) + L"]";
-	text += L" ";
-	text += buf.data();
-
+	wstring text = Format(L"[%s][%s] %s", logTypes[level], 
+		Clock::NowTickToWStr().c_str(), buf.data());
+	SAFE_LOCK(lock);
 	wcout << text << endl;
 }

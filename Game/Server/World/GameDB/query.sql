@@ -1,5 +1,5 @@
-CREATE TABLE Accounts
-	(accountId BIGINT PRIMARY KEY NOT NULL,
+CREATE TABLE Accounts (
+	id BIGINT PRIMARY KEY NOT NULL,
 	familyName NVARCHAR(50) NOT NULL,
 	creatableCharactersCount SMALLINT DEFAULT 10,
 	createdDate DATETIME NOT NULL, 
@@ -16,9 +16,9 @@ CREATE TABLE Characters
 	currentMP BIGINT DEFAULT 100,
 	maxHP BIGINT DEFAULT 100,
 	maxMP BIGINT DEFAULT 100,	
-	x FLOAT DEFAULT 80,
-	y FLOAT DEFAULT 22.5,
-	z FLOAT DEFAULT 50,
+	x FLOAT DEFAULT 140,
+	y FLOAT DEFAULT 1,
+	z FLOAT DEFAULT 20,
 	rx FLOAT DEFAULT 0,
 	ry FLOAT DEFAULT 0,
 	rz FLOAT DEFAULT 0,
@@ -60,6 +60,26 @@ END
 GO
 
 GRANT EXECUTE ON dbo.CreateAccount To poona
+GO
+
+CREATE OR ALTER PROC DeleteAccount
+@accountId BIGINT
+AS
+BEGIN
+	DECLARE @count INT
+	SELECT @count = COUNT(*) FROM dbo.Accounts WHERE accountId = @accountId
+	IF @count = 0
+		RETURN 0
+
+	DELETE FROM dbo.Accounts WHERE accountId = @accountId
+	IF @@ROWCOUNT = 0
+		RETURN 0
+
+	RETURN 1
+END
+GO
+
+GRANT EXECUTE ON dbo.DeleteAccount To poona
 GO
 
 CREATE OR ALTER PROC GetCharacterList

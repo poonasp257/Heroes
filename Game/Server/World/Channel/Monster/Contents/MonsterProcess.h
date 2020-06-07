@@ -8,7 +8,7 @@ class Packet;
 class MonsterProcess : public ContentsProcess {
 public:
 	MonsterProcess();
-	virtual ~MonsterProcess();
+	~MonsterProcess();
 
 	//static void ChannelStatusRequest(Session* session, Packet* rowPacket);
 };

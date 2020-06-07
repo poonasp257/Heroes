@@ -4,25 +4,40 @@
 class Database;
 class Query;
 
-class DBManager : public Singleton <DBManager> {
-	int                                 workerCount;
-	std::vector<Database*>	            dbPool;
+class DBManager {
+private:
+	int										workerCount;
+	std::vector<std::unique_ptr<Database>>	dbPool;
 
-	std::wstring						ip;
-	int									port;
-	std::wstring						dbName;
-	std::wstring						id;
-	std::wstring						password;
-	ThreadJobQueue<Query*>				*queryPool;
+	std::wstring							ip;
+	int										port;
+	std::wstring							dbName;
+	std::wstring							id;
+	std::wstring							password;
+
+	std::unique_ptr<SynchronizedQueue<std::unique_ptr<Query>>> queryPool;
+
+private:
+	DBManager();
+	~DBManager();
 
 public:
-	DBManager();
-	virtual ~DBManager();
-	
-	bool isQueryPoolEmpty() const { return queryPool->isEmpty(); }
-	void pushQuery(Query *query);
-	bool popQuery(Query **query);
+	DBManager(const DBManager&) = delete;
+	DBManager(DBManager&&) = delete;
+	DBManager& operator=(const DBManager&) = delete;
+	DBManager& operator=(DBManager&&) = delete;
 
-	void run();
+	bool isQueryPoolEmpty() const { return queryPool->isEmpty(); }
+	void pushQuery(std::unique_ptr<Query> query);
+	void popQuery(std::unique_ptr<Query>& query);
+
+	bool initialize();
+	bool run();
+	void stopAll();
+
+	static auto& Instance() {
+		static DBManager instance;
+		return instance;
+	}
 };
 #endif

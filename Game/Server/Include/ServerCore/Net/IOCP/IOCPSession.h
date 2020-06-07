@@ -47,12 +47,12 @@ private:
 
 public:
 	IOCPSession();
-	virtual ~IOCPSession();
+	~IOCPSession();
 
 	virtual void onSend(size_t transferSize);
-	virtual void sendPacket(Packet *packet);
+	virtual void sendPacket(const Packet& packet);
 
-	virtual Package* onRecv(size_t transferSize);
+	virtual std::unique_ptr<Package> onRecv(size_t transferSize);
 	virtual void recvStandBy();
 };
 

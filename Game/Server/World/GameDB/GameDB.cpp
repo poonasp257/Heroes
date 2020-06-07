@@ -2,16 +2,17 @@
 #include "Contents/GameDBProcess.h"
 
 int _tmain() {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-		return -1;
+	if (!DBManager::Instance().initialize()) {
+		ERROR_LOG(L"Terminal Manager initialized failed");
+		return false;
+	}
+	if (!DBManager::Instance().run()) {
+		ERROR_LOG(L"Terminal Manager couldn't start");
+		return false;
 	}
 
-	DBManager::Instance().run();
-
-	std::shared_ptr<Server> server(new IOCPServer(new GameDBProcess()));
+	auto server = std::make_shared<IOCPServer>(std::make_unique<GameDBProcess>());
 	if (!server->run()) return -1;
 
-	WSACleanup();
 	return 0;
 }

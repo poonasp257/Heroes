@@ -1,75 +1,80 @@
 #include "stdafx.h"
 
-ContentsProcess::ContentsProcess() : packageQueue(new ThreadJobQueue<Package*>()){
-	Json json;
-	bool result = json.readFile("config.json");
-	if (!result) {
-		SystemLogger::Log(Logger::Error, L"File could not be opened!");
-		// assert
-	}
-
-	this->initialize(json.getDocument());
+ContentsProcess::ContentsProcess() : 
+	threadCount(0),
+	packageQueue(nullptr){
 	
-	this->registerPacketProcess(PacketType::NotifyTerminal, &ContentsProcess::NotifyTerminal);
 }
 
 ContentsProcess::~ContentsProcess() {
-	delete packageQueue;
+
 }
 
-void ContentsProcess::initialize(Json::Document& document) {
-	Json::Value& config = document["App"]["Contents"];
-	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, L"\'App\' document is not exist");
-		// assert
+bool ContentsProcess::initialize() {
+	const auto& config = ConfigManager::Instance().getConfig();
+	const Json::Value& contentsConfig = config["Contents"];
+	if (contentsConfig.IsNull()) {
+		ERROR_LOG(L"\'Contents\' document doesn't exist");
+		return false;
 	}
 
-	int threadCount = config["ThreadCount"].GetInt();
+	if (contentsConfig["ThreadCount"].IsNull()) {
+		ERROR_LOG(L"\'Database:ThreadCount\' document doesn't exist");
+		return false;
+	}
+
+	threadCount = contentsConfig["ThreadCount"].GetInt();
+	packageQueue = std::make_unique<SynchronizedQueue<std::unique_ptr<Package>>>(L"ContentsProcessQueue");
+	this->registerPacketProcess(PacketType::NotifyTerminal, &ContentsProcess::NotifyTerminal);
+
+	return true;
+}
+
+bool ContentsProcess::run() {
+	if (threadCount <= 0) return false;
+
 	for (int i = 0; i < threadCount; ++i) {
-		threadPool[i] = std::make_unique<Thread>(new std::thread(&ContentsProcess::process, this));
+		threadPool.push_back(MAKE_THREAD(ContentsProcess, processThread));
 	}
+
+	return true;
 }
 
-void ContentsProcess::process() {
-	while (true) {
-		this->execute();
-		Sleep(1);
-	}
-}
-
-void ContentsProcess::run(Package *package) {
-	Session *session = package->getSession();
-	Packet *packet = package->getPacket();
+void ContentsProcess::execute(std::unique_ptr<Package>& package) {
+	Session* session = package->getSession();
+	Packet* packet = package->getPacket();
 	PacketType type = packet->type();
 
 	auto itr = processTable.find(type);
 	if (itr == processTable.end()) {
-		SystemLogger::Log(Logger::Warning, L"invaild packet runFunction. type[%d]", type);
-		session->onClose();
+		WARNING_LOG(L"invaild packet runFunction. type[%d]", type);
+		SessionManager::Instance().closeSession(session);
 		return;
 	}
 
-	PacketProcess packetProcess = itr->second;
-	packetProcess(session, packet);
+	itr->second(session, packet);
 }
 
-void ContentsProcess::execute() {
-	Package *package = nullptr;
-	packageQueue->pop(package);
-	if(!package) return;
-	   	
-    this->run(package);
-	delete package;
+void ContentsProcess::processThread() {
+	while (Server::getState() == ServerState::Running) {
+		if (!packageQueue->isEmpty()) {
+			std::unique_ptr<Package> package = nullptr;
+			packageQueue->pop(package);
+			this->execute(package);
+		}   
+
+		Sleep(1);
+	}
 }
 
 void ContentsProcess::registerPacketProcess(PacketType type, PacketProcess process) {
 	processTable.insert(std::make_pair(type, process));
 }
 
-void ContentsProcess::putPackage(Package *package) {
+void ContentsProcess::putPackage(std::unique_ptr<Package>& package) {
     packageQueue->push(package);		
 }    
 
-void ContentsProcess::NotifyTerminal(Session *session, Packet *rowPacket) {
+void ContentsProcess::NotifyTerminal(Session* session, const Packet* rowPacket) {
 	session->setType(SessionType::Terminal);
 }

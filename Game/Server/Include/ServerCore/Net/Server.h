@@ -2,30 +2,35 @@
 #define SERVER_H
 
 class ContentsProcess;
+class Package;
 
-enum class ServerStatus {
+enum class ServerState {
 	Stop,
-	Initialize,
-	Ready
+	Running
 };
 
-class Server {
+class Server : public std::enable_shared_from_this<Server> {
 protected:
-	std::array<char, SIZE_16> 	ip;
-	int							port;
-	int							workerThreadCount;
+	std::wstring						name;
+	std::array<char, SIZE_16> 			ip;
+	int									port;
+	int									workerThreadCount;
 
-	ServerStatus				status;
-	ContentsProcess 			*process;
-	
+	std::unique_ptr<ContentsProcess>	contentsProcess;
+
+	static ServerState					state;
+
 public:
-	Server(ContentsProcess *process);
+	Server(std::unique_ptr<ContentsProcess> process);
 	virtual ~Server();
 
 	virtual bool run() = 0;
 
-	ServerStatus getStatus() { return status; }
+	const wchar_t* getName() const { return name.c_str(); }
 
-	void putPackage(Package *package);
+	void putPackage(std::unique_ptr<Package>& package);
+
+	static void setState(ServerState state) { Server::state = state; }
+	static ServerState getState() { return state; }
 };
 #endif

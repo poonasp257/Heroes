@@ -1,11 +1,10 @@
 #ifndef JSON_H
 #define JSON_H
 
-// rapidjson wrapper class
 class Json {
 private:
-	FILE*				fp;
-	rapidjson::Document	document;
+	using FileReadStream = rapidjson::FileReadStream;
+	using FileWriteStream = rapidjson::FileWriteStream;
 
 public:
 	using Document = rapidjson::Document;
@@ -13,12 +12,8 @@ public:
 	using Value = rapidjson::Value;
 
 public:
-	Json();
-	~Json();
-
-	bool readFile(const std::string& fileName);
-	bool writeFile(const std::string& fileName);
-	Document& getDocument() { return document; }
+	static bool ReadFile(Document& document, const std::string& fileName);
+	static bool WriteFile(Document& document, const std::string& fileName);
 };
 
 #endif

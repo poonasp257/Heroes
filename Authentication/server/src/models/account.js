@@ -23,7 +23,8 @@ const Account = new Schema({
 Account.plugin(autoIncrement.plugin, 'account');
 
 Account.methods.generateHash = function(password) {
-    return bcrypt.hashSync(password, 8);
+    const salt = bcrypt.genSaltSync(8);
+    return bcrypt.hashSync(password, salt);
 };
 
 Account.methods.validateHash = function(password) {

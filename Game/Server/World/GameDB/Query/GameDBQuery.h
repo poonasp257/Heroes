@@ -5,27 +5,26 @@ class Session;
 
 class SearchAccountQuery : public Query {
 public:
-	Session *session;
-	UInt64 clientId;
+	Session* session;
+	objectId_t clientId;
 
 	SearchAccountQuery() {
 		statement->setQuery(L"EXEC SearchAccount", QueryType::Direct);
 	}
-	virtual ~SearchAccountQuery() {}
+	~SearchAccountQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBSearchAccountResponsePacket packet;
 		packet.clientId = clientId;
-		packet.errorCode = ErrorCode::Fail;
+		packet.errorCode = StatusCode::Fail;
 
 		wchar_t familyName[50] = L"";
-
 		SQLBindCol(statement, 1, SQL_C_WCHAR, familyName, 50, NULL);
 		SQLBindCol(statement, 2, SQL_C_SHORT, &packet.creatableCharactersCount, sizeof(UINT16), NULL);
 
 		SQLRETURN retVal = SQLFetch(statement);
 		if (retVal == SQL_ERROR) {
-			SystemLogger::Log(Logger::Error, L"*SQL Fetch error");
+			ERROR_LOG(L"*SQL Fetch error");
 			return;
 		}
 
@@ -33,56 +32,55 @@ public:
 		SQLRowCount(statement, &rowCount);
 		if (rowCount > 0) {
 			packet.familyName = familyName;
-			packet.errorCode = ErrorCode::Success;
+			packet.errorCode = StatusCode::Success;
 		}
 
-		session->sendPacket(&packet);		
+		session->sendPacket(packet);		
 	}
 };
 
 class CreateAccountQuery : public Query {
 public:
 	Session* session;
-	UInt64 clientId;
+	objectId_t clientId;
 	
 	CreateAccountQuery() {
 		statement->setQuery(L"EXEC CreateAccount", QueryType::Direct);
 	}
-	virtual ~CreateAccountQuery() {}
+	~CreateAccountQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBCreateAccountResponsePacket packet;
 		packet.clientId = clientId;
-		packet.errorCode = ErrorCode::Success;
+		packet.errorCode = StatusCode::Fail;
 
 		SQLLEN rowCount = 0;
 		SQLRowCount(statement, &rowCount);
-		if (rowCount == 0) packet.errorCode = ErrorCode::Conflict;
-		else if (rowCount < 0) packet.errorCode = ErrorCode::Fail;
+		if (rowCount > 0) packet.errorCode = StatusCode::Success;
+		else packet.errorCode = StatusCode::Fail;
 
-		session->sendPacket(&packet);
+		session->sendPacket(packet);
 	}
 };
 
 class GetCharacterListQuery : public Query {
 public:
-	Session *session;
-	UInt64 clientId;
+	Session* session;
+	objectId_t clientId;
 
 	GetCharacterListQuery() {
 		statement->setQuery(L"EXEC GetCharacterList", QueryType::Direct);
 	}
-	virtual ~GetCharacterListQuery() {}
+	~GetCharacterListQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBGetCharacterListResponsePacket packet;
 		packet.clientId = clientId;
 
 		CharacterInfo characterInfo;
 		wchar_t characterName[50];
 		wchar_t location[50];
-
-		SQLBindCol(statement, 1, SQL_C_UBIGINT, &characterInfo.characterId, sizeof(UInt64), NULL);
+		SQLBindCol(statement, 1, SQL_C_UBIGINT, &characterInfo.characterId, sizeof(objectId_t), NULL);
 		SQLBindCol(statement, 2, SQL_C_WCHAR, &characterName, 50, NULL);
 		SQLBindCol(statement, 3, SQL_C_SHORT, &characterInfo.characterClass, sizeof(UInt16), NULL);
 		SQLBindCol(statement, 4, SQL_C_LONG, &characterInfo.level, sizeof(UInt32), NULL);
@@ -106,23 +104,23 @@ public:
 			packet.characterList.push_back(characterInfo);
 		}
 
-		session->sendPacket(&packet);
+		session->sendPacket(packet);
 	}
 };
 
 class ChangeCharacterOrderQuery : public Query {
 public:
-	Session *session;
-	UInt64 clientId;
+	Session* session;
+	objectId_t clientId;
 	UInt16 fromIndex;
 	UInt16 toIndex;
 		
 	ChangeCharacterOrderQuery() {
 		statement->setQuery(L"EXEC ChangeCharacterOrder", QueryType::Direct);
 	}
-	virtual ~ChangeCharacterOrderQuery() {}
+	~ChangeCharacterOrderQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBChangeCharacterOrderResponsePacket packet;
 		packet.clientId = clientId;
 		packet.fromIndex = fromIndex;
@@ -130,71 +128,70 @@ public:
 
 		SQLLEN rowCount = 0;
 		SQLRowCount(statement, &rowCount);
-		if (rowCount <= 0) {
-			SystemLogger::Log(Logger::Warning, L"'ChangeCharacterOrder' query error");
+		SQLRETURN retVal = SQLRowCount(statement, &rowCount);
+		if (retVal == SQL_ERROR) {
+			ERROR_LOG(L"* DB Query error!");
+			return;
 		}
 
-		session->sendPacket(&packet);
+		session->sendPacket(packet);
 	}
 };
 
 class CreateCharacterQuery : public Query {
 public:
-	Session *session;
-	UInt64 clientId;
+	Session* session;
+	objectId_t clientId;
 
 	CreateCharacterQuery() {
 		statement->setQuery(L"EXEC CreateCharacter", QueryType::Direct);
 	}
-	virtual ~CreateCharacterQuery() {}
+	~CreateCharacterQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBCreateCharacterResponsePacket packet;
 		packet.clientId = clientId;
-		packet.errorCode = ErrorCode::Success;
+		packet.errorCode = StatusCode::Success;
 		
-		SQLINTEGER rowCount;
-		SQLRowCount(statement, &rowCount);
-		if (rowCount == 0) packet.errorCode = ErrorCode::Conflict;
-		else if (rowCount < 0) packet.errorCode = ErrorCode::Fail;
+		SQLLEN rowCount;
+		SQLRETURN retVal = SQLRowCount(statement, &rowCount);
+		if (retVal == SQL_ERROR) {
+			ERROR_LOG(L"* DB Query error!");
+		}
 
-		SQLFreeStmt(statement, SQL_CLOSE);
-		SQLFreeStmt(statement, SQL_UNBIND);
-		SQLFreeStmt(statement, SQL_RESET_PARAMS);
+		if (rowCount == 0) packet.errorCode = StatusCode::Conflict;
+		else if (rowCount < 0) packet.errorCode = StatusCode::Fail;
 
-		session->sendPacket(&packet);
+		session->sendPacket(packet);
 	}
 };
 
 class DeleteCharacterQuery : public Query {
 public:
 	Session* session;
-	UInt64 clientId;
+	objectId_t clientId;
 
 	DeleteCharacterQuery() {
 		statement->setQuery(L"EXEC DeleteCharacter", QueryType::Direct);
 	}
-	virtual ~DeleteCharacterQuery() {}
+	~DeleteCharacterQuery() {}
 
-	void doResponse(SQLHSTMT statement) {
+	virtual void doResponse(SQLHSTMT statement) {
 		DBDeleteCharacterResponsePacket packet;
 		packet.clientId = clientId;
 
-		SQLINTEGER rowCount;
+		SQLLEN rowCount;
 		SQLRETURN retVal = SQLRowCount(statement, &rowCount);
 		if (retVal == SQL_ERROR) {
-			SystemLogger::Log(Logger::Error, L"* DB Query error!");
+			ERROR_LOG(L"* DB Query error!");
+			return;
 		}
 
 		if (rowCount < 0) {
-			SystemLogger::Log(Logger::Error, L"* does not exists character");
+			ERROR_LOG(L"* does not exists character");
 		}
 
-		SQLFreeStmt(statement, SQL_CLOSE);
-		SQLFreeStmt(statement, SQL_UNBIND);
-		SQLFreeStmt(statement, SQL_RESET_PARAMS);
-
-		session->sendPacket(&packet);
+		session->sendPacket(packet);
 	}
 };
 #endif

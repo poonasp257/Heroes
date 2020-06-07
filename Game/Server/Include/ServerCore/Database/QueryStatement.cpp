@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "QueryStatement.h"
 
-QueryStatement::QueryStatement() {
+QueryStatement::QueryStatement() :
+ 	type(QueryType::Direct) {
 	paramCount = 0;
 	query.clear();
 }
@@ -10,16 +11,16 @@ QueryStatement::~QueryStatement() {
 
 }
 
-void QueryStatement::setQuery(const wchar_t *query, QueryType type) {
+void QueryStatement::setQuery(const wchar_t* query, QueryType type) {
 	this->query = query;
 	this->type = type;
 }
 
-void QueryStatement::addParam(const char *value) {
+void QueryStatement::addParam(const char* value) {
 	this->addArg(L"'%S'", value);
 }
 
-void QueryStatement::addParam(const wchar_t *value) {
+void QueryStatement::addParam(const wchar_t* value) {
 	this->addArg(L"'%s'", value);
 }
 

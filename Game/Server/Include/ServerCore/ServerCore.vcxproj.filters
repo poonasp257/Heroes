@@ -7,23 +7,11 @@
     <ClCompile Include="Contents\ContentsProcess.cpp">
       <Filter>Contents</Filter>
     </ClCompile>
-    <ClCompile Include="Util\Json.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Clock.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="Database\ODBCDatabase.cpp">
       <Filter>Database</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Net\Server.cpp">
       <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="Util\Thread.cpp">
-      <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="Database\Query.cpp">
       <Filter>Database</Filter>
@@ -76,6 +64,66 @@
     <ClCompile Include="Util\Logger\SystemLogger.cpp">
       <Filter>Util\Logger</Filter>
     </ClCompile>
+    <ClCompile Include="Net\Packet\PacketObfuscator.cpp">
+      <Filter>Net\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread\Thread.cpp">
+      <Filter>Util\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread\ThreadManager.cpp">
+      <Filter>Util\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Lock\Lock.cpp">
+      <Filter>Util\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Lock\LockManager.cpp">
+      <Filter>Util\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Lock\ScopedLock.cpp">
+      <Filter>Util\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Clock.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\GameObject.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\HttpRequest.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Json.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Obfuscation\Obfuscation.cpp">
+      <Filter>Util\Obfuscation</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Obfuscation\XorObfuscation.cpp">
+      <Filter>Util\Obfuscation</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Task\AsyncTaskManager.cpp">
+      <Filter>Util\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Task\Task.cpp">
+      <Filter>Util\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Container\QuadTree.cpp">
+      <Filter>Util\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Boundary\BoundingBox.cpp">
+      <Filter>Util\Boudary</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Boundary\BoundingCircle.cpp">
+      <Filter>Util\Boudary</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\ConfigManager.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Assert.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Database\DBManager.h">
@@ -84,32 +132,14 @@
     <ClInclude Include="Contents\ContentsProcess.h">
       <Filter>Contents</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Json.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Clock.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="Database\ODBCDatabase.h">
       <Filter>Database</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="ServerCore.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Net\Server.h">
       <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Type.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Thread.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\ThreadJobQueue.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Database\Database.h">
       <Filter>Database</Filter>
@@ -125,9 +155,6 @@
     </ClInclude>
     <ClInclude Include="Net\Session.h">
       <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Singleton.h">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Net\IOCP\IOCPServer.h">
       <Filter>Net\IOCP</Filter>
@@ -162,9 +189,6 @@
     <ClInclude Include="Net\Packet\Stream.h">
       <Filter>Net\Packet</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Util.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\Logger\ConsoleLogger.h">
       <Filter>Util\Logger</Filter>
     </ClInclude>
@@ -176,6 +200,93 @@
     </ClInclude>
     <ClInclude Include="Util\Logger\SystemLogger.h">
       <Filter>Util\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\PacketObfuscator.h">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Thread\Thread.h">
+      <Filter>Util\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Thread\ThreadManager.h">
+      <Filter>Util\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Lock\Lock.h">
+      <Filter>Util\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Lock\LockManager.h">
+      <Filter>Util\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Lock\ScopedLock.h">
+      <Filter>Util\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Clock.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GameObject.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\HttpRequest.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Json.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Type.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Util.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\FSM\State.h">
+      <Filter>Util\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\FSM\StateMachine.h">
+      <Filter>Util\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Container\QuadTree.h">
+      <Filter>Util\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Obfuscation\Obfuscation.h">
+      <Filter>Util\Obfuscation</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Obfuscation\XorObfuscation.h">
+      <Filter>Util\Obfuscation</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Task\AsyncTaskManager.h">
+      <Filter>Util\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Task\Task.h">
+      <Filter>Util\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Packet\Stream.hpp">
+      <Filter>Net\Packet</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Algorithm\PathFinding.h">
+      <Filter>Util\Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Container\QuadTree.hpp">
+      <Filter>Util\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingBox.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingCircle.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Boundary\BoundingObject.h">
+      <Filter>Util\Boudary</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Assert.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ConfigManager.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Container\SynchronizedQueue.h">
+      <Filter>Util\Container</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +316,30 @@
     </Filter>
     <Filter Include="Util\Logger">
       <UniqueIdentifier>{0a99d0f6-e57b-439b-a44a-7c7f224974c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Lock">
+      <UniqueIdentifier>{7f2dcb48-2ff9-40e5-ad86-eb15faea2fc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Thread">
+      <UniqueIdentifier>{abc2d0dd-c89c-48b6-bec5-b5e605ee0426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\FSM">
+      <UniqueIdentifier>{47048f51-f781-495e-847f-fef8ece1c52d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Container">
+      <UniqueIdentifier>{863f4fdc-1c03-46ac-bd01-93f769a89fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Obfuscation">
+      <UniqueIdentifier>{2c2c5fab-39a6-43cb-98eb-d58ff5bfa709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Task">
+      <UniqueIdentifier>{5ee0066a-3eea-4bef-bc49-33a8cdf7a08c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Algorithm">
+      <UniqueIdentifier>{d4e06123-a09f-4b6c-b481-75f343fafbc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Boudary">
+      <UniqueIdentifier>{07fc9b85-8896-4c3d-9103-9133040ed38a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

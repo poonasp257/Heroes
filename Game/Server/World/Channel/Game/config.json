@@ -1,23 +1,25 @@
 {
-  "App": {
-    "Name": "아르카스",
-    "Server": {
+  "Name": "World-1",
+  "Server": {
+    "IP": "127.0.0.1",
+    "Port": 10000,
+    "ThreadCount": 1
+  },
+  "AuthServer": {
+    "IP": "http://127.0.0.1",
+    "Port": 9000
+  },
+  "Terminal": {
+    "ChannelManager": {
       "IP": "127.0.0.1",
-      "Port": 10000,
-      "ThreadCount": 1
+      "Port": 9400
     },
-    "Terminal": {
-      "Manager": {
-        "IP": "127.0.0.1",
-        "Port":  9400
-      },
-      "GameDB": {
-        "IP": "127.0.0.1",
-        "Port": 9500
-      }
-    },
-    "Contents": {
-      "ThreadCount": 1
+    "GameDB": {
+      "IP": "127.0.0.1",
+      "Port": 9500
     }
+  },
+  "Contents": {
+    "ThreadCount": 1
   }
 }

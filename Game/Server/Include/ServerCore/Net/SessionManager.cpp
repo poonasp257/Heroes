@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 SessionManager::SessionManager() 
-    : MaxConnection(1000), sessionIdSeed(0) {
+	: MaxConnection(1000), lock(L"SessionManager") {
 
 }
 
@@ -9,63 +9,70 @@ SessionManager::~SessionManager() {
 
 }
 
-bool SessionManager::addSession(Session *session) {
-	std::lock_guard<std::mutex> guard(lock);
+bool SessionManager::addSession(std::shared_ptr<Session> session) {
+	SAFE_LOCK(lock);
 
-    auto found = std::find(sessionList.begin(), sessionList.end(), session);
-    if(found != sessionList.end()) return false;
+    auto itr = std::find(sessionList.begin(), sessionList.end(), session);
+    if(itr != sessionList.end()) return false;
 	
     if(MaxConnection <= sessionList.size()) {
-        SystemLogger::Log(Logger::Info, L"No connections are available");
+		WARNING_LOG(L"No connections are available");
         return false;
     }
 
-	session->setId(this->createSessionId());
-    
-    sessionList.push_back(session);
+	session->setId(this->generateId());
+    sessionList.push_back(std::move(session));
+
 	return true;
 }
 
-bool SessionManager::closeSession(UInt64 sessionId) {
-	Session *session = this->getSession(sessionId);
-	return this->closeSession(session);
+void SessionManager::closeSession(objectId_t sessionId) {
+	SAFE_LOCK(lock);
+
+	auto itr = std::find_if(sessionList.begin(), sessionList.end(),
+		[&sessionId](const auto& session) { return  session->getId() == sessionId; });
+	if (itr == sessionList.end()) return;
+
+	INFO_LOG(L"disconnected client...[%s]", (*itr)->getIP().c_str());
+
+	(*itr)->onClose();
+	sessionList.erase(itr);
 }
 
-bool SessionManager::closeSession(Session *session) {
-	std::lock_guard<std::mutex> guard(lock);
+void SessionManager::closeSession(const Session* session) {
+	SAFE_LOCK(lock);
 
-    if(!session) return false;
+	if (session == nullptr) return;
 
-    auto found = std::find(sessionList.begin(), sessionList.end(), session);
-    if(found == sessionList.end()) return false;
-	
-	SystemLogger::Log(Logger::Info, L"disconnected client...[%s]",
-		session->getIP().c_str());
+	auto itr = std::find_if(sessionList.begin(), sessionList.end(),
+		[&session](const auto& item) { return item.get() == session; });
+	if (itr == sessionList.end()) return;
 
-    Session *delSession = *found;
-    closesocket(delSession->getSocket());
-    sessionList.remove(delSession);
-	if (delSession) delete delSession;
+	INFO_LOG(L"disconnected client...[%s]", (*itr)->getIP().c_str());
 
-    return true;
+	(*itr)->onClose();
+	sessionList.erase(itr);
 }
 
-void SessionManager::forceCloseSession(Session *session) {
-	std::lock_guard<std::mutex> guard(lock);
+void SessionManager::forceCloseSession(const Session* session) {
+	SAFE_LOCK(lock);
 
-    if(!session) return;
+	if (session == nullptr) return;
 
-    LINGER linger;
-    linger.l_linger = 0;
-    linger.l_onoff = 1;
+	auto itr = std::find_if(sessionList.begin(), sessionList.end(),
+		[&session](const auto& item) { return item.get() == session; });
+	if (itr == sessionList.end()) return;
 
-    setsockopt(session->getSocket(), SOL_SOCKET, SO_LINGER, 
-        (const char*)&linger, sizeof(linger));
+	INFO_LOG(L"disconnected client...[%s]", (*itr)->getIP().c_str());
 
-	this->closeSession(session);
+
+	LINGER linger = { 1, 0 };
+	setsockopt((*itr)->getSocket(), SOL_SOCKET, SO_LINGER, (const char*)&linger, sizeof(linger));
+	(*itr)->onClose();
+	sessionList.erase(itr);
 }
 
-void SessionManager::BroadcastPacket(Packet *packet, SessionType sessionType) {
+void SessionManager::BroadcastPacket(const Packet& packet, SessionType sessionType) {
 	for (auto session : sessionList) {
 		if (sessionType != session->getType()) continue;
 
@@ -73,16 +80,14 @@ void SessionManager::BroadcastPacket(Packet *packet, SessionType sessionType) {
 	}
 }
 
-Session* SessionManager::getSession(UInt64 sessionId) {
-	std::lock_guard<std::mutex> guard(lock);
-	Session *findSession = nullptr;
-
+Session* SessionManager::getSession(objectId_t sessionId) {
+	SAFE_LOCK(lock);
+	
 	for (auto session : sessionList) {
 		if (session->getId() == sessionId) {
-			findSession = session;
-			break;
+			return session.get();
 		}
 	}
 
-	return findSession;
+	return nullptr;
 }

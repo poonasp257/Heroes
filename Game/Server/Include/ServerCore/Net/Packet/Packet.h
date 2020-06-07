@@ -5,7 +5,7 @@ class Packet {
 public:
 	virtual PacketType type() const = 0;
 
-	virtual void serialize(Stream& stream) { stream << (UInt32)this->type(); }
+	virtual void serialize(Stream& stream) const { stream << (UInt32)this->type(); }
 	virtual void deSerialize(Stream& stream) { }
 };
 
@@ -36,7 +36,7 @@ public:
 public:
 	PacketType type() const { return PacketType::GetChannelListResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << channelList;
 	}
@@ -48,18 +48,18 @@ public:
 
 class SearchAccountRequestPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 
 public:
 	PacketType type() const { return PacketType::SearchAccountRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 	}
 };
 
@@ -72,7 +72,7 @@ public:
 public:
 	PacketType type() const { return PacketType::SearchAccountResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << familyName;
 		stream << creatableCharactersCount;
@@ -88,13 +88,13 @@ public:
 
 class DBSearchAccountRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
+	objectId_t clientId;
+	objectId_t accountId;
 
 public:
 	PacketType type() const { return PacketType::DBSearchAccountRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -108,7 +108,7 @@ public:
 
 class DBSearchAccountResponsePacket : public Packet {
 public:
-	UInt64 clientId;
+	objectId_t clientId;
 	std::wstring familyName;
 	UInt16 creatableCharactersCount;
 	Byte errorCode;
@@ -116,7 +116,7 @@ public:
 public:
 	PacketType type() const { return PacketType::DBSearchAccountResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << familyName;
@@ -134,20 +134,20 @@ public:
 
 class CreateAccountRequestPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 	std::wstring familyName;
 
 public:
 	PacketType type() const { return PacketType::CreateAccountRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 		stream << familyName;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 		stream >> &familyName;
 	}
 };
@@ -159,7 +159,7 @@ public:
 public:
 	PacketType type() const { return PacketType::CreateAccountResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << errorCode;
 	}
@@ -171,14 +171,14 @@ public:
 
 class DBCreateAccountRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
+	objectId_t clientId;
+	objectId_t accountId;
 	std::wstring familyName;
 
 public:
 	PacketType type() const { return PacketType::DBCreateAccountRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -194,13 +194,13 @@ public:
 
 class DBCreateAccountResponsePacket : public Packet {
 public:
-	UInt64 clientId;
+	objectId_t clientId;
 	Byte errorCode;
 
 public:
 	PacketType type() const { return PacketType::DBCreateAccountResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << errorCode;
@@ -214,18 +214,18 @@ public:
 
 class GetCharacterListRequestPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 
 public:
 	PacketType type() const { return PacketType::GetCharacterListRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 	}
 };
 
@@ -236,7 +236,7 @@ public:
 public:
 	PacketType type() const { return PacketType::GetCharacterListResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << characterList;
 	}
@@ -248,13 +248,13 @@ public:
 
 class DBGetCharacterListRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
+	objectId_t clientId;
+	objectId_t accountId;
 
 public:
 	PacketType type() const { return PacketType::DBGetCharacterListRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -268,13 +268,13 @@ public:
 
 class DBGetCharacterListResponsePacket : public Packet {
 public:
-	UInt64 clientId;
+	objectId_t clientId;
 	std::vector<CharacterInfo> characterList;
 
 public:
 	PacketType type() const { return PacketType::DBGetCharacterListResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << characterList;
@@ -288,22 +288,22 @@ public:
 
 class ChangeCharacterOrderRequestPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 	UInt16 fromIndex;
 	UInt16 toIndex;
 
 public:
 	PacketType type() const { return PacketType::ChangeCharacterOrderRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 		stream << fromIndex;
 		stream << toIndex;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 		stream >> &fromIndex;
 		stream >> &toIndex;
 	}
@@ -317,7 +317,7 @@ public:
 public:
 	PacketType type() const { return PacketType::ChangeCharacterOrderResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << fromIndex;
 		stream << toIndex;
@@ -331,15 +331,15 @@ public:
 
 class DBChangeCharacterOrderRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
+	objectId_t clientId;
+	objectId_t accountId;
 	UInt16 fromIndex;
 	UInt16 toIndex;
 
 public:
 	PacketType type() const { return PacketType::DBChangeCharacterOrderRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -357,14 +357,14 @@ public:
 
 class DBChangeCharacterOrderResponsePacket : public Packet {
 public:
-	UInt64 clientId;
+	objectId_t clientId;
 	UInt16 fromIndex;
 	UInt16 toIndex;
 
 public:
 	PacketType type() const { return PacketType::DBChangeCharacterOrderResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << fromIndex;
@@ -380,22 +380,22 @@ public:
 
 class CreateCharacterRequestPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 	CharacterClass characterClass;
 	std::wstring characterName;
 
 public:
 	PacketType type() const { return PacketType::CreateCharacterRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 		stream << characterClass;
 		stream << characterName;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 		stream >> &characterClass;
 		stream >> &characterName;
 	}
@@ -408,7 +408,7 @@ public:
 public:
 	PacketType type() const { return PacketType::CreateCharacterResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << errorCode;
 	}
@@ -420,15 +420,15 @@ public:
 
 class DBCreateCharacterRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
+	objectId_t clientId;
+	objectId_t accountId;
 	CharacterClass characterClass;
 	std::wstring characterName;
 
 public:
 	PacketType type() const { return PacketType::DBCreateCharacterRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -447,12 +447,12 @@ public:
 class DBCreateCharacterResponsePacket : public Packet {
 public:
 	Byte errorCode;
-	UInt64 clientId;
+	objectId_t clientId;
 
 public:
 	PacketType type() const { return PacketType::DBCreateCharacterResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << errorCode;
 		stream << clientId;
@@ -466,20 +466,20 @@ public:
 
 class DeleteCharacterRequestPacket : public Packet {
 public:
-	UInt64 accountId;
-	UInt64 characterId;
+	std::wstring accessKey;
+	objectId_t characterId;
 
 public:
 	PacketType type() const { return PacketType::DeleteCharacterRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 		stream << characterId;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 		stream >> &characterId;
 	}
 };
@@ -491,14 +491,14 @@ public:
 
 class DBDeleteCharacterRequestPacket : public Packet {
 public:
-	UInt64 clientId;
-	UInt64 accountId;
-	UInt64 characterId;
+	objectId_t clientId;
+	objectId_t accountId;
+	objectId_t characterId;
 
 public:
 	PacketType type() const { return PacketType::DBDeleteCharacterRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 		stream << accountId;
@@ -514,12 +514,12 @@ public:
 
 class DBDeleteCharacterResponsePacket : public Packet {
 public:
-	UInt64 clientId;
+	objectId_t clientId;
 
 public:
 	PacketType type() const { return PacketType::DBDeleteCharacterResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << clientId;
 	}
@@ -531,41 +531,56 @@ public:
 
 class ConnectChannelRequestPacket : public Packet {
 public:
-	PlayerInfo playerInfo;
+	std::wstring accessKey;
+	PlayerInfo	playerInfo;
 
 public:
 	PacketType type() const { return PacketType::ConnectChannelRequest; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
+		stream << accessKey;
 		stream << playerInfo;
 	}
 
 	void deSerialize(Stream& stream) {
+		stream >> &accessKey;
 		stream >> &playerInfo;
 	}
 };
 
 class ConnectChannelResponsePacket : public Packet {
 public:
-	std::unordered_map<UInt64, CharacterInfo> playerTable;
+	std::list<std::pair<objectId_t, PlayerInfo>> playerList;
 
 public:
 	PacketType type() const { return PacketType::ConnectChannelResponse; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << playerTable;
+		stream << playerList;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &playerTable;
+		stream >> &playerList;
 	}
 };
 
 class DisconnectChannelRequestPacket : public Packet {
 public:
+	std::wstring accessKey;
+
+public:
 	PacketType type() const { return PacketType::DisconnectChannelRequest; }
+
+	void serialize(Stream& stream) const {
+		stream << (UInt32)this->type();
+		stream << accessKey;
+	}
+
+	void deSerialize(Stream& stream) {
+		stream >> &accessKey;
+	}
 };
 
 class DisconnectChannelResponsePacket : public Packet {
@@ -580,7 +595,7 @@ public:
 public:
 	PacketType type() const { return PacketType::NotifyConnectPlayer; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << playerInfo;
 	}
@@ -592,50 +607,50 @@ public:
 
 class NotifyDisconnectPlayerPacket : public Packet {
 public:
-	UInt64 accountId;
+	objectId_t playerId;
 
 public:
 	PacketType type() const { return PacketType::NotifyDisconnectPlayer; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << playerId;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &playerId;
 	}
 };
 
 class NotifyCharacterMovementPacket : public Packet {
 public:
-	UInt64 accountId;
+	std::wstring accessKey;
 	CharacterMovement movement;
 
 public:
 	PacketType type() const { return PacketType::NotifyCharacterMovement; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
-		stream << accountId;
+		stream << accessKey;
 		stream << movement;
 	}
 
 	void deSerialize(Stream& stream) {
-		stream >> &accountId;
+		stream >> &accessKey;
 		stream >> &movement;
 	}
 };
 
 class NotifyCharacterActionPacket : public Packet {
 public:
-	UInt64 accountId;
+	objectId_t accountId;
 	ActionType actionType;
 
 public:
 	PacketType type() const { return PacketType::NotifyCharacterAction; }
 
-	void serialize(Stream& stream) {
+	void serialize(Stream& stream) const {
 		stream << (UInt32)this->type();
 		stream << accountId;
 		stream << (UInt16)actionType;

@@ -26,7 +26,10 @@ export default class Home extends PureComponent {
                 <Link to="/signup">
                     <Button>회원가입</Button>
                 </Link>
-                <Link to="/help">
+                <Link to="/help/account">
+                    <Button>계정 찾기</Button>
+                </Link>                
+                <Link to="/help/password">
                     <Button>비밀번호 재설정</Button>
                 </Link>
             </Container>

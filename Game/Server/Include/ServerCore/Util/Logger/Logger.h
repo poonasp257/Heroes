@@ -3,7 +3,7 @@
 
 class Logger {	
 public:
-	enum Level {
+	enum class Level {
 		Unknown, Info, Warning, Error, Debug
 	};
 
@@ -18,6 +18,6 @@ public:
 	virtual void log(Level level, const wchar_t* message, va_list args) = 0;
 
 protected:
-	std::map<Level, std::wstring> logTypes;
+	std::map<Level, const wchar_t*> logTypes;
 };
 #endif

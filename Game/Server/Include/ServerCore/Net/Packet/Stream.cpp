@@ -1,10 +1,13 @@
 #include "stdafx.h"
 
-Stream::Stream() : offset(0), readOffset(0), stream({ 0 }) {
+Stream::Stream() : 
+	offset(0), 
+	readOffset(0), 
+	stream({ 0 }) {
 
 }
 
-Stream::Stream(Byte *data, size_t size) 
+Stream::Stream(Byte* data, size_t size) 
 	: offset(0), readOffset(0), stream({ 0 }) {
 	this->setData(data, size);
 }
@@ -13,7 +16,7 @@ Stream::~Stream() {
 
 }
 
-void Stream::setData(Byte *data, size_t size) {
+void Stream::setData(Byte* data, size_t size) {
 	offset = size;
 	memcpy_s((void*)stream.data(), stream.size(),
 		(void*)data, size);
@@ -25,7 +28,7 @@ void Stream::operator=(Stream& stream) {
 
 bool Stream::checkWriteBound(size_t len) {
 	if(offset + len > sizeof(stream)) {
-		SystemLogger::Log(Logger::Warning, L"stream data over");
+		WARNING_LOG(L"stream data over");
 		return false;
 	}
 
@@ -34,7 +37,7 @@ bool Stream::checkWriteBound(size_t len) {
 
 bool Stream::checkReadBound(size_t len) {
 	if(readOffset + len > offset) {
-		SystemLogger::Log(Logger::Warning, L"stream has no more buffer");
+		WARNING_LOG(L"stream has no more buffer");
 		return false;
 	}
 
@@ -78,21 +81,26 @@ void Stream::operator<<(const CharacterInfo& value) {
 	*this << value.location;
 }
 
+void Stream::operator<<(const PlayerInfo& value) {
+	*this << value.familyName;
+	*this << value.characterInfo;
+}
+
 void Stream::operator<<(const CharacterMovement& value) {
 	*this << value.moveAmount;
-	*this << value.position;
+	*this << value.direction;
 	*this << value.rotation;
 }
 
-void Stream::operator>>(std::string *retVal) {
+void Stream::operator>>(std::string* retVal) {
 	int32_t len;
 	*this >> &len;
 	if(this->checkReadBound(len) == false) {
 		return;
 	} 
 
-	char *buf = new char[len + 1];
-	size_t size = len * sizeof(char);
+	char* buf = new char[len + 1];
+	size_t size = len*  sizeof(char);
 
 	memcpy_s((void*)buf, size, (void*)(stream.data() + readOffset), size);
 	readOffset += size;
@@ -101,18 +109,18 @@ void Stream::operator>>(std::string *retVal) {
 	retVal->clear();
 	*retVal = buf;
 	
-	delete buf;
+	delete[] buf;
 }
 
-void Stream::operator>>(std::wstring *retVal) {
+void Stream::operator>>(std::wstring* retVal) {
 	int32_t len;
 	*this >> &len;
 	if(this->checkReadBound(len) == false) {
 		return;
 	} 
 
-	WCHAR *buf = new wchar_t[len + 1];
-	size_t size = len * sizeof(wchar_t);
+	WCHAR* buf = new wchar_t[len + 1];
+	size_t size = len*  sizeof(wchar_t);
 	
 	memcpy_s((void*)buf, size, (void*)(stream.data() + readOffset), size);
 	readOffset += size;
@@ -121,22 +129,22 @@ void Stream::operator>>(std::wstring *retVal) {
 	retVal->clear();
 	*retVal = buf;
 	
-	delete buf;
+	delete[] buf;
 }
 
-void Stream::operator>>(Vector3 *retVal) {
+void Stream::operator>>(Vector3* retVal) {
 	*this >> &retVal->x;
 	*this >> &retVal->y;
 	*this >> &retVal->z;
 }
 
-void Stream::operator>>(ChannelInfo *retVal) {
+void Stream::operator>>(ChannelInfo* retVal) {
 	*this >> &retVal->name;
 	*this >> &retVal->ip;
 	*this >> &retVal->port;
 }
 
-void Stream::operator>>(CharacterInfo *retVal) {
+void Stream::operator>>(CharacterInfo* retVal) {
 	*this >> &retVal->characterId;
 	*this >> &retVal->characterName;
 	*this >> (UInt16*)&retVal->characterClass;
@@ -151,8 +159,13 @@ void Stream::operator>>(CharacterInfo *retVal) {
 	*this >> &retVal->location;
 }
 
-void Stream::operator>>(CharacterMovement *retVal) {
+void Stream::operator>>(PlayerInfo* retVal) {
+	*this >> &retVal->familyName;
+	*this >> &retVal->characterInfo;
+}
+
+void Stream::operator>>(CharacterMovement* retVal) {
 	*this >> &retVal->moveAmount;
-	*this >> &retVal->position;
+	*this >> &retVal->direction;
 	*this >> &retVal->rotation;
 }

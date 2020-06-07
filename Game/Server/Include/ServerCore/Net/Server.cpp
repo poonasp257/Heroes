@@ -1,48 +1,54 @@
 #include "stdafx.h"
 
-Server::Server(ContentsProcess *process) : process(process) {
-	status = ServerStatus::Stop;
+ServerState Server::state = ServerState::Stop;
 
-	TerminalManager::Instance().run(this);
-
-	Json json;
-	bool result = json.readFile("config.json");
-	if (!result) {
-		SystemLogger::Log(Logger::Error, L"File could not be opened!");
-		// assert
+Server::Server(std::unique_ptr<ContentsProcess> process) : 
+	contentsProcess(std::move(process)) {
+	const auto& config = ConfigManager::Instance().getConfig();
+	const Json::Value& serverConfig = config["Server"];
+	if (serverConfig.IsNull()) {
+		ERROR_LOG(L"\'Server\' document doesn't exist");
+		return;
+	}
+	else if (config["Name"].IsNull()) {
+		ERROR_LOG(L"\'Name\' document doesn't exist");
 		return;
 	}
 
-	Json::Document& document = json.getDocument();
-	Json::Value& config = document["App"]["Server"];
-	if (config.IsNull()) {
-		SystemLogger::Log(Logger::Error, L"\'Server\' document is not exist");
-		// assert
+	if (serverConfig["IP"].IsNull()) {
+		ERROR_LOG(L"\'Server:IP\' document doesn't exist");
+		return;
+	}
+	else if (serverConfig["Port"].IsNull()) {
+		ERROR_LOG(L"\'Server:Port\' document doesn't exist");
+		return;
+	}
+	else if (serverConfig["ThreadCount"].IsNull()) {
+		ERROR_LOG(L"\'Server:ThreadCount\' document doesn't exist");
 		return;
 	}
 
-	strcpy_s(ip.data(), ip.size(), config["IP"].GetString());
-	port = config["Port"].GetInt();
-	workerThreadCount = config["ThreadCount"].GetInt();
+	strcpy_s(ip.data(), ip.size(), serverConfig["IP"].GetString());
+	port = serverConfig["Port"].GetInt();
+	workerThreadCount = serverConfig["ThreadCount"].GetInt();
+	name = ConvertAnsiToUnicode(config["Name"].GetString());
 
-	std::wstring name = convertAnsiToUnicode(document["App"]["Name"].GetString());
-	SystemLogger::Log(Logger::Info, L"%s Server start on port %d", name.c_str(), port);
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+		ERROR_LOG(L"WSAStartup() failed");
+		return;
+	}
 }
 
 Server::~Server() {
-	if(process) {
-		delete process;
-		process = nullptr;
-	}
-
-	SystemLogger::Log(Logger::Info, L"iocp server closed...");
+	WSACleanup();
 }
 
-void Server::putPackage(Package *package) {
-	if(!process) {
-		SystemLogger::Log(Logger::Error, L"process doesn't exist");
+void Server::putPackage(std::unique_ptr<Package>& package) {
+	if(contentsProcess == nullptr) {
+		ERROR_LOG(L"process doesn't exist");
 		return;
 	}
 
-	process->putPackage(package);
+	contentsProcess->putPackage(package);
 }

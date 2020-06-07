@@ -2,15 +2,8 @@
 #include "Contents/ChannelManagerProcess.h"
 
 int _tmain() {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-		return -1;
-	}
-
-	std::shared_ptr<Server> server(new IOCPServer(new ChannelManagerProcess()));
+	auto server = std::make_shared<IOCPServer>(std::make_unique<ChannelManagerProcess>());
 	if (!server->run()) return -1;
 
-
-	WSACleanup();
 	return 0;
 }

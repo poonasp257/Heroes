@@ -5,14 +5,16 @@
 
 class Query {
 protected:
-	QueryStatement		*statement;
+	std::unique_ptr<QueryStatement>	statement;
 
 public:
 	Query();
 	virtual ~Query();
 	
-	void setStatement(QueryStatement *statement) { this->statement = statement; }
-	QueryStatement* getStatement() { return statement; }
+	void setStatement(std::unique_ptr<QueryStatement> statement) { 
+		this->statement = std::move(statement); 
+	}
+	QueryStatement* getStatement() { return statement.get(); }
 
 	virtual void doResponse(SQLHSTMT statement) = 0;
 };

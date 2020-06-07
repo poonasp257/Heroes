@@ -10,14 +10,17 @@ protected:
 	DBState state;
 
 public:
-	Database() : state(DBState::Stop) {}
+	Database() : 
+		state(DBState::Stop) {}
 	virtual ~Database() {}
 
-	virtual bool connect(const wchar_t *ip, int port, const wchar_t *dbName, const wchar_t *id, const wchar_t *password) = 0;
+	virtual bool connect(const wchar_t* ip, int port, const wchar_t* dbName, const wchar_t* id, const wchar_t* password) = 0;
 	virtual bool disconnect() = 0;
 	virtual bool isConnected() = 0;
 
-	virtual void run() = 0;
+	virtual bool run() = 0;
+
+	void setState(DBState state) { this->state = state; }
 	DBState getState() const { return state; }
 };
 #endif

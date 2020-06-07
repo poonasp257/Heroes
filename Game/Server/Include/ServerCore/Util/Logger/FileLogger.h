@@ -3,14 +3,17 @@
 
 #include "Logger.h"
 
+class CriticalSection;
+
 class FileLogger : public Logger {
 private:
-	std::wfstream fs;
-	std::string path;
+	std::wfstream	fs;
+	std::string		path;
+	CriticalSection	lock;
 
 public:
 	FileLogger();
-	virtual ~FileLogger();
+	~FileLogger();
 
 	virtual void log(Level level, const wchar_t* message, ...);
 	virtual void log(Level level, const wchar_t* message, va_list args);

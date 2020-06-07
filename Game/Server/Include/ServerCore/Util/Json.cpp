@@ -1,43 +1,46 @@
 #include "stdafx.h"
 
-using rapidjson::Document;
-using rapidjson::FileReadStream;
-using rapidjson::FileWriteStream;
 using rapidjson::PrettyWriter;
 
-Json::Json() {
-
-}
-
-Json::~Json() {
-
-}
-
-bool Json::readFile(const std::string& fileName) {	
-	errno_t err = ::fopen_s(&fp, fileName.c_str(), "rb");
-	if (err) return false;
+bool Json::ReadFile(Document& document, const std::string& fileName) {
+	FILE* file = nullptr;
+	errno_t err = fopen_s(&file, fileName.c_str(), "rb");
+	if (err) {
+		std::cerr << "can't read file" << '\n';
+		return false;
+	}
 
 	std::array<char, SIZE_256> readBuffer;
-	FileReadStream readStream(fp, readBuffer.data(), readBuffer.size());
+	FileReadStream readStream(file, readBuffer.data(), readBuffer.size());
 	bool result = !document.ParseStream(readStream).HasParseError();
+	::fclose(file);
 
-	::fclose(fp);
+	if (!result) {
+		std::cerr << "String is incorrect JSON format" << '\n';
+		return false;
+	}
 
-	return result;
+	return true;
 }
 
-bool Json::writeFile(const std::string& fileName) {
-	errno_t err = ::fopen_s(&fp, fileName.c_str(), "wb");
+bool Json::WriteFile(Document& document, const std::string& fileName) {
+	FILE* file = nullptr;
+	errno_t err = ::fopen_s(&file, fileName.c_str(), "wb");
 	if (err) {
+		std::cerr << "can't write file" << '\n';
 		return false;
 	}
 
 	std::array<char, SIZE_256> writeBuffer;
-	FileWriteStream writeStream(fp, writeBuffer.data(), writeBuffer.size());
+	FileWriteStream writeStream(file, writeBuffer.data(), writeBuffer.size());
 	PrettyWriter<FileWriteStream> writer(writeStream);
-	document.Accept(writer);
+	bool result =  document.Accept(writer);
+	::fclose(file);
 
-	::fclose(fp);
+	if (!result) {
+		std::cout << "String is incorrect JSON format" << std::endl;
+		return false;
+	}
 
 	return true;
 }

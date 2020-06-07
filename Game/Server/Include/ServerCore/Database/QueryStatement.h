@@ -14,7 +14,7 @@ private:
 
 private:
 	template<typename T>
-	void addArg(const wchar_t *fmt, T value) {
+	void addArg(const wchar_t* fmt, T value) {
 		std::array<wchar_t, SIZE_256> buffer;
 
 		_snwprintf_s(buffer.data(), buffer.size(), ((size_t)-1), fmt, value);
@@ -29,13 +29,13 @@ public:
     QueryStatement();
     ~QueryStatement();
 
-    void setQuery(const wchar_t *query, QueryType type = QueryType::Direct);
+    void setQuery(const wchar_t* query, QueryType type = QueryType::Direct);
 	const wchar_t* getQuery() { return query.c_str(); }
 
 	QueryType getType() const { return type; }
 
-    void addParam(const char *value);
-	void addParam(const wchar_t *value);
+    void addParam(const char* value);
+	void addParam(const wchar_t* value);
 	void addParam(Int16 value);
 	void addParam(UInt16 value);
     void addParam(Int32 value);

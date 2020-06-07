@@ -6,15 +6,15 @@ class Packet;
 
 class Package {
 private:
-    Session *session;
-    Packet  *packet;
+    std::shared_ptr<Session> session;
+    std::unique_ptr<Packet> packet;
 
 public:
-    Package(Session *session, Packet *packet);
+    Package(std::shared_ptr<Session> session, std::unique_ptr<Packet> packet);
     ~Package();
 
-    Session* getSession();
-    Packet* getPacket();
+    Session* getSession() const;
+    Packet* getPacket() const;
 };
 
 #endif

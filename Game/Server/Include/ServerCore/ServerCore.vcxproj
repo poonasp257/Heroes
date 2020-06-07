@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -48,9 +48,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -74,45 +74,65 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)lib\</OutDir>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,17 +143,19 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;CPPCONN_PUBLIC_FUNC=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +173,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,8 +199,10 @@
     <ClInclude Include="Net\Packet\Packet.h" />
     <ClInclude Include="Net\Packet\PacketAnalyzer.h" />
     <ClInclude Include="Net\Packet\PacketFactory.h" />
+    <ClInclude Include="Net\Packet\PacketObfuscator.h" />
     <ClInclude Include="Net\Packet\PacketType.h" />
     <ClInclude Include="Net\Packet\Stream.h" />
+    <ClInclude Include="Net\Packet\Stream.hpp" />
     <ClInclude Include="Net\Server.h" />
     <ClInclude Include="Net\Session.h" />
     <ClInclude Include="Net\SessionManager.h" />
@@ -182,15 +211,34 @@
     <ClInclude Include="Net\Terminal\TerminalSession.h" />
     <ClInclude Include="ServerCore.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Util\Algorithm\PathFinding.h" />
+    <ClInclude Include="Util\Assert.h" />
+    <ClInclude Include="Util\Boundary\BoundingBox.h" />
+    <ClInclude Include="Util\Boundary\BoundingCircle.h" />
+    <ClInclude Include="Util\Boundary\BoundingObject.h" />
     <ClInclude Include="Util\Clock.h" />
+    <ClInclude Include="Util\ConfigManager.h" />
+    <ClInclude Include="Util\Container\QuadTree.h" />
+    <ClInclude Include="Util\Container\QuadTree.hpp" />
+    <ClInclude Include="Util\Container\SynchronizedQueue.h" />
+    <ClInclude Include="Util\FSM\State.h" />
+    <ClInclude Include="Util\FSM\StateMachine.h" />
+    <ClInclude Include="Util\GameObject.h" />
+    <ClInclude Include="Util\HttpRequest.h" />
     <ClInclude Include="Util\Json.h" />
+    <ClInclude Include="Util\Lock\Lock.h" />
+    <ClInclude Include="Util\Lock\LockManager.h" />
+    <ClInclude Include="Util\Lock\ScopedLock.h" />
     <ClInclude Include="Util\Logger\ConsoleLogger.h" />
     <ClInclude Include="Util\Logger\FileLogger.h" />
     <ClInclude Include="Util\Logger\Logger.h" />
     <ClInclude Include="Util\Logger\SystemLogger.h" />
-    <ClInclude Include="Util\Singleton.h" />
-    <ClInclude Include="Util\Thread.h" />
-    <ClInclude Include="Util\ThreadJobQueue.h" />
+    <ClInclude Include="Util\Obfuscation\Obfuscation.h" />
+    <ClInclude Include="Util\Obfuscation\XorObfuscation.h" />
+    <ClInclude Include="Util\Task\AsyncTaskManager.h" />
+    <ClInclude Include="Util\Task\Task.h" />
+    <ClInclude Include="Util\Thread\Thread.h" />
+    <ClInclude Include="Util\Thread\ThreadManager.h" />
     <ClInclude Include="Util\Type.h" />
     <ClInclude Include="Util\Util.h" />
   </ItemGroup>
@@ -205,6 +253,7 @@
     <ClCompile Include="Net\Packet\Package.cpp" />
     <ClCompile Include="Net\Packet\PacketAnalyzer.cpp" />
     <ClCompile Include="Net\Packet\PacketFactory.cpp" />
+    <ClCompile Include="Net\Packet\PacketObfuscator.cpp" />
     <ClCompile Include="Net\Packet\Stream.cpp" />
     <ClCompile Include="Net\Server.cpp" />
     <ClCompile Include="Net\Session.cpp" />
@@ -215,16 +264,30 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util\Assert.cpp" />
+    <ClCompile Include="Util\Boundary\BoundingBox.cpp" />
+    <ClCompile Include="Util\Boundary\BoundingCircle.cpp" />
     <ClCompile Include="Util\Clock.cpp" />
+    <ClCompile Include="Util\ConfigManager.cpp" />
+    <ClCompile Include="Util\Container\QuadTree.cpp" />
+    <ClCompile Include="Util\GameObject.cpp" />
+    <ClCompile Include="Util\HttpRequest.cpp" />
     <ClCompile Include="Util\Json.cpp" />
+    <ClCompile Include="Util\Lock\Lock.cpp" />
+    <ClCompile Include="Util\Lock\LockManager.cpp" />
+    <ClCompile Include="Util\Lock\ScopedLock.cpp" />
     <ClCompile Include="Util\Logger\ConsoleLogger.cpp" />
     <ClCompile Include="Util\Logger\FileLogger.cpp" />
     <ClCompile Include="Util\Logger\Logger.cpp" />
     <ClCompile Include="Util\Logger\SystemLogger.cpp" />
-    <ClCompile Include="Util\Thread.cpp" />
+    <ClCompile Include="Util\Obfuscation\Obfuscation.cpp" />
+    <ClCompile Include="Util\Obfuscation\XorObfuscation.cpp" />
+    <ClCompile Include="Util\Task\AsyncTaskManager.cpp" />
+    <ClCompile Include="Util\Task\Task.cpp" />
+    <ClCompile Include="Util\Thread\Thread.cpp" />
+    <ClCompile Include="Util\Thread\ThreadManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

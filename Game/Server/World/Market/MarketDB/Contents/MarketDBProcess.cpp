@@ -10,13 +10,13 @@ MarketDBProcess::~MarketDBProcess() {
 
 }
 
-//void MarketDBProcess::DBSearchAccountRequest(Session *session, Packet *rowPacket) {
-//	DBSearchAccountRequestPacket *packet = dynamic_cast<DBSearchAccountRequestPacket*>(rowPacket);
+//void MarketDBProcess::DBSearchAccountRequest(Session* session, Packet* rowPacket) {
+//	DBSearchAccountRequestPacket* packet = dynamic_cast<DBSearchAccountRequestPacket*>(rowPacket);
 //
-//	DBSearchAccountQuery *query = new DBSearchAccountQuery();
+//	DBSearchAccountQuery* query = new DBSearchAccountQuery();
 //	query->clientId = packet->clientId;
 //
-//	QueryStatement *statement = query->getStatement();
+//	QueryStatement* statement = query->getStatement();
 //	statement->addParam(packet->accountId);
 //
 //	DBManager::Instance().pushQuery(query);

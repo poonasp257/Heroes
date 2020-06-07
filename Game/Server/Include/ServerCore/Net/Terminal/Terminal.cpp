@@ -1,57 +1,59 @@
 #include "stdafx.h"
 
-Terminal::Terminal(Server *server, const std::wstring& name) 
-	: server(server), name(name), status(TerminalStatus::Stop) {
-
+Terminal::Terminal(std::shared_ptr<Server> server, const std::wstring& name) : 
+	server(std::move(server)), 
+	name(name), 
+	state(TerminalState::Stop), 
+	session(std::make_shared<TerminalSession>()) {
+		
 }
 
 Terminal::~Terminal() {
-	status = TerminalStatus::Stop;
+	state = TerminalState::Stop;
 }
 
-void Terminal::initialize(const std::string& ip, int port) {
+bool Terminal::initialize(const std::string& ip, int port) {
 	strcpy_s(this->ip.data(), this->ip.size(), ip.c_str());
 	this->port = port;
 
-	this->run();
+	return true;
 }
 
-void Terminal::run() {
-	processThread = std::make_unique<Thread>(new std::thread(
-		&Terminal::receivePacketProcess, this));
+bool Terminal::run() {
+	processThread = MAKE_THREAD(Terminal, receivePacketProcess);
+	if (processThread == nullptr) return false;
+
+	return true;
 }
 
-void Terminal::sendPacket(Packet *packet) {
-	if (status != TerminalStatus::Ready) return;
+void Terminal::sendPacket(const Packet& packet) {
+	if (state != TerminalState::Running) return;
 
-	session.sendPacket(packet);
+	session->sendPacket(packet);
 }
 
 void Terminal::tryConnectProcess() {
-	status = TerminalStatus::Stop;
+	state = TerminalState::Stop;
 
-	while (true) {
-		if (session.connectTo(ip.data(), port)) break;
-
-		SystemLogger::Log(Logger::Info, L"*try connect to [%s] terminal", name.c_str());
+	while (!session->connectTo(ip.data(), port)) {
+		INFO_LOG(L"*try connect to [%s] terminal", name.c_str());
 		Sleep(3000);
 	}
 
 	NotifyTerminalPacket packet;
-	this->session.sendPacket(&packet);
+	this->session->sendPacket(packet);
 
-	SystemLogger::Log(Logger::Info, L"*[%s] terminal connect ready", name.c_str());
-	status = TerminalStatus::Ready;
+	INFO_LOG(L"*[%s] terminal connect ready", name.c_str());
+	state = TerminalState::Running;
 }
 
 void Terminal::receivePacketProcess() {
 	tryConnectProcess();
-
-	while (true) {
-		Package *package = session.onRecv(0);
-
+	   
+	while (state != TerminalState::Stop) {
+		auto package = session->onRecv(0);
 		if (package == nullptr) {
-			SystemLogger::Log(Logger::Warning, L"! termnal [%s] disconnected !", name.c_str());
+			INFO_LOG(L"! termnal [%s] disconnected !", name.c_str());
 			tryConnectProcess();
 			continue;
 		}
@@ -59,6 +61,4 @@ void Terminal::receivePacketProcess() {
 		server->putPackage(package);
 		Sleep(1);
 	}
-
-	status = TerminalStatus::Stop;
 }

@@ -1,19 +1,17 @@
 {
-  "App": {
-    "Name": "Marketplace",
-    "Server": {
+  "Name": "Marketplace",
+  "Server": {
+    "IP": "127.0.0.1",
+    "Port": 9200,
+    "ThreadCount": 1
+  },
+  "Terminal": {
+    "MarketDB": {
       "IP": "127.0.0.1",
-      "Port": 9200,
-      "ThreadCount": 1
-    },
-    "Terminal": {
-      "MarketDB": {
-        "IP": "127.0.0.1",
-        "Port": 9300
-      }
-    },
-    "Contents": {
-      "ThreadCount": 1
+      "Port": 9300
     }
+  },
+  "Contents": {
+    "ThreadCount": 1
   }
 }

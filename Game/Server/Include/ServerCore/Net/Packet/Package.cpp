@@ -1,19 +1,19 @@
 #include "stdafx.h"
 
-Package::Package(Session *session, Packet *packet)
-    : session(session), packet(packet) {
+Package::Package(std::shared_ptr<Session> session, std::unique_ptr<Packet> packet) : 
+    session(std::move(session)), 
+    packet(std::move(packet)) {
 
 }
 
 Package::~Package() {
-    session = nullptr;
-    delete packet;
+
 }
 
-Session* Package::getSession() {
-    return session;
+Session* Package::getSession() const {
+    return session.get();
 }
 
-Packet* Package::getPacket() {
-    return packet;
+Packet* Package::getPacket() const {
+    return packet.get();
 }

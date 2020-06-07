@@ -13,10 +13,12 @@ public:
 	using timePoint = system_clock::time_point;
 		
 public:
-	static std::time_t NowTick();
-	static std::string NowTickToStr(const char *format = DATETIME_FORMAT);
+	static std::string TickToStr(std::time_t tick, const char* format = DATETIME_FORMAT);
+	static std::wstring TickToWStr(std::time_t tick, const char* format = DATETIME_FORMAT);
 
-	static std::string TickToStr(std::time_t tick, const char *format = DATETIME_FORMAT);
+	static std::time_t NowTick();
+	static std::string NowTickToStr(const char* format = DATETIME_FORMAT);
+	static std::wstring NowTickToWStr(const char* format = DATETIME_FORMAT);
 };
 
 #endif

@@ -4,7 +4,7 @@
 class MarketplaceProcess : public ContentsProcess {
 public:
 	MarketplaceProcess();
-	virtual ~MarketplaceProcess();
+	~MarketplaceProcess();
 
 	//static void ChannelStatusRequest(Session* session, Packet* rowPacket);
 };

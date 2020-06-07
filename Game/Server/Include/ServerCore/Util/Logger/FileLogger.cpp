@@ -2,42 +2,31 @@
 using namespace std;
 using namespace filesystem;
 
-FileLogger::FileLogger() : Logger(), path("Log\\") {
+FileLogger::FileLogger() : 
+	Logger(), 
+	path("Log\\"), 
+	lock(L"FileLogger") {
 	if (!exists(path)) {
 		filesystem::create_directory(path);
 	}
-	
-	Json json;
-	bool result = json.readFile("config.json");
-	if (!result) {
-		cout << "File could not be opened!\n";
-		// assert
+
+	const auto& config = ConfigManager::Instance().getConfig();
+	if (config["Name"].IsNull()) {
+		cout << "\'Name\' document doesn't exist\n";
 		return;
 	}
 
-	Json::Document& document = json.getDocument();
-	Json::Value& name = document["App"]["Name"];
-	if (name.IsNull()) {
-		cout << "\'Name\' document is not exist\n";
-		// assert
-		return;
-	}
-
-	string rename = name.GetString();
+	string rename = config["Name"].GetString();
 	size_t found = rename.find(".log");
-
 	if (found != string::npos) {
 		rename = rename.substr(0, found);
 	}
 
-	path += rename + "_";
-	path += Clock::NowTickToStr(LOG_DATETIME_FORMAT);
-	path += ".log";
-
+	path += Format("%s_%s.log", rename.c_str(), Clock::NowTickToStr(LOG_DATETIME_FORMAT).c_str());
 	fs.open(path.c_str(), ios::out | ios::app);
 	if (fs.bad()) {
 		cout << "log error, file open fail\n";
-		// assert
+		return;
 	}
 }
 
@@ -54,13 +43,11 @@ void FileLogger::log(Level level, const wchar_t* message, ...) {
 }
 
 void FileLogger::log(Level level, const wchar_t* message, va_list args) {
-	wstring text;
-	   
-	text = L"[" + logTypes[level] + L"]";
-	text += L"[" + convertAnsiToUnicode(Clock::NowTickToStr()) + L"]";
-	text += L" ";
-	text += message;
-
+	array<wchar_t, SIZE_256> buf;
+	vswprintf_s(buf.data(), buf.size(), message, args);
+	wstring text = Format(L"[%s][%s] %s", logTypes[level], 
+		Clock::NowTickToWStr().c_str(), buf.data());
+	SAFE_LOCK(lock);
 	fs << text;
 	fs.flush();
 }

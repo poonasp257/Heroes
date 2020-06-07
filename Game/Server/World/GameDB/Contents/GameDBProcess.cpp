@@ -12,49 +12,46 @@ GameDBProcess::GameDBProcess() {
 }
 
 GameDBProcess::~GameDBProcess() {
-
+	   
 }
 
-void GameDBProcess::DBSearchAccountRequest(Session *session, Packet *rowPacket) {
-	DBSearchAccountRequestPacket *packet = dynamic_cast<DBSearchAccountRequestPacket*>(rowPacket);
-	SearchAccountQuery *query = new SearchAccountQuery();
+void GameDBProcess::DBSearchAccountRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBSearchAccountRequestPacket*>(rowPacket);
+	auto query = std::make_unique<SearchAccountQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 
-	QueryStatement *statement = query->getStatement();
+	QueryStatement* statement = query->getStatement();
 	statement->addParam(packet->accountId);
-
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }
 
-void GameDBProcess::DBCreateAccountRequest(Session* session, Packet* rowPacket) {
-	DBCreateAccountRequestPacket *packet = dynamic_cast<DBCreateAccountRequestPacket*>(rowPacket);
-	CreateAccountQuery *query = new CreateAccountQuery();
+void GameDBProcess::DBCreateAccountRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBCreateAccountRequestPacket*>(rowPacket);
+	auto query = std::make_unique<CreateAccountQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 
 	QueryStatement* statement = query->getStatement();
 	statement->addParam(packet->accountId);
 	statement->addParam(packet->familyName.c_str());
-
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }
 
-void GameDBProcess::DBGetCharacterListRequest(Session* session, Packet* rowPacket) {
-	DBGetCharacterListRequestPacket *packet = dynamic_cast<DBGetCharacterListRequestPacket*>(rowPacket);
-	GetCharacterListQuery *query = new GetCharacterListQuery();
+void GameDBProcess::DBGetCharacterListRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBGetCharacterListRequestPacket*>(rowPacket);
+	auto query = std::make_unique<GetCharacterListQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 
 	QueryStatement* statement = query->getStatement();
 	statement->addParam(packet->accountId);
-
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }
 
-void GameDBProcess::DBChangeCharacterOrderRequest(Session* session, Packet* rowPacket) {
-	DBChangeCharacterOrderRequestPacket *packet = dynamic_cast<DBChangeCharacterOrderRequestPacket*>(rowPacket);
-	ChangeCharacterOrderQuery* query = new ChangeCharacterOrderQuery();
+void GameDBProcess::DBChangeCharacterOrderRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBChangeCharacterOrderRequestPacket*>(rowPacket);
+	auto query = std::make_unique<ChangeCharacterOrderQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 	query->fromIndex = packet->fromIndex;
@@ -64,35 +61,30 @@ void GameDBProcess::DBChangeCharacterOrderRequest(Session* session, Packet* rowP
 	statement->addParam(packet->accountId);
 	statement->addParam(packet->fromIndex);
 	statement->addParam(packet->toIndex);
-
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }
 
-void GameDBProcess::DBCreateCharacterRequest(Session *session, Packet *rowPacket) {
-	DBCreateCharacterRequestPacket *packet = dynamic_cast<DBCreateCharacterRequestPacket*>(rowPacket);
-
-	CreateCharacterQuery *query = new CreateCharacterQuery();
+void GameDBProcess::DBCreateCharacterRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBCreateCharacterRequestPacket*>(rowPacket);
+	auto query = std::make_unique<CreateCharacterQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 
-	QueryStatement *statement = query->getStatement();
+	QueryStatement* statement = query->getStatement();
 	statement->addParam(packet->accountId);
 	statement->addParam((UInt16)packet->characterClass);
 	statement->addParam(packet->characterName.c_str());
-
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }
 
-void GameDBProcess::DBDeleteCharacterRequest(Session *session, Packet *rowPacket) {
-	DBDeleteCharacterRequestPacket *packet = dynamic_cast<DBDeleteCharacterRequestPacket*>(rowPacket);
-
-	DeleteCharacterQuery *query = new DeleteCharacterQuery();
+void GameDBProcess::DBDeleteCharacterRequest(Session* session, const Packet* rowPacket) {
+	auto packet = static_cast<const DBDeleteCharacterRequestPacket*>(rowPacket);
+	auto query = std::make_unique<DeleteCharacterQuery>();
 	query->session = session;
 	query->clientId = packet->clientId;
 
-	QueryStatement *statement = query->getStatement();
+	QueryStatement* statement = query->getStatement();
 	statement->addParam(packet->accountId);
 	statement->addParam(packet->characterId);
-	
-	DBManager::Instance().pushQuery(query);
+	DBManager::Instance().pushQuery(std::move(query));
 }

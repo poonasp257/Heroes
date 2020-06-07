@@ -1,22 +1,23 @@
 #ifndef IOCPSERVER_H
 #define IOCPSERVER_H
 
+class ContentsProcess;
+
 class IOCPServer : public Server {
 private:
-	SOCKET listenSocket;
 	HANDLE iocp;
-	std::unique_ptr<Thread> acceptThread;
-	std::array<std::unique_ptr<Thread>, SIZE_16> workerThreads;
+	SOCKET listenSocket;
+	std::vector<std::shared_ptr<Thread>> threadPool;
 
 private:
 	bool createListenSocket();
 
-	static unsigned int WINAPI AcceptThread(LPVOID lpParam);
-	static unsigned int WINAPI WorkerThread(LPVOID lpParam);
+	void acceptThread();
+	void workerThread();
 
 public:
-	IOCPServer(ContentsProcess *process);
-	virtual ~IOCPServer();
+	IOCPServer(std::unique_ptr<ContentsProcess> process);
+	~IOCPServer();
 
 	virtual bool run();
 
@@ -24,5 +25,4 @@ public:
 	HANDLE	getIOCP() { return iocp; }
 	void	onAccept(SOCKET accepter, SOCKADDR_IN addrInfo);
 };
-
 #endif

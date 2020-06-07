@@ -1,29 +1,30 @@
-#ifndef SERVERLIBRARY_H
-#define SERVERLIBRARY_H
+#ifndef SERVER_CORE_H
+#define SERVER_CORE_H
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "mswsock.lib")
 #pragma comment(lib, "Winmm.lib")
 
+#define WIN32_LEAN_AND_MEAN
+
+// C standard library
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include <conio.h>
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <windows.h>
 
+// C++ standard library
+#include <stdexcept>
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <ctime>
+#include <cmath>
+#include <chrono>
 
-#include <thread>
-#include <memory>
-#include <mutex>
-
-#include <regex>
-#include <algorithm>
 #include <string>
 #include <array>
 #include <list>
@@ -31,8 +32,17 @@
 #include <map>
 #include <unordered_map>
 
-#include <ctime>
-#include <chrono>
+#include <memory>
+#include <thread>
+#include <mutex>
+
+#include <algorithm>
+#include <regex>
+#include <functional>
+#include <future>
+
+// vcpkg Library
+#include <curl/curl.h>
 
 #include "Include/rapidjson/document.h"
 #include "Include/rapidjson/filereadstream.h"
@@ -42,13 +52,40 @@
 #include "Util/Type.h"
 #include "Util/Util.h"
 #include "Util/Json.h"
-#include "Util/Singleton.h"
 #include "Util/Clock.h"
+#include "Util/HttpRequest.h"
+#include "Util/GameObject.h"
+#include "Util/Assert.h"
+#include "Util/ConfigManager.h"
+
+#include "Util/Boundary/BoundingObject.h"
+#include "Util/Boundary/BoundingBox.h"
+#include "Util/Boundary/BoundingCircle.h"
+
+#include "Util/Algorithm/PathFinding.h"
+
+#include "Util/Lock/Lock.h"
+#include "Util/Lock/LockManager.h"
+#include "Util/Lock/ScopedLock.h"
+
+#include "Util/Thread/Thread.h"
+#include "Util/Thread/ThreadManager.h"
+
 #include "Util/Logger/FileLogger.h"
 #include "Util/Logger/ConsoleLogger.h"
 #include "Util/Logger/SystemLogger.h"
-#include "Util/Thread.h"
-#include "Util/ThreadJobQueue.h"
+
+#include "Util/Obfuscation/Obfuscation.h"
+#include "Util/Obfuscation/XorObfuscation.h"
+
+#include "Util/FSM/State.h"
+#include "Util/FSM/StateMachine.h"
+
+#include "Util/Task/Task.h"
+#include "Util/Task/AsyncTaskManager.h"
+
+#include "Util/Container/QuadTree.h"
+#include "Util/Container/SynchronizedQueue.h"
 
 #include "Net/Packet/Stream.h"
 #include "Net/Packet/PacketType.h"
@@ -56,6 +93,7 @@
 #include "Net/Packet/PacketAnalyzer.h"
 #include "Net/Packet/PacketFactory.h"
 #include "Net/Packet/Package.h"
+#include "Net/Packet/PacketObfuscator.h"
 
 #include "Net/Session.h"
 #include "Net/SessionManager.h"
