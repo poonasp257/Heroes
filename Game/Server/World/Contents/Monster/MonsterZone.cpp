@@ -11,12 +11,12 @@ MonsterZone::MonsterZone() :
 
 }
 
-MonsterZone::MonsterZone(const Json::Value& zoneInfo) :
+MonsterZone::MonsterZone(const JsonValue& zoneInfo) :
 	GameObject(),
 	lock(L"MonsterZone"),
 	moveBoundary(35.0f),
 	recognizeBoundary(80.0f) {
-	Json::Document positionDocument;
+	JsonDocument positionDocument;
 	positionDocument.Parse(zoneInfo["position"].GetString());
 	moveBoundary.setCenter(
 		positionDocument["x"].GetFloat(),

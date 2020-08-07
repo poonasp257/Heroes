@@ -25,7 +25,7 @@ void DBManager::popQuery(std::unique_ptr<Query>& query) {
 
 bool DBManager::initialize() {
 	const auto& config = ConfigManager::Instance().getConfig();
-	const Json::Value& dbConfig = config["Database"];
+	const JsonValue& dbConfig = config["Database"];
 	if (dbConfig.IsNull()) {
 		ERROR_LOG(L"\'Database\' document doesn't exist");
 		return false;

@@ -12,7 +12,7 @@ TerminalManager::~TerminalManager() {
 
 bool TerminalManager::initialize(std::shared_ptr<Server> server) {
 	const auto& config = ConfigManager::Instance().getConfig();
-	const Json::Value& terminalConfig = config["Terminal"];
+	const JsonValue& terminalConfig = config["Terminal"];
 	if (terminalConfig.IsNull()) {
 		ERROR_LOG(L"\'Terminal\' document doesn't exist");
 		return false;

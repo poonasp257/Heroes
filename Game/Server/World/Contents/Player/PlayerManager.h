@@ -11,7 +11,7 @@ private:
 	CriticalSection lock;
 	PlayerTable playerTable;
 
-	Json::Document charactersData;
+	JsonDocument charactersData;
 
 private:
 	PlayerManager();

@@ -5,8 +5,8 @@
 
 Monster::Monster(objectId_t typeId,
 	MonsterZone& monsterZone,
-	const Json::Value& monsterInfo,
-	const Json::Value& transformInfo) :
+	const JsonValue& monsterInfo,
+	const JsonValue& transformInfo) :
 	GameObject(),
 	monsterZone(monsterZone),
 	visualRange(30.0f),
@@ -24,7 +24,7 @@ Monster::Monster(objectId_t typeId,
 	info.damage = monsterInfo["damage"].GetUint();
 	info.defense = monsterInfo["defense"].GetUint();
 
-	Json::Document positionDocument, rotationDocument;
+	JsonDocument positionDocument, rotationDocument;
 	positionDocument.Parse(transformInfo["position"].GetString());
 	rotationDocument.Parse(transformInfo["rotation"].GetString());
 	info.position.x = positionDocument["x"].GetFloat();

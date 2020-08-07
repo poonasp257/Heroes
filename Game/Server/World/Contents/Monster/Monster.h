@@ -27,8 +27,8 @@ private:
 public:
 	Monster(objectId_t typeId,
 		MonsterZone& monsterZone,
-		const Json::Value& monsterInfo, 
-		const Json::Value& transformInfo);
+		const JsonValue& monsterInfo, 
+		const JsonValue& transformInfo);
 	~Monster();
 
 	virtual void start();

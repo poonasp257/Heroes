@@ -3,7 +3,7 @@
 
 class ConfigManager {
 private:
-	Json::Document config;
+	JsonDocument config;
 
 private:
 	ConfigManager();
@@ -15,7 +15,7 @@ private:
 	ConfigManager& operator=(const ConfigManager&) = delete;
 
 public:
-	const Json::Document& getConfig() const { return config; }
+	const JsonDocument& getConfig() const { return config; }
 
 	static auto& Instance() {
 		static ConfigManager instance;

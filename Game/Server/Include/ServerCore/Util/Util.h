@@ -19,7 +19,7 @@ inline std::string ConvertUnicodeToAnsi(const std::wstring& wstr) {
 
 inline bool CheckUsernameFormat(const std::wstring& username) {
 	std::wsmatch matchResult;
-	std::wregex pattern(L"(?=^[^0-9])([a-zA-Z°¡-ÆR0-9]{2,10})");
+	std::wregex pattern(L"(?=^[^0-9])([a-zA-Zï¿½ï¿½-ï¿½R0-9]{2,10})");
 	return std::regex_match(username, matchResult, pattern);
 }
 
@@ -41,6 +41,49 @@ inline std::wstring Format(const std::wstring& fmt, const Args&... args) {
 	std::unique_ptr<wchar_t[]> buffer(new wchar_t[len]);
 	swprintf(buffer.get(), len, fmt.c_str(), args...);
 	return std::wstring(buffer.get(), buffer.get() + len - 1);
+}
+
+inline bool ReadJsonFile(JsonDocument& document, const std::string& fileName) {
+	FILE* file = nullptr;
+	errno_t err = fopen_s(&file, fileName.c_str(), "rb");
+	if (err) {
+		std::cerr << "can't read file" << '\n';
+		return false;
+	}
+
+	std::array<char, SIZE_256> readBuffer;
+	JsonFileReadStream readStream(file, readBuffer.data(), readBuffer.size());
+	bool result = !document.ParseStream(readStream).HasParseError();
+	::fclose(file);
+
+	if (!result) {
+		std::cerr << "String is incorrect JSON format" << '\n';
+		return false;
+	}
+
+	return true;
+}
+
+inline bool WriteJsonFile(JsonDocument& document, const std::string& fileName) {
+	FILE* file = nullptr;
+	errno_t err = ::fopen_s(&file, fileName.c_str(), "wb");
+	if (err) {
+		std::cerr << "can't write file" << '\n';
+		return false;
+	}
+
+	std::array<char, SIZE_256> writeBuffer;
+	JsonFileWriteStream writeStream(file, writeBuffer.data(), writeBuffer.size());
+	rapidjson::PrettyWriter<JsonFileWriteStream> writer(writeStream);
+	bool result =  document.Accept(writer);
+	::fclose(file);
+
+	if (!result) {
+		std::cout << "String is incorrect JSON format" << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 #endif

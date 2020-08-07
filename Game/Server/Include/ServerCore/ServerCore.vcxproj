@@ -232,7 +232,6 @@
     <ClInclude Include="Util\FSM\State.h" />
     <ClInclude Include="Util\FSM\StateMachine.h" />
     <ClInclude Include="Util\HttpRequest.h" />
-    <ClInclude Include="Util\Json.h" />
     <ClInclude Include="Util\Lock\Lock.h" />
     <ClInclude Include="Util\Lock\LockManager.h" />
     <ClInclude Include="Util\Lock\ScopedLock.h" />
@@ -285,7 +284,6 @@
     <ClCompile Include="Util\ConfigManager.cpp" />
     <ClCompile Include="Util\Container\QuadTree.cpp" />
     <ClCompile Include="Util\HttpRequest.cpp" />
-    <ClCompile Include="Util\Json.cpp" />
     <ClCompile Include="Util\Lock\Lock.cpp" />
     <ClCompile Include="Util\Lock\LockManager.cpp" />
     <ClCompile Include="Util\Lock\ScopedLock.cpp" />

@@ -6,9 +6,6 @@
 class CriticalSection;
 
 class ConsoleLogger : public Logger {
-private:
-	CriticalSection lock;
-
 public:
 	ConsoleLogger();
 	~ConsoleLogger();

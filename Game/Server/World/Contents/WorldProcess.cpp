@@ -64,7 +64,7 @@ void WorldProcess::SearchAccountRequest(Session* session, const Packet* rowPacke
 		[&session, accessKey](const std::string& buffer) {
 			if (session == nullptr) return;
 
-			Json::Document responsedData;
+			JsonDocument responsedData;
 			responsedData.Parse(buffer.c_str());
 			if (!responsedData.HasMember("errorCode")) {
 				objectId_t accountId = responsedData["accountId"].GetUint64();

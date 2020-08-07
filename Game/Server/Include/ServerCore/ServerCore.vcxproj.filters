@@ -88,9 +88,6 @@
     <ClCompile Include="Util\HttpRequest.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="Util\Json.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="Util\Obfuscation\Obfuscation.cpp">
       <Filter>Util\Obfuscation</Filter>
     </ClCompile>
@@ -232,9 +229,6 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\HttpRequest.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\Json.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\Type.h">

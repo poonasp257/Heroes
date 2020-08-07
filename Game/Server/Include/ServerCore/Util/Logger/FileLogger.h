@@ -7,9 +7,8 @@ class CriticalSection;
 
 class FileLogger : public Logger {
 private:
-	std::wfstream	fs;
+	std::wofstream  outStream;
 	std::string		path;
-	CriticalSection	lock;
 
 public:
 	FileLogger();

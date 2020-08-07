@@ -5,7 +5,7 @@ ServerState Server::state = ServerState::Stop;
 Server::Server(std::unique_ptr<ContentsProcess> process) : 
 	contentsProcess(std::move(process)) {
 	const auto& config = ConfigManager::Instance().getConfig();
-	const Json::Value& serverConfig = config["Server"];
+	const JsonValue& serverConfig = config["Server"];
 	if (serverConfig.IsNull()) {
 		ERROR_LOG(L"\'Server\' document doesn't exist");
 		return;

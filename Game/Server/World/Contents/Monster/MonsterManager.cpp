@@ -24,15 +24,15 @@ MonsterZone* MonsterManager::findMonsterZone(objectId_t zoneId) {
 }
 
 bool MonsterManager::initialize() {
-	Json::Document zoneData;
-	bool result = Json::ReadFile(zoneData, "monster_zone_info.json");
+	JsonDocument zoneData;
+	bool result = ReadJsonFile(zoneData, "monster_zone_info.json");
 	if (!result) {
 		ERROR_LOG(L"\"monster_zone_info\" could not be opened!");
 		return false;
 	}
 
-	Json::Document monsterData;
-	result = Json::ReadFile(monsterData, "monster_info.json");
+	JsonDocument monsterData;
+	result = ReadJsonFile(monsterData, "monster_info.json");
 	if (!result) {
 		ERROR_LOG(L"\"monster_info\" could not be opened!");
 		return false;

@@ -4,8 +4,7 @@ using namespace filesystem;
 
 FileLogger::FileLogger() : 
 	Logger(), 
-	path("Log\\"), 
-	lock(L"FileLogger") {
+	path("Log\\") {
 	if (!exists(path)) {
 		filesystem::create_directory(path);
 	}
@@ -23,17 +22,14 @@ FileLogger::FileLogger() :
 	}
 
 	path += Format("%s_%s.log", rename.c_str(), Clock::NowTickToStr(LOG_DATETIME_FORMAT).c_str());
-	fs.open(path.c_str(), ios::out | ios::app);
-	if (fs.bad()) {
+	outStream.open(path.c_str(), ios::app);
+	if (outStream.bad()) {
 		cout << "log error, file open fail\n";
 		return;
 	}
 }
 
-FileLogger::~FileLogger() {
-	fs.clear();
-	fs.close();
-}
+FileLogger::~FileLogger() {}
 
 void FileLogger::log(Level level, const wchar_t* message, ...) {
 	va_list args;
@@ -45,9 +41,7 @@ void FileLogger::log(Level level, const wchar_t* message, ...) {
 void FileLogger::log(Level level, const wchar_t* message, va_list args) {
 	array<wchar_t, SIZE_256> buf;
 	vswprintf_s(buf.data(), buf.size(), message, args);
-	wstring text = Format(L"[%s][%s] %s\n", logTypes[level], 
+
+	outStream << Format(L"[%ls][%ls] %ls\n", logTypes[level],
 		Clock::NowTickToWStr().c_str(), buf.data());
-	SAFE_LOCK(lock);
-	fs << text;
-	fs.flush();
 }

@@ -27,6 +27,12 @@ using Float = float;
 using threadId_t = std::thread::id;
 using objectId_t = UInt64;
 
+using JsonFileReadStream = rapidjson::FileReadStream;
+using JsonFileWriteStream = rapidjson::FileWriteStream;
+using JsonDocument = rapidjson::Document;
+using JsonSizeType = rapidjson::SizeType;
+using JsonValue = rapidjson::Value;
+
 struct IntPoint {
 	int x, y;
 

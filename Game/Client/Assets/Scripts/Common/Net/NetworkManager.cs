@@ -53,9 +53,9 @@ namespace Heroes {
 		private void Update() {
 			if (IsConnected) return;
 			
-			if (!messageBoxHandler.IsOpened) {
-				messageBoxHandler.alert("서버와 연결이 끊겼습니다.", () => SceneLoader.LoadLoginScene());
-			}
+			//if (!messageBoxHandler.IsOpened) {
+			//	messageBoxHandler.alert("서버와 연결이 끊겼습니다.", () => SceneLoader.LoadLoginScene());
+			//}
 		}
 
 		private void OnDestroy() {
@@ -87,6 +87,8 @@ namespace Heroes {
 				Byte[] buffer = packetStream.ToArray();
 				PacketObfuscator.encodeHeader(ref buffer);
 				PacketObfuscator.encodeData(ref buffer, packetLen - sizeof(Int32));
+
+				Debug.Log(packetLen);
 
 				try {
 					stream.Write(buffer, 0, buffer.Length);

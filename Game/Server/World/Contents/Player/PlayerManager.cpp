@@ -35,7 +35,7 @@ std::shared_ptr<Player> PlayerManager::find(objectId_t playerId) {
 }
 
 bool PlayerManager::initialize() {
-	bool result = Json::ReadFile(charactersData, "character_info.json");
+	bool result = ReadJsonFile(charactersData, "character_info.json");
 	if (!result) {
 		ERROR_LOG(L"\"character_info\" could not be opened!");
 		return false;

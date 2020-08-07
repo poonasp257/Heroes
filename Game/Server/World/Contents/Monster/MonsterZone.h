@@ -18,7 +18,7 @@ private:
 
 public:
 	MonsterZone();
-	MonsterZone(const Json::Value& zoneInfo);
+	MonsterZone(const JsonValue& zoneInfo);
 	~MonsterZone();
 
 	BoundingCircle& getMoveBoundary() { return moveBoundary; }

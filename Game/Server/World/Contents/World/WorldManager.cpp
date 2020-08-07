@@ -41,8 +41,8 @@ bool WorldManager::initialize() {
 		return false;
 	}
 
-	Json::Document document;
-	bool result = Json::ReadFile(document, "world_map.json");
+	JsonDocument document;
+	bool result = ReadJsonFile(document, "world_map.json");
 	if (!result) {
 		ERROR_LOG(L"\"world_map\" could not be opened!");
 		return false;

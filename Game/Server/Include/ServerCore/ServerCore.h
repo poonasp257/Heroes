@@ -50,7 +50,6 @@
 
 #include "Util/Type.h"
 #include "Util/Util.h"
-#include "Util/Json.h"
 #include "Util/Clock.h"
 #include "Util/HttpRequest.h"
 #include "Util/Assert.h"
@@ -64,8 +63,6 @@
 #include "Util/Boundary/BoundingObject.h"
 #include "Util/Boundary/BoundingBox.h"
 #include "Util/Boundary/BoundingCircle.h"
-
-#include "Util/Algorithm/PathFinding.h"
 
 #include "Util/Lock/Lock.h"
 #include "Util/Lock/LockManager.h"

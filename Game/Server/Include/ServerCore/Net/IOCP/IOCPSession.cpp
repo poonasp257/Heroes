@@ -85,8 +85,8 @@ void IOCPSession::recv(WSABUF wsaBuf) {
 		ioBuffer[IOType::Read].getOverlapped(), NULL);
 	if (errorCode == SOCKET_ERROR &&
 		WSAGetLastError() != ERROR_IO_PENDING) {
-		//SessionManager::Instance().closeSession(this);
-		//ERROR_LOG(L"socket error: %d", WSAGetLastError());
+		SessionManager::Instance().closeSession(this);
+		ERROR_LOG(L"socket error: %d", WSAGetLastError());
 		return;
 	}
 }
@@ -116,8 +116,8 @@ void IOCPSession::send(WSABUF wsaBuf) {
 		ioBuffer[IOType::Write].getOverlapped(), NULL);
 	if (errorCode == SOCKET_ERROR
 		&& WSAGetLastError() != ERROR_IO_PENDING) {
-		//SessionManager::Instance().closeSession(this);
-		//ERROR_LOG(L"socket error: %d", WSAGetLastError());
+		SessionManager::Instance().closeSession(this);
+		ERROR_LOG(L"socket error: %d", WSAGetLastError());
 		return;
 	}
 }
@@ -138,14 +138,14 @@ void IOCPSession::sendPacket(const Packet& packet) {
 	ioBuffer[IOType::Write].setBuffer(stream);
 
 	size_t packetLen = ioBuffer[IOType::Write].getTotalBytes();
-	//INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
+	INFO_LOG(L"send %d bytes[Type:%d]", packetLen, packet.type());
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = ioBuffer[IOType::Write].getBuffer();
 	wsaBuf.len = (ULONG)packetLen;
 
 	this->send(wsaBuf);
-	this->recvStandBy();
+	//this->recvStandBy();
 }
 
 std::unique_ptr<Package> IOCPSession::onRecv(size_t transferSize) {
@@ -165,7 +165,7 @@ std::unique_ptr<Package> IOCPSession::onRecv(size_t transferSize) {
 	}
 
 	size_t packetLen = packetHeaderSize + packetDataSize;
-	//INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
+	INFO_LOG(L"received %d bytes[Type:%d]", packetLen, packet->type());
 
 	this->recvStandBy();
 	return std::make_unique<Package>(shared_from_this(), std::move(packet));

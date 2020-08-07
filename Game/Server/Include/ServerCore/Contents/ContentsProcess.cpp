@@ -12,7 +12,7 @@ ContentsProcess::~ContentsProcess() {
 
 bool ContentsProcess::initialize() {
 	const auto& config = ConfigManager::Instance().getConfig();
-	const Json::Value& contentsConfig = config["Contents"];
+	const JsonValue& contentsConfig = config["Contents"];
 	if (contentsConfig.IsNull()) {
 		ERROR_LOG(L"\'Contents\' document doesn't exist");
 		return false;
