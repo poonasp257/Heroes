@@ -3,8 +3,7 @@
 ## Introduction  
 + Title: Heroes  
 + Genre: MMORPG  
-
-## Game Design
++ Platform: PC
 
 ## Tech
 ### Client
